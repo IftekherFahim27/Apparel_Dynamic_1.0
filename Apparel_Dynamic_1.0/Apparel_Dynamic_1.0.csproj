@@ -46,6 +46,7 @@
     <Reference Include="SAPBusinessOneSDK" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helper\FileDialogHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -55,7 +56,6 @@
     <Folder Include="AddFiles\Documents\" />
     <Folder Include="AddFiles\Hana\" />
     <Folder Include="AddFiles\Logo\" />
-    <Folder Include="Helper\" />
     <Folder Include="Modules\" />
     <Folder Include="Resources\" />
   </ItemGroup>
