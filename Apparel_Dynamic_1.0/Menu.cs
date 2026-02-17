@@ -127,6 +127,34 @@ namespace Apparel_Dynamic_1._0
                     Gender activeForm = new Gender();
                     activeForm.Show();
                 }
+                //Size
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SIZEMSTR")
+                {
+                    string formUID = "FIL_FRM_SIZEMSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Size activeForm = new Size();
+                    activeForm.Show();
+                }
+                //Colour
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_CLRMSTR")
+                {
+                    string formUID = "FIL_FRM_CLR_MSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Colour activeForm = new Colour();
+                    activeForm.Show();
+                }
 
                 //___________________________________________________________Master________________________________________________
 
