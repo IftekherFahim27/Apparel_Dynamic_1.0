@@ -53,6 +53,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Setup\SampleType.b1f.cs">
+      <DependentUpon>SampleType.b1f</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AddFiles\Database Design\" />
@@ -60,7 +63,13 @@
     <Folder Include="AddFiles\Hana\" />
     <Folder Include="AddFiles\Logo\" />
     <Folder Include="Modules\" />
-    <Folder Include="Resources\" />
+    <Folder Include="Resources\Master\" />
+    <Folder Include="Resources\Transaction\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\Setup\SampleType.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
