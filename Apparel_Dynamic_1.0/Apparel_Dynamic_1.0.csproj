@@ -53,6 +53,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Setup\Gender.b1f.cs">
+      <DependentUpon>Gender.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Setup\SampleType.b1f.cs">
       <DependentUpon>SampleType.b1f</DependentUpon>
     </Compile>
@@ -67,6 +70,9 @@
     <Folder Include="Resources\Transaction\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Setup\Gender.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
     <None Include="Resources\Setup\SampleType.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>

@@ -98,8 +98,10 @@ namespace Apparel_Dynamic_1._0
             try
             {
                 //___________________________________________________________Setup_______________________________________________
-                 if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SMPLTYPE")
-                 {
+                
+                //Sample Type
+                if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SMPLTYPE")
+                {
                         string formUID = "FIL_FRM_SMPLTYPE";
                         if (IsFormOpen(formUID))
                         {
@@ -110,7 +112,22 @@ namespace Apparel_Dynamic_1._0
                         }
                     SampleType activeForm = new SampleType();
                     activeForm.Show();
-                 }
+                }
+                // Gender 
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_GENTYMSTR")
+                {
+                    string formUID = "FIL_FRM_GENTYMSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Gender activeForm = new Gender();
+                    activeForm.Show();
+                }
+
                 //___________________________________________________________Master________________________________________________
 
 
