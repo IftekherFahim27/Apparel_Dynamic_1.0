@@ -49,6 +49,7 @@
     <Compile Include="Helper\FileDialogHelper.cs" />
     <Compile Include="Helper\Global.cs" />
     <Compile Include="Helper\GlobalFunction.cs" />
+    <Compile Include="Helper\NetworkShareHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
