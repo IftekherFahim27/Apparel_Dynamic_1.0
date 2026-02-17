@@ -53,8 +53,23 @@
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Setup\Colour.b1f.cs">
+      <DependentUpon>Colour.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Setup\ComponentStages.b1f.cs">
+      <DependentUpon>ComponentStages.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Setup\Gender.b1f.cs">
+      <DependentUpon>Gender.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Setup\SampleStatus.b1f.cs">
+      <DependentUpon>SampleStatus.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Setup\SampleType.b1f.cs">
       <DependentUpon>SampleType.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Setup\Size.b1f.cs">
+      <DependentUpon>Size.b1f</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -67,7 +82,22 @@
     <Folder Include="Resources\Transaction\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Setup\Colour.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\ComponentStages.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\Gender.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\SampleStatus.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
     <None Include="Resources\Setup\SampleType.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\Size.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
   </ItemGroup>

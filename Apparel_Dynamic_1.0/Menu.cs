@@ -98,8 +98,10 @@ namespace Apparel_Dynamic_1._0
             try
             {
                 //___________________________________________________________Setup_______________________________________________
-                 if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SMPLTYPE")
-                 {
+                
+                //Sample Type
+                if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SMPLTYPE")
+                {
                         string formUID = "FIL_FRM_SMPLTYPE";
                         if (IsFormOpen(formUID))
                         {
@@ -110,7 +112,77 @@ namespace Apparel_Dynamic_1._0
                         }
                     SampleType activeForm = new SampleType();
                     activeForm.Show();
-                 }
+                }
+                // Gender 
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_GENTYMSTR")
+                {
+                    string formUID = "FIL_FRM_GENTYMSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Gender activeForm = new Gender();
+                    activeForm.Show();
+                }
+                //Size
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SIZEMSTR")
+                {
+                    string formUID = "FIL_FRM_SIZEMSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Size activeForm = new Size();
+                    activeForm.Show();
+                }
+                //Colour
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_CLRMSTR")
+                {
+                    string formUID = "FIL_FRM_CLR_MSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Colour activeForm = new Colour();
+                    activeForm.Show();
+                }
+                //Component Stages
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_COMSTGES")
+                {
+                    string formUID = "FIL_FRM_COMSTG";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    ComponentStages activeForm = new ComponentStages();
+                    activeForm.Show();
+                }
+                //Sample Status
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SMPLSTUS")
+                {
+                    string formUID = "FIL_FRM_SMPLSTAT";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    SampleStatus activeForm = new SampleStatus();
+                    activeForm.Show();
+                }
                 //___________________________________________________________Master________________________________________________
 
 
