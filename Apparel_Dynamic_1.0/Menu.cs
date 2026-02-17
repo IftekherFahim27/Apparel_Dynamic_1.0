@@ -169,7 +169,20 @@ namespace Apparel_Dynamic_1._0
                     ComponentStages activeForm = new ComponentStages();
                     activeForm.Show();
                 }
-
+                //Sample Status
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SMPLSTUS")
+                {
+                    string formUID = "FIL_FRM_SMPLSTAT";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    SampleStatus activeForm = new SampleStatus();
+                    activeForm.Show();
+                }
                 //___________________________________________________________Master________________________________________________
 
 
