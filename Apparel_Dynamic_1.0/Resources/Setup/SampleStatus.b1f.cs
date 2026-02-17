@@ -18,9 +18,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         private SAPbouiCOM.EditText ETCODE, ETDOCTRY;
         private SAPbouiCOM.Button ADDButton, CancelButton;
         private SAPbouiCOM.CheckBox CKACTIVE;
-        /// <summary>
-        /// Initialize components. Called by framework after form created.
-        /// </summary>
+     
         public override void OnInitializeComponent()
         {
             this.STCODE = ((SAPbouiCOM.StaticText)(this.GetItem("STCODE").Specific));
@@ -65,7 +63,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                 string code = oCode.Value.Trim().ToUpper();
                 oCode.Value = code;
 
-                // 🔍 Empty check
+                //Empty check
                 if (string.IsNullOrEmpty(code))
                 {
                     Global.GFunc.ShowError("Enter Size Code");
@@ -73,7 +71,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     return BubbleEvent = false;
                 }
 
-                // 🔍 Format validation (no spaces + no special characters)
+                //Format validation (no spaces + no special characters)
                 if (!IsValidCode(code, out string err))
                 {
                     Global.GFunc.ShowError(err);
@@ -82,7 +80,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     return BubbleEvent = false;
                 }
 
-                // 🔍 Duplicate check
+                //Duplicate check
                 SAPbobsCOM.Recordset oRS =
                     (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
