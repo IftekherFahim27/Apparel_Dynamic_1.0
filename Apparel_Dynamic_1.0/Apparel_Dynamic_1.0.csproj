@@ -53,6 +53,9 @@
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Resources\Master\RouteMaster.b1f.cs">
+      <DependentUpon>RouteMaster.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Master\SampleMaster.b1f.cs">
       <DependentUpon>SampleMaster.b1f</DependentUpon>
     </Compile>
@@ -89,6 +92,9 @@
     <Folder Include="Modules\" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Master\RouteMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
     <None Include="Resources\Master\SampleMaster.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
