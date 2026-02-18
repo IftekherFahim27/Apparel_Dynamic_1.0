@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Text;
 using Apparel_Dynamic_1._0.Helper;
 using Apparel_Dynamic_1._0.Resources.Setup;
+using Apparel_Dynamic_1._0.Resources.Master;
+using Apparel_Dynamic_1._0.Resources.Transaction;
 
 namespace Apparel_Dynamic_1._0
 {
@@ -183,9 +185,133 @@ namespace Apparel_Dynamic_1._0
                     SampleStatus activeForm = new SampleStatus();
                     activeForm.Show();
                 }
+                // Positon
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_PSTNMSTR")
+                {
+                    string formUID = "FIL_FRM_PSTN_MSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Position activeForm = new Position();
+                    activeForm.Show();
+                }
                 //___________________________________________________________Master________________________________________________
+                //Sample Master
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_SAM_SM")
+                {
+                    string formUID = "FIL_FRM_SMPLMSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    SampleMaster activeForm = new SampleMaster();
+                    activeForm.Show();
+                    SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_SMPLMSTR");
+                    try
+                    {
+                        SAPbouiCOM.Matrix MTSZ = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
+                        SAPbouiCOM.Matrix MTXCLR = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific;
+                        SAPbouiCOM.Matrix MTXITM = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXITEM").Specific;
+                        SAPbouiCOM.Matrix MTXBYRS = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXBUYER").Specific;
+                        SAPbouiCOM.Matrix MTXATTAC = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+                        MTSZ.AutoResizeColumns();
+                        MTXCLR.AutoResizeColumns();
+                        MTXITM.AutoResizeColumns();
+                        MTXBYRS.AutoResizeColumns();
+                        MTXATTAC.AutoResizeColumns();
+
+                        //Series Initialization
+                        SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_SMPLMAST");   //DEFINE  DATASOURCES.
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                            Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_SMPLMAST");  //Object Type
+                            string ocmbvalue = ocmb.Selected.Value;
+                            long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_SMPLMAST");
+
+                            oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+                        }
+                        //Date
+                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETSLCNDT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
 
 
+                    }
+                    catch (Exception e)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + e.Message);
+                    }
+                }
+                // Route Master
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_MST_ROUTNG")
+                {
+                    string formUID = "FIL_FRM_ROUTEMSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    RouteMaster activeForm = new RouteMaster();
+                    activeForm.Show();
+                }
+                //___________________________________________________________Transaction________________________________________________
+                //Sample PreCositng
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_SAM_SPC")
+                {
+                    string formUID = "FIL_FRM_SMPLPCST";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    SamplePreCosting activeForm = new SamplePreCosting();
+                    activeForm.Show();
+                    SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_SMPLPCST");
+                    try
+                    {
+                        //Component Matrix
+                        SAPbouiCOM.Matrix oMTXCMP = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCMPNT").Specific;
+                        SAPbouiCOM.Column oAmtCMP = oMTXCMP.Columns.Item("CLAMT");
+                        oAmtCMP.ColumnSetting.SumType = SAPbouiCOM.BoColumnSumType.bst_Auto;
+
+                        //Other Cost Matrix
+                        SAPbouiCOM.Matrix oMTXOTCST = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXOTCST").Specific;
+                        SAPbouiCOM.Column oAmtOTCST = oMTXOTCST.Columns.Item("CLAMT");
+                        oAmtOTCST.ColumnSetting.SumType = SAPbouiCOM.BoColumnSumType.bst_Auto;
+
+                        oMTXCMP.AutoResizeColumns();
+                        oMTXOTCST.AutoResizeColumns();
+
+                        //Series Initialization
+                        SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_PRECOSTING");
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                            Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_PRECOSTING");
+                            string ocmbvalue = ocmb.Selected.Value;
+                            long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_PRECOSTING");
+                            oDBH.SetValue("DocNum", 0, docno.ToString());
+                        }
+                        //Date
+                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETDATE").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = "1"; //Default version 
+                    }
+                    catch (Exception e)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + e.Message);
+                    }
+                }
                 //___________________________________________________________Standard______________________________________________
                 //ADD
                 else if (!pVal.BeforeAction && pVal.MenuUID == "1282")
@@ -853,13 +979,13 @@ namespace Apparel_Dynamic_1._0
                                                                                                        // sErrorMsg = Global.oCompany.GetLastErrorDescription();
                 if (!ValidateLicense(_AddonId))
                 {
-                    Application.SBO_Application.StatusBar.SetText("License validation failed for Apparel Add-On", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                    Application.SBO_Application.StatusBar.SetText("License validation failed for Apparel Dynsmic", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                     System.Windows.Forms.Application.Exit();
                     return false;
                 }
                 else
                 {
-                    Application.SBO_Application.StatusBar.SetText("Apparel Add-On Connected Successfully", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                    Application.SBO_Application.StatusBar.SetText("Apparel Dynamic Connected Successfully", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
                     return true;
                 }
             }
