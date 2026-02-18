@@ -37,7 +37,6 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             this.STUOM = ((SAPbouiCOM.StaticText)(this.GetItem("STUOM").Specific));
             this.ETUOM = ((SAPbouiCOM.EditText)(this.GetItem("ETUOM").Specific));
             this.CKACTIVE = ((SAPbouiCOM.CheckBox)(this.GetItem("CKACTIVE").Specific));
-            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("Item_0").Specific));
             this.OnCustomInitialize();
 
         }
