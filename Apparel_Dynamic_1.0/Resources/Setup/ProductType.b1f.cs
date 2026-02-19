@@ -18,7 +18,14 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         /// </summary>
         public override void OnInitializeComponent()
         {
-            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_0").Specific));
+            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("STCODE").Specific));
+            this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("STNAME").Specific));
+            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("ETCODE").Specific));
+            this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("ETNAME").Specific));
+            this.EditText2 = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
+            this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.Button1 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
+            this.CheckBox0 = ((SAPbouiCOM.CheckBox)(this.GetItem("CKACTIVE").Specific));
             this.OnCustomInitialize();
 
         }
@@ -36,5 +43,13 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         {
 
         }
+
+        private SAPbouiCOM.StaticText StaticText1;
+        private SAPbouiCOM.EditText EditText0;
+        private SAPbouiCOM.EditText EditText1;
+        private SAPbouiCOM.EditText EditText2;
+        private SAPbouiCOM.Button Button0;
+        private SAPbouiCOM.Button Button1;
+        private SAPbouiCOM.CheckBox CheckBox0;
     }
 }
