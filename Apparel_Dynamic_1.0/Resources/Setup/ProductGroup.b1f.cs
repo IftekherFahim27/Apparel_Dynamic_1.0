@@ -6,15 +6,16 @@ using System.Text;
 
 namespace Apparel_Dynamic_1._0.Resources.Setup
 {
-    [FormAttribute("Apparel_Dynamic_1._0.Resources.Setup.ProductType", "Resources/Setup/ProductType.b1f")]
-    class ProductType : UserFormBase
+    [FormAttribute("Apparel_Dynamic_1._0.Resources.Setup.ProductGroup", "Resources/Setup/ProductGroup.b1f")]
+    class ProductGroup : UserFormBase
     {
-        public ProductType()
+        public ProductGroup()
         {
         }
 
-        private SAPbouiCOM.StaticText STCODE, STNAME;
-        private SAPbouiCOM.EditText ETCODE, ETNAME, ETDOCTRY;
+
+        private SAPbouiCOM.StaticText STCODE, STNAME, STPDTYPE, STPDLINE;
+        private SAPbouiCOM.EditText ETCODE, ETNAME, ETDOCTRY, ETPDTYPE, ETPDLINE;
         private SAPbouiCOM.Button ADDButton, CancelButton;
         private SAPbouiCOM.CheckBox CKACTIVE;
         public override void OnInitializeComponent()
@@ -27,6 +28,10 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.CKACTIVE = ((SAPbouiCOM.CheckBox)(this.GetItem("CKACTIVE").Specific));
+            this.STPDTYPE = ((SAPbouiCOM.StaticText)(this.GetItem("STPDTYPE").Specific));
+            this.STPDLINE = ((SAPbouiCOM.StaticText)(this.GetItem("STPDLINE").Specific));
+            this.ETPDTYPE = ((SAPbouiCOM.EditText)(this.GetItem("ETPDTYPE").Specific));
+            this.ETPDLINE = ((SAPbouiCOM.EditText)(this.GetItem("ETPDLINE").Specific));
             this.OnCustomInitialize();
 
         }
@@ -35,13 +40,12 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         {
         }
 
- 
+
 
         private void OnCustomInitialize()
         {
 
         }
-
 
 
     }

@@ -71,6 +71,9 @@
     <Compile Include="Resources\Setup\Position.b1f.cs">
       <DependentUpon>Position.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Setup\ProductGroup.b1f.cs">
+      <DependentUpon>ProductGroup.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Setup\ProductLine.b1f.cs">
       <DependentUpon>ProductLine.b1f</DependentUpon>
     </Compile>
@@ -114,6 +117,9 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\Position.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\ProductGroup.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\ProductLine.b1f">
