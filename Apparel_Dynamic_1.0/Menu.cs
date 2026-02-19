@@ -33,10 +33,10 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_SMPLSTUS", "Sample Status", 6, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_COMSTGES", "Components Stages", 7, 1, false);
 
-                //CreateMainMenu("APP_STP", "APP_STP_PRODLN", "Product Line ", 7, 1, false);
-                //CreateMainMenu("APP_STP", "APP_STP_PRODGRP", "Product Group ", 8, 1, false);
-                //CreateMainMenu("APP_STP", "APP_STP_PRODCAT", "Product Category", 9, 1, false);
-                //CreateMainMenu("APP_STP", "APP_STP_PRODTYPE", "Product Type", 10, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_PRODLN", "Product Line ", 8, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_PRODGRP", "Product Group ", 9, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_PRODCAT", "Product Category", 10, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_PRODTYPE", "Product Type", 11, 1, false);
 
               
                
@@ -197,6 +197,20 @@ namespace Apparel_Dynamic_1._0
                         return;
                     }
                     Position activeForm = new Position();
+                    activeForm.Show();
+                }
+                // Product Line 
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_PRODLN")
+                {
+                    string formUID = "FIL_FRM_PRDLINE";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    ProductLine activeForm = new ProductLine();
                     activeForm.Show();
                 }
                 //___________________________________________________________Master________________________________________________
