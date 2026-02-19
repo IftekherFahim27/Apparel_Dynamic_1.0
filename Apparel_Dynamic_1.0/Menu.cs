@@ -33,10 +33,11 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_SMPLSTUS", "Sample Status", 6, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_COMSTGES", "Components Stages", 7, 1, false);
 
-                //CreateMainMenu("APP_STP", "APP_STP_PRODLN", "Product Line ", 7, 1, false);
-                //CreateMainMenu("APP_STP", "APP_STP_PRODGRP", "Product Group ", 8, 1, false);
-                //CreateMainMenu("APP_STP", "APP_STP_PRODCAT", "Product Category", 9, 1, false);
-                //CreateMainMenu("APP_STP", "APP_STP_PRODTYPE", "Product Type", 10, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_PRODLN", "Product Line ", 8, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_PRODTYPE", "Product Type", 9, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_PRODGRP", "Product Group ", 10, 1, false);
+                //CreateMainMenu("APP_STP", "APP_STP_PRODCAT", "Product Category", 11, 1, false);
+               
 
               
                
@@ -197,6 +198,48 @@ namespace Apparel_Dynamic_1._0
                         return;
                     }
                     Position activeForm = new Position();
+                    activeForm.Show();
+                }
+                // Product Line 
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_PRODLN")
+                {
+                    string formUID = "FIL_FRM_PRDLINE";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    ProductLine activeForm = new ProductLine();
+                    activeForm.Show();
+                }
+                // Product Type 
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_PRODTYPE")
+                {
+                    string formUID = "FIL_FRM_PRDTYPE";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    ProductType activeForm = new ProductType();
+                    activeForm.Show();
+                }
+                // Product Group
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_PRODGRP")
+                {
+                    string formUID = "FIL_FRM_PRDTYPE";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    ProductType activeForm = new ProductType();
                     activeForm.Show();
                 }
                 //___________________________________________________________Master________________________________________________
