@@ -17,7 +17,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         private SAPbouiCOM.StaticText STCODE, STNAME, STACTIVE, STPANTON;
         private SAPbouiCOM.EditText ETCODE, ETNAME, ETDOCTRY, ETPANTON;
         private SAPbouiCOM.Button ADDButton, CancelButton;
-        private SAPbouiCOM.CheckBox CHKACTIVE;
+        private SAPbouiCOM.CheckBox CKACTIVE;
 
 
 
@@ -33,7 +33,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
             this.STACTIVE = ((SAPbouiCOM.StaticText)(this.GetItem("STACTIVE").Specific));
-            this.CHKACTIVE = ((SAPbouiCOM.CheckBox)(this.GetItem("CHKACTIVE").Specific));
+            this.CKACTIVE = ((SAPbouiCOM.CheckBox)(this.GetItem("CKACTIVE").Specific));
             this.STPANTON = ((SAPbouiCOM.StaticText)(this.GetItem("STPANTON").Specific));
             this.ETPANTON = ((SAPbouiCOM.EditText)(this.GetItem("ETPANTON").Specific));
             this.ETPANTON.LostFocusAfter += new SAPbouiCOM._IEditTextEvents_LostFocusAfterEventHandler(this.ETPANTON_LostFocusAfter);

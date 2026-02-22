@@ -60,8 +60,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             try
             {
                 SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-
-                if (oForm.Mode != SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
                 {
                     // Get entered code
                     SAPbouiCOM.EditText oCode = (SAPbouiCOM.EditText)oForm.Items.Item("ETCODE").Specific;
@@ -137,8 +136,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         {
             string code = oForm.DataSources.DBDataSources.Item("@FIL_MH_POSITION").GetValue("Code", 0);
             string name = oForm.DataSources.DBDataSources.Item("@FIL_MH_POSITION").GetValue("Name", 0);
-            string category = oForm.DataSources.DBDataSources.Item("@FIL_MH_POSITION").GetValue("U_CATEGORY", 0);
-            string desc = oForm.DataSources.DBDataSources.Item("@FIL_MH_POSITION").GetValue("U_DESC", 0);
+            
             if (code == "")
             {
                 Global.GFunc.ShowError("Enter Position Master Code");
@@ -149,18 +147,6 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             {
                 Global.GFunc.ShowError("Enter Position Master Name");
                 oForm.ActiveItem = "ETNAME";
-                return BubbleEvent = false;
-            }
-            else if (category == "")
-            {
-                Global.GFunc.ShowError("Enter Position Master Category");
-                oForm.ActiveItem = "ETCATGRY";
-                return BubbleEvent = false;
-            }
-            else if (desc == "")
-            {
-                Global.GFunc.ShowError("Enter Position Master Description");
-                oForm.ActiveItem = "ETDESC";
                 return BubbleEvent = false;
             }
             return BubbleEvent;

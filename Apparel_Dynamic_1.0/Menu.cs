@@ -133,7 +133,7 @@ namespace Apparel_Dynamic_1._0
                 //Size
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_SIZEMSTR")
                 {
-                    string formUID = "FIL_FRM_SIZEMSTR";
+                    string formUID = "FIL_FRM_SIZE";
                     if (IsFormOpen(formUID))
                     {
                         Global.G_UI_Application.Forms.Item(formUID).Select();
@@ -305,6 +305,17 @@ namespace Apparel_Dynamic_1._0
                     }
                     RouteMaster activeForm = new RouteMaster();
                     activeForm.Show();
+                    SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_ROUTEMSTR");
+                    try
+                    {
+                        SAPbouiCOM.Matrix MTSTG = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSTAGE").Specific;
+                        MTSTG.AutoResizeColumns();
+                        EnsureLine(oForm, "MTXSTAGE", "@FIL_MR_RSM1");
+                    }
+                    catch(Exception ex)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
+                    }
                 }
                 //___________________________________________________________Transaction________________________________________________
                 //Sample PreCositng
@@ -441,6 +452,23 @@ namespace Apparel_Dynamic_1._0
 
                                 break;
                             }
+                        case "FIL_FRM_ROUTEMSTR":
+                            {
+                                SetItemsEnabled(oForm, true, "ETCODE");
+                                break;
+                            }
+                        case "FIL_FRM_CLR_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                break;
+                            }
+                        case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                break;
+                            }
                     }
                 }
                 //Find Mode
@@ -450,7 +478,14 @@ namespace Apparel_Dynamic_1._0
                     string formtype = oForm.UniqueID.ToString();
                     switch (formtype)
                     {
- 
+                        case "FIL_FRM_SMPLTYPE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                SAPbouiCOM.CheckBox oChk = (SAPbouiCOM.CheckBox)oForm.Items.Item("CKACTIVE").Specific;
+                                oChk.Checked = false;
+                                break;
+                            }
                         case "FIL_FRM_SMPLMSTR":
                             {
                                 SAPbouiCOM.Item oSampleCode = oForm.Items.Item("ETSLCODE");
@@ -470,6 +505,52 @@ namespace Apparel_Dynamic_1._0
 
                                 break;
                             }
+                        case "FIL_FRM_ROUTEMSTR":
+                            {
+                                SetItemsEnabled(oForm, true, "ETCODE");
+                                SAPbouiCOM.CheckBox oChk = (SAPbouiCOM.CheckBox)oForm.Items.Item("CKACTIVE").Specific;
+                                oChk.Checked = false;
+                                break;
+                            }
+                        case "FIL_FRM_CLR_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                SAPbouiCOM.CheckBox oChk = (SAPbouiCOM.CheckBox)oForm.Items.Item("CKACTIVE").Specific;
+                                oChk.Checked = false;
+                                break;
+                            }
+                        case "FIL_FRM_GENTYMSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                SAPbouiCOM.CheckBox oChk = (SAPbouiCOM.CheckBox)oForm.Items.Item("CKACTIVE").Specific;
+                                oChk.Checked = false;
+                                break;
+                            }
+                        case "FIL_FRM_PSTN_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                SAPbouiCOM.CheckBox oChk = (SAPbouiCOM.CheckBox)oForm.Items.Item("CKACTIVE").Specific;
+                                oChk.Checked = false;
+                                break;
+                            }
+                        case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                SAPbouiCOM.CheckBox oChk = (SAPbouiCOM.CheckBox)oForm.Items.Item("CKACTIVE").Specific;
+                                oChk.Checked = false;
+                                break;
+                            }
+                        case "FIL_FRM_COMSTG":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                break;
+                            }
+
                     }
                 }
                 //First
@@ -479,9 +560,22 @@ namespace Apparel_Dynamic_1._0
                     string formtype = oForm.UniqueID.ToString();
                     switch (formtype)
                     {
-                        
+                        case "FIL_FRM_PSTN_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_CLR_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
                         case "FIL_FRM_COMSTG":
                             {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
                                 SetComStageEnable(oForm);
                                 break;
                             }
@@ -507,7 +601,18 @@ namespace Apparel_Dynamic_1._0
                                 LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
                                 break;
                             }
-
+                        case "FIL_FRM_ROUTEMSTR":
+                            {
+                                SetItemsEnabled(oForm, false, "ETCODE");
+                                AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
+                                break;
+                            }
+                        case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
                     }
                 }
                 //Previous
@@ -517,7 +622,24 @@ namespace Apparel_Dynamic_1._0
                     string formtype = oForm.UniqueID.ToString();
                     switch (formtype)
                     {
-                        
+                        case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_PSTN_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_CLR_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
                         case "FIL_FRM_SMPLMSTR":
                             {
                                 //Matrix Open 
@@ -541,6 +663,8 @@ namespace Apparel_Dynamic_1._0
 
                         case "FIL_FRM_COMSTG":
                             {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
                                 SetComStageEnable(oForm);
                                 break;
                             }
@@ -564,6 +688,12 @@ namespace Apparel_Dynamic_1._0
                                 AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
                                 string route = GetRouteFromSampleCode(oForm);
                                 LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
+                                break;
+                            }
+                        case "FIL_FRM_ROUTEMSTR":
+                            {
+                                SetItemsEnabled(oForm, false, "ETCODE");
+                                AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
                                 break;
                             }
                     }
@@ -575,7 +705,24 @@ namespace Apparel_Dynamic_1._0
                     string formtype = oForm.UniqueID.ToString();
                     switch (formtype)
                     {
-                       
+                        case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_PSTN_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_CLR_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
                         case "FIL_FRM_SMPLMSTR":
                             {
                                 //Matrix Open 
@@ -599,6 +746,8 @@ namespace Apparel_Dynamic_1._0
 
                         case "FIL_FRM_COMSTG":
                             {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
                                 SetComStageEnable(oForm);
                                 break;
                             }
@@ -622,6 +771,12 @@ namespace Apparel_Dynamic_1._0
                                 AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
                                 string route = GetRouteFromSampleCode(oForm);
                                 LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
+                                break;
+                            }
+                        case "FIL_FRM_ROUTEMSTR":
+                            {
+                                SetItemsEnabled(oForm, false, "ETCODE");
+                                AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
                                 break;
                             }
                     }
@@ -633,6 +788,24 @@ namespace Apparel_Dynamic_1._0
                     string formtype = oForm.UniqueID.ToString();
                     switch (formtype)
                     {
+                        case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_PSTN_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_CLR_MSTR":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
                         case "FIL_FRM_SMPLMSTR":
                             {
                                 //Matrix Open 
@@ -656,6 +829,8 @@ namespace Apparel_Dynamic_1._0
 
                         case "FIL_FRM_COMSTG":
                             {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
                                 SetComStageEnable(oForm);
                                 break;
                             }
@@ -680,6 +855,12 @@ namespace Apparel_Dynamic_1._0
                                 string route = GetRouteFromSampleCode(oForm);
                                 LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
 
+                                break;
+                            }
+                        case "FIL_FRM_ROUTEMSTR":
+                            {
+                                SetItemsEnabled(oForm, false, "ETCODE");
+                                AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
                                 break;
                             }
                     }
@@ -1022,9 +1203,13 @@ namespace Apparel_Dynamic_1._0
                                                                                                        // sErrorMsg = Global.oCompany.GetLastErrorDescription();
                 if (!ValidateLicense(_AddonId))
                 {
-                    Application.SBO_Application.StatusBar.SetText("License validation failed for Apparel Dynsmic", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-                    System.Windows.Forms.Application.Exit();
-                    return false;
+                    //Application.SBO_Application.StatusBar.SetText("License validation failed for Apparel Dynsmic", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                    //System.Windows.Forms.Application.Exit();
+                    //return false;
+
+
+                    Application.SBO_Application.StatusBar.SetText("Apparel Dynamic Connected Successfully", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+                    return true;
                 }
                 else
                 {
