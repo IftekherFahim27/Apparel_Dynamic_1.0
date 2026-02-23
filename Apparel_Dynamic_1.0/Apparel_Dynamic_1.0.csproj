@@ -59,6 +59,9 @@
     <Compile Include="Resources\Master\SampleMaster.b1f.cs">
       <DependentUpon>SampleMaster.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Setup\Brand.b1f.cs">
+      <DependentUpon>Brand.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Setup\Colour.b1f.cs">
       <DependentUpon>Colour.b1f</DependentUpon>
     </Compile>
@@ -89,6 +92,9 @@
     <Compile Include="Resources\Setup\Size.b1f.cs">
       <DependentUpon>Size.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Setup\SubDivision.b1f.cs">
+      <DependentUpon>SubDivision.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Transaction\SamplePreCosting.b1f.cs">
       <DependentUpon>SamplePreCosting.b1f</DependentUpon>
     </Compile>
@@ -105,6 +111,9 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Master\SampleMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\Brand.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\Colour.b1f">
@@ -135,6 +144,9 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\Size.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\SubDivision.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Transaction\SamplePreCosting.b1f">

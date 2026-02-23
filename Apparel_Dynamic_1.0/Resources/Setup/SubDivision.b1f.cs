@@ -7,13 +7,12 @@ using Apparel_Dynamic_1._0.Helper;
 
 namespace Apparel_Dynamic_1._0.Resources.Setup
 {
-    [FormAttribute("Apparel_Dynamic_1._0.Resources.Setup.Gender", "Resources/Setup/Gender.b1f")]
-    class Gender : UserFormBase
+    [FormAttribute("Apparel_Dynamic_1._0.Resources.Setup.SubDivision", "Resources/Setup/SubDivision.b1f")]
+    class SubDivision : UserFormBase
     {
-        public Gender()
+        public SubDivision()
         {
         }
-
         private SAPbouiCOM.StaticText STCODE, STNAME;
         private SAPbouiCOM.EditText ETCODE, ETNAME, ETDOCTRY;
         private SAPbouiCOM.Button ADDButton, CancelButton;
@@ -35,9 +34,6 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         }
 
-        /// <summary>
-        /// Initialize form event. Called by framework before form creation.
-        /// </summary>
         public override void OnInitializeFormEvents()
         {
         }
@@ -86,7 +82,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                         SAPbobsCOM.Recordset oRS =
                             (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
-                        string query = $@"SELECT 1 FROM ""@FIL_MH_OGEN"" WHERE ""Code"" = '{UCode.Replace("'", "''")}'";
+                        string query = $@"SELECT 1 FROM ""@FIL_MH_SUBDIV"" WHERE ""Code"" = '{UCode.Replace("'", "''")}'";
                         oRS.DoQuery(query);
 
                         if (!oRS.EoF)
@@ -137,17 +133,17 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
         {
-            string code = oForm.DataSources.DBDataSources.Item("@FIL_MH_OGEN").GetValue("Code", 0);
-            string name = oForm.DataSources.DBDataSources.Item("@FIL_MH_OGEN").GetValue("Name", 0);
+            string code = oForm.DataSources.DBDataSources.Item("@FIL_MH_SUBDIV").GetValue("Code", 0);
+            string name = oForm.DataSources.DBDataSources.Item("@FIL_MH_SUBDIV").GetValue("Name", 0);
             if (code == "")
             {
-                Global.GFunc.ShowError("Enter Gender Master Code");
+                Global.GFunc.ShowError("Enter Sub Division Code");
                 oForm.ActiveItem = "ETCODE";
                 return BubbleEvent = false;
             }
             else if (name == "")
             {
-                Global.GFunc.ShowError("Enter Gender Master Name");
+                Global.GFunc.ShowError("Enter Sub Division Name");
                 oForm.ActiveItem = "ETNAME";
                 return BubbleEvent = false;
             }
