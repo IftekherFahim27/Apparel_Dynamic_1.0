@@ -467,6 +467,12 @@ namespace Apparel_Dynamic_1._0
                                 oUomItem.Enabled = true;
                                 break;
                             }
+                        case "FIL_FRM_PRDLINE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                break;
+                            }
                     }
                 }
                 //Find Mode
@@ -548,6 +554,14 @@ namespace Apparel_Dynamic_1._0
                                 oUomItem.Enabled = true;
                                 break;
                             }
+                        case "FIL_FRM_PRDLINE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                SAPbouiCOM.CheckBox oChk = (SAPbouiCOM.CheckBox)oForm.Items.Item("CKACTIVE").Specific;
+                                oChk.Checked = false;
+                                break;
+                            }
 
                     }
                 }
@@ -606,6 +620,12 @@ namespace Apparel_Dynamic_1._0
                                 break;
                             }
                         case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
+                        case "FIL_FRM_PRDLINE":
                             {
                                 SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
                                 oUomItem.Enabled = false;
@@ -694,6 +714,12 @@ namespace Apparel_Dynamic_1._0
                                 AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
                                 break;
                             }
+                        case "FIL_FRM_PRDLINE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
+                                break;
+                            }
                     }
                 }
                 //Next
@@ -775,6 +801,12 @@ namespace Apparel_Dynamic_1._0
                             {
                                 SetItemsEnabled(oForm, false, "ETCODE");
                                 AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
+                                break;
+                            }
+                        case "FIL_FRM_PRDLINE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
                                 break;
                             }
                     }
@@ -859,6 +891,12 @@ namespace Apparel_Dynamic_1._0
                             {
                                 SetItemsEnabled(oForm, false, "ETCODE");
                                 AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
+                                break;
+                            }
+                        case "FIL_FRM_PRDLINE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = false;
                                 break;
                             }
                     }
@@ -946,7 +984,7 @@ namespace Apparel_Dynamic_1._0
                 oCol.ValidValues.Remove(0, SAPbouiCOM.BoSearchKey.psk_Index);
 
 
-            string query = $@"Select Distinct ""U_Code"", ""U_Name""
+            string query = $@"Select Distinct ""U_STAGECODE"", ""U_STAGENAME""
                                 from ""@FIL_MR_RSM1""
                                 where ""Code"" = '{routeCode}'";
 
