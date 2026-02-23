@@ -207,7 +207,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             else if (gender == "")
             {
                 Global.GFunc.ShowError("Enter Gender");
-                oForm.ActiveItem = "ETNAME";
+                oForm.ActiveItem = "ETGENDER";
                 return BubbleEvent = false;
             }
             return BubbleEvent;
