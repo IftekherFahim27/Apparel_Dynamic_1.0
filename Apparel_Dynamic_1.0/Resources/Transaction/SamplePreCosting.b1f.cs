@@ -188,9 +188,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                         oForm.Freeze(true);
                         ClearForm(oForm);
                         oForm.PaneLevel = 1;
-                        LoadHeaderVersion(oForm, SelDocEntry, SelDocNum, SelVersion);
-                        LoadComponentMatrix(oForm, SelDocEntry, SelVersion);
-                        LoadOtherCostMatrix(oForm, SelDocEntry, SelVersion);
+                        LoadHeaderVersion(oForm, SelDocEntry, SelDocNum, SelVersion, SelLogInst);
+                        LoadComponentMatrix(oForm, SelDocEntry, SelVersion, SelLogInst);
+                        LoadOtherCostMatrix(oForm, SelDocEntry, SelVersion, SelLogInst);
                         oForm.Mode = SAPbouiCOM.BoFormMode.fm_VIEW_MODE;
                     }
                 }
@@ -233,7 +233,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             mtxOth.Clear();
             oDT.Clear();
         }
-        private void LoadHeaderVersion(SAPbouiCOM.Form oForm, string docEntry, string docNum, string version)
+        private void LoadHeaderVersion(SAPbouiCOM.Form oForm, string docEntry, string docNum, string version,string log)
         {
             string sql = $@"
                             SELECT ""DocEntry"", ""DocNum"" ,""U_VERSION"", ""U_SMPLCODE"" ,""U_SMPLDESC"",
@@ -241,7 +241,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                             FROM ""@AFIL_DH_PRECOSTING"" 
                             WHERE ""DocEntry""='{docEntry}' 
                               AND ""DocNum""='{docNum}'
-                              AND ""U_VERSION""='{version}'";
+                              AND ""U_VERSION""='{version}'
+                              AND ""LogInst""='{log}'";
 
             SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
             rs.DoQuery(sql);
@@ -262,7 +263,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
             }
         }
-        private void LoadComponentMatrix(SAPbouiCOM.Form oForm, string docEntry, string version)
+        private void LoadComponentMatrix(SAPbouiCOM.Form oForm, string docEntry, string version, string log)
         {
             SAPbouiCOM.Matrix mtx =
                 (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCMPNT").Specific;
@@ -283,7 +284,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                 ""U_VERSION""
                             FROM ""@AFIL_DR_PRECOSTCOMP""
                             WHERE ""DocEntry""='{docEntry}'
-                              AND ""U_VERSION""='{version}'";
+                              AND ""U_VERSION""='{version}'
+                              AND ""LogInst""='{log}'";
 
             SAPbobsCOM.Recordset rs =
                 (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
@@ -320,7 +322,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         }
 
 
-        private void LoadOtherCostMatrix(SAPbouiCOM.Form oForm, string docEntry, string version)
+        private void LoadOtherCostMatrix(SAPbouiCOM.Form oForm, string docEntry, string version, string log)
         {
             SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXOTCST").Specific;
             mtx.Clear();
@@ -333,7 +335,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                     ""U_OHCONAMT"",
                                     ""U_VERSION""
                             FROM ""@AFIL_DR_PRECOSTOTHR"" 
-                            WHERE ""DocEntry""='{docEntry}' AND ""U_VERSION""='{version}'";
+                            WHERE ""DocEntry""='{docEntry}' 
+                                AND ""U_VERSION""='{version}'
+                                AND ""LogInst""='{log}'";
 
             SAPbobsCOM.Recordset rs =
                 (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
@@ -832,8 +836,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     if (row > oMatrix.RowCount)
                         oMatrix.AddRow();
 
-                    string code = Convert.ToString(rs.Fields.Item("Code").Value).Trim();
-                    string name = Convert.ToString(rs.Fields.Item("Name").Value).Trim();
+                    string code = Convert.ToString(rs.Fields.Item("AlcCode").Value).Trim();
+                    string name = Convert.ToString(rs.Fields.Item("AlcName").Value).Trim();
                     ((SAPbouiCOM.EditText)oMatrix.Columns.Item("#").Cells.Item(row).Specific).Value = row.ToString();
                     ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCSTHCD").Cells.Item(row).Specific).Value = code;
                     ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCSTHNM").Cells.Item(row).Specific).Value = name;

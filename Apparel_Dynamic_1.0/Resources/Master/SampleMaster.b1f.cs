@@ -76,7 +76,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.ETCRDNAM = ((SAPbouiCOM.EditText)(this.GetItem("ETCRDNAM").Specific));
             this.ETRUTSNM = ((SAPbouiCOM.EditText)(this.GetItem("ETRUTSNM").Specific));
             this.ETITMGRP = ((SAPbouiCOM.EditText)(this.GetItem("ETITMGRP").Specific));
-            this.ETITMGRP.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETITMGRP_ChooseFromListBefore);
             this.ETITMGRP.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETITMGRP_ChooseFromListAfter);
             this.ETSLTYNM = ((SAPbouiCOM.EditText)(this.GetItem("ETSLTYNM").Specific));
             this.LKMERCOD = ((SAPbouiCOM.LinkedButton)(this.GetItem("LKMERCOD").Specific));
@@ -1140,38 +1139,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         }
 
 
-
-        private void ETITMGRP_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
-        {
-            BubbleEvent = true;
-            try
-            {
-                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
-                string cflUID = cflArg.ChooseFromListUID;
-
-                if (cflUID == "CFL_SITM")
-                {
-                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
-                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
-                    SAPbouiCOM.Condition oCon1 = oCons.Add();
-                    oCon1.Alias = "U_ITMSGRPTP";
-                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                    oCon1.CondVal = "FG";
-                    oCFL.SetConditions(oCons);
-                }
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.StatusBar.SetText(
-                    "Error filtering SAP Group CFL: " + ex.Message,
-                    SAPbouiCOM.BoMessageTime.bmt_Short,
-                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
-                );
-                BubbleEvent = false;
-            }
-
-        }
 
         private void ETITMGRP_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {

@@ -39,8 +39,6 @@ namespace Apparel_Dynamic_1._0
                 //CreateMainMenu("APP_STP", "APP_STP_PRODCAT", "Product Category", 11, 1, false);
                
 
-              
-               
                 //Apparel ->  Master
                 CreateMainMenu("APP_MST", "APP_MST_ROUTNG", "Route Master", 1, 1, false);
 
