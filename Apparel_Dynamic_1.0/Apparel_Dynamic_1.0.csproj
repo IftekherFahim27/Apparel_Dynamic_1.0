@@ -59,6 +59,9 @@
     <Compile Include="Resources\Master\SampleMaster.b1f.cs">
       <DependentUpon>SampleMaster.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Master\SizeTypeMaster.b1f.cs">
+      <DependentUpon>SizeTypeMaster.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Setup\Brand.b1f.cs">
       <DependentUpon>Brand.b1f</DependentUpon>
     </Compile>
@@ -111,6 +114,9 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Master\SampleMaster.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Master\SizeTypeMaster.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\Brand.b1f">
