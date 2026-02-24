@@ -50,6 +50,7 @@
     <Compile Include="Helper\Global.cs" />
     <Compile Include="Helper\GlobalFunction.cs" />
     <Compile Include="Helper\NetworkShareHelper.cs" />
+    <Compile Include="Modules\StandardFormManipulation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -107,7 +108,6 @@
     <Folder Include="AddFiles\Documents\" />
     <Folder Include="AddFiles\Hana\" />
     <Folder Include="AddFiles\Logo\" />
-    <Folder Include="Modules\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\Master\RouteMaster.b1f">

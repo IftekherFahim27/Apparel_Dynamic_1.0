@@ -14,7 +14,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         {
         }
 
-
         public override void OnInitializeComponent()
         {
             this.STCODE = ((SAPbouiCOM.StaticText)(this.GetItem("STCODE").Specific));
@@ -23,7 +22,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.ETCODE.LostFocusAfter += new SAPbouiCOM._IEditTextEvents_LostFocusAfterEventHandler(this.ETCODE_LostFocusAfter);
             this.ETNAME = ((SAPbouiCOM.EditText)(this.GetItem("ETNAME").Specific));
             this.CKACTIVE = ((SAPbouiCOM.CheckBox)(this.GetItem("CKACTIVE").Specific));
-            this.MTXSIZE = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSTAGE").Specific));
+            this.MTXSIZE = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSIZE").Specific));
             this.MTXSIZE.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXSIZE_ChooseFromListAfter);
             this.MTXSIZE.ChooseFromListBefore += new SAPbouiCOM._IMatrixEvents_ChooseFromListBeforeEventHandler(this.MTXSIZE_ChooseFromListBefore);
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
@@ -76,7 +75,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
 
                 SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item("CFL_SIZE");
-                // Always clear previous conditions
                 SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
                 if (usedCodes.Count == 0)
                 {
@@ -96,7 +94,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     if (idx < usedCodes.Count)
                         cond.Relationship = SAPbouiCOM.BoConditionRelationship.cr_AND;
                 }
-
                 oCFL.SetConditions(oCons);
             }
             catch (Exception ex)
@@ -114,20 +111,19 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
                 SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
                 SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
-                SAPbouiCOM.DBDataSource DBDataSourceLine = oForm.DataSources.DBDataSources.Item("@FIL_MH_STM1");
+                SAPbouiCOM.DBDataSource DBDataSourceLine = oForm.DataSources.DBDataSources.Item("@FIL_MR_STM1");
                 SAPbouiCOM.DataTable oDataTable = cflArg.SelectedObjects;
 
-                if (oDataTable.Rows.Count > 0)
-                {
+                if (oDataTable == null || oDataTable.Rows.Count == 0)
+                    return;
+                
                     string code = oDataTable.GetValue("Code", 0).ToString();
-                    string name = oDataTable.GetValue("Desc", 0).ToString();
-
-                    int row = pVal.Row; // matrix row where CFL triggered
+                    string name = oDataTable.GetValue("Name", 0).ToString();
+                    int row = pVal.Row;
                     oMatrix.SetCellWithoutValidation(row, "CLSZCODE", code);
                     oMatrix.SetCellWithoutValidation(row, "CLSZNAME", name);
                     oMatrix.FlushToDataSource();
 
-                    // Add new row if last row has data
                     int lastRow = oMatrix.RowCount;
                     bool lastRowHasData = !string.IsNullOrWhiteSpace(((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLSZCODE").Cells.Item(lastRow).Specific).Value);
                     if (pVal.Row == lastRow && lastRowHasData)
@@ -139,7 +135,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     {
                         oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
                     }
-                }
+                
             }
             catch (Exception ex)
             {
@@ -147,7 +143,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                    SAPbouiCOM.BoMessageTime.bmt_Short,
                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
-
         }
 
         private void ETCODE_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -254,7 +249,51 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
             PreventEmptyLastRow(oForm, "@FIL_MR_STM1", MTXSIZE, "U_SIZECODE");
 
+            if (!RequireAtLeastOneFilledRow(oForm,"@FIL_MR_STM1",MTXSIZE,"U_SIZECODE",ref BubbleEvent))
+            {
+                EnsureLine(oForm, "MTXSIZE", "@FIL_MR_STM1");
+                return BubbleEvent;
+            }
+
             return BubbleEvent;
+        }
+
+        private bool RequireAtLeastOneFilledRow(SAPbouiCOM.Form oForm,string dbDatasourceUID,SAPbouiCOM.Matrix matrix,string columnName,ref bool BubbleEvent)
+        {
+            try
+            {
+                SAPbouiCOM.DBDataSource oDB =oForm.DataSources.DBDataSources.Item(dbDatasourceUID);
+                int rowCount = matrix.VisualRowCount;
+                if (rowCount == 0)
+                {
+                    Global.GFunc.ShowError("At least one Size Code is required.");
+                    oForm.ActiveItem = matrix.Item.UniqueID;
+                    BubbleEvent = false;
+                    return false;
+                }
+
+                for (int i = 0; i < rowCount; i++)
+                {
+                    string val = oDB.GetValue(columnName, i)
+                                    .Replace("\0", "")
+                                    .Trim();
+
+                    if (!string.IsNullOrEmpty(val) && val != "0.0")
+                        return true;
+                }
+
+                Global.GFunc.ShowError("At least one Size Code is required.");
+                oForm.ActiveItem = matrix.Item.UniqueID;
+
+                BubbleEvent = false;
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Global.GFunc.ShowError("Validation error: " + ex.Message);
+                BubbleEvent = false;
+                return false;
+            }
         }
 
         private void PreventEmptyLastRow(SAPbouiCOM.Form oForm, string dbDatasourceUID, SAPbouiCOM.Matrix matrix, string columnName)
@@ -269,6 +308,16 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     matrix.DeleteRow(rowCount);
                     oDB.RemoveRecord(rowCount - 1);
                 }
+            }
+        }
+
+        public static void EnsureLine(SAPbouiCOM.Form oForm, string matrixID, string dbTable)
+        {
+            SAPbouiCOM.Matrix matrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixID).Specific;
+            SAPbouiCOM.DBDataSource db = oForm.DataSources.DBDataSources.Item(dbTable);
+            if (matrix.RowCount == 0)
+            {
+                Global.GFunc.SetNewLine(matrix, db, 1, "");
             }
         }
     }
