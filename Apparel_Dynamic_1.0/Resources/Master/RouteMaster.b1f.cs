@@ -21,6 +21,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.ETNAME = ((SAPbouiCOM.EditText)(this.GetItem("ETNAME").Specific));
             this.CKACTIVE = ((SAPbouiCOM.CheckBox)(this.GetItem("CKACTIVE").Specific));
             this.MTXSTAGE = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSTAGE").Specific));
+            this.MTXSTAGE.ValidateAfter += new SAPbouiCOM._IMatrixEvents_ValidateAfterEventHandler(this.MTXSTAGE_ValidateAfter);
             this.MTXSTAGE.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXSTAGE_ChooseFromListAfter);
             this.MTXSTAGE.ChooseFromListBefore += new SAPbouiCOM._IMatrixEvents_ChooseFromListBeforeEventHandler(this.MTXSTAGE_ChooseFromListBefore);
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
@@ -34,6 +35,8 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         public override void OnInitializeFormEvents()
         {
+            this.DataLoadAfter += new DataLoadAfterHandler(this.Form_DataLoadAfter);
+
         }
 
         private SAPbouiCOM.StaticText STCODE, STNAME;
@@ -235,6 +238,34 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         }
 
+        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            oForm.Freeze(true);
+            try
+            {
+                SetItemsEnabled(oForm, false, "ETCODE");
+                ApplyStageCodeEditability(oForm);
+            }
+            finally
+            {
+                oForm.Freeze(false);
+            }
+        }
+        private void SetItemsEnabled(SAPbouiCOM.Form oForm, bool enabled, params string[] itemIds)
+        {
+            foreach (string itemId in itemIds)
+            {
+                try
+                {
+                    oForm.Items.Item(itemId).Enabled = enabled;
+                }
+                catch
+                {
+
+                }
+            }
+        }
         private void ApplyStageCodeEditability(SAPbouiCOM.Form oForm)
         {
             SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSTAGE").Specific;
@@ -277,7 +308,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText(
-                    "Route Check Error: " + ex.Message,
+                    "Route Used Check Error: " + ex.Message,
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error);
 
@@ -338,8 +369,77 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             return true;
         }
 
+        private void MTXSTAGE_ValidateAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                if (pVal.ColUID != "CLSTGCOD") return;
 
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.Matrix m = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSTAGE").Specific;
 
+                int row = pVal.Row;
+                if (row <= 0) return;
+
+                oForm.Freeze(true);
+                try
+                {
+                    string code = ((SAPbouiCOM.EditText)m.Columns.Item("CLSTGCOD").Cells.Item(row).Specific).Value
+                                    .Replace("\0", "").Trim();
+
+                    if (string.IsNullOrEmpty(code))
+                    {
+                        // 1) clear name (no flicker because Freeze)
+                        ((SAPbouiCOM.EditText)m.Columns.Item("CLSTGNAM").Cells.Item(row).Specific).Value = "";
+
+                        // 2) remove this row + resequence LineId
+                        RemoveRowIfCodeEmptyAndResequence(oForm, m, "@FIL_MR_RSM1", "U_STAGECODE");
+                        AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
+                    }
+
+                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                        oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                }
+                finally
+                {
+                    oForm.Freeze(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Validation Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+        private void RemoveRowIfCodeEmptyAndResequence(SAPbouiCOM.Form oForm,SAPbouiCOM.Matrix matrix,string dbDatasourceUID,string codeFieldName)
+        {
+            // Make sure current UI values are in datasource
+            matrix.FlushToDataSource();
+
+            SAPbouiCOM.DBDataSource ds = oForm.DataSources.DBDataSources.Item(dbDatasourceUID);
+
+            // Remove rows where code is empty (iterate from bottom to avoid index shifting)
+            for (int i = ds.Size - 1; i >= 0; i--)
+            {
+                string code = (ds.GetValue(codeFieldName, i) ?? "").Replace("\0", "").Trim();
+
+                if (string.IsNullOrEmpty(code))
+                {
+                    ds.RemoveRecord(i);
+                }
+            }
+
+            // Resequence LineId to 1..n (LineId is standard field name in child UDO)
+            for (int i = 0; i < ds.Size; i++)
+            {
+                ds.SetValue("LineId", i, (i + 1).ToString());
+            }
+
+            // Reload matrix UI from updated datasource
+            matrix.LoadFromDataSource();
+        }
         private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
         {
             string code = oForm.DataSources.DBDataSources.Item("@FIL_MH_ORSM").GetValue("Code", 0);
@@ -359,7 +459,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             
             PreventEmptyLastRow(oForm, "@FIL_MR_RSM1", MTXSTAGE, "U_STAGECODE");
 
-            if (!RequireAtLeastOneFilledRow(oForm, "@FIL_MR_RSM1", MTXSTAGE, "U_STAGECODE", ref BubbleEvent))
+            if (!RequireAtLeastOneFilledRow(oForm, MTXSTAGE, "CLSTGCOD", ref BubbleEvent))
             {
                 EnsureLine(oForm, "MTXSTAGE", "@FIL_MR_RSM1");
                 return BubbleEvent;
@@ -368,11 +468,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             return BubbleEvent;
         }
 
-        private bool RequireAtLeastOneFilledRow(SAPbouiCOM.Form oForm, string dbDatasourceUID, SAPbouiCOM.Matrix matrix, string columnName, ref bool BubbleEvent)
+        private bool RequireAtLeastOneFilledRow(SAPbouiCOM.Form oForm,SAPbouiCOM.Matrix matrix,string matrixColumnId,ref bool BubbleEvent)
         {
             try
             {
-                SAPbouiCOM.DBDataSource oDB = oForm.DataSources.DBDataSources.Item(dbDatasourceUID);
                 int rowCount = matrix.VisualRowCount;
                 if (rowCount == 0)
                 {
@@ -382,9 +481,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     return false;
                 }
 
-                for (int i = 0; i < rowCount; i++)
+                for (int i = 1; i <= rowCount; i++) // Matrix row index is 1-based
                 {
-                    string val = oDB.GetValue(columnName, i)
+                    string val = ((SAPbouiCOM.EditText)matrix.Columns.Item(matrixColumnId)
+                                    .Cells.Item(i).Specific).Value
                                     .Replace("\0", "")
                                     .Trim();
 
@@ -394,7 +494,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
                 Global.GFunc.ShowError("At least one Route Stage is required.");
                 oForm.ActiveItem = matrix.Item.UniqueID;
-
                 BubbleEvent = false;
                 return false;
             }

@@ -29,8 +29,8 @@ namespace Apparel_Dynamic_1._0
                 Menu MyMenu = new Menu();
                 MyMenu.BasicStart();
 
-                StandardFormManipulation objSFM;
-                objSFM = new StandardFormManipulation();
+                //StandardFormManipulation objSFM;
+                //objSFM = new StandardFormManipulation();
 
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);
