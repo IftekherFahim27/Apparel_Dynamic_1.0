@@ -18,6 +18,9 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         private SAPbouiCOM.EditText ETCODE, ETNAME, ETDOCTRY, ETUOM;
         private SAPbouiCOM.Button ADDButton, CancelButton;
         private SAPbouiCOM.ComboBox CBUOMAPL;
+
+
+
         private SAPbouiCOM.CheckBox CKACTIVE;
         public override void OnInitializeComponent()
         {
@@ -43,10 +46,62 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         public override void OnInitializeFormEvents()
         {
+            this.DataLoadAfter += new DataLoadAfterHandler(this.Form_DataLoadAfter);
+
         }
         private void OnCustomInitialize()
         {
 
+        }
+
+        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            oForm.Freeze(true);
+            try
+            {
+                SetItemsEnabled(oForm, false, "ETCODE");
+                SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBUOMAPL").Specific;
+
+                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETUOM");
+
+                string selectedValue = oCombo.Selected.Value;
+
+                if (selectedValue == "Y")
+                {
+                    oUomItem.Enabled = true;
+                    oForm.ActiveItem = "ETUOM";
+
+                    SAPbouiCOM.StaticText oLabel = (SAPbouiCOM.StaticText)oForm.Items.Item("STUOM").Specific;
+                    oLabel.Caption = "UoM*";
+                }
+                else
+                {
+                    oUomItem.Enabled = false;
+                    ((SAPbouiCOM.EditText)oUomItem.Specific).Value = "";
+                    SAPbouiCOM.StaticText oLabel = (SAPbouiCOM.StaticText)oForm.Items.Item("STUOM").Specific;
+                    oLabel.Caption = "UoM";
+                }
+            }
+            finally
+            {
+                oForm.Freeze(false);
+            }
+
+        }
+        private void SetItemsEnabled(SAPbouiCOM.Form oForm, bool enabled, params string[] itemIds)
+        {
+            foreach (string itemId in itemIds)
+            {
+                try
+                {
+                    oForm.Items.Item(itemId).Enabled = enabled;
+                }
+                catch
+                {
+
+                }
+            }
         }
 
         private void CBUOMAPL_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -62,11 +117,16 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             {
                 oUomItem.Enabled = true;
                 oForm.ActiveItem = "ETUOM";
+
+                SAPbouiCOM.StaticText oLabel =(SAPbouiCOM.StaticText)oForm.Items.Item("STUOM").Specific;
+                oLabel.Caption = "UoM*";
             }
             else
             {
                 oUomItem.Enabled = false;
                 ((SAPbouiCOM.EditText)oUomItem.Specific).Value = "";
+                SAPbouiCOM.StaticText oLabel = (SAPbouiCOM.StaticText)oForm.Items.Item("STUOM").Specific;
+                oLabel.Caption = "UoM";
             }
 
         }

@@ -42,6 +42,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         public override void OnInitializeFormEvents()
         {
+            this.DataLoadAfter += new DataLoadAfterHandler(this.Form_DataLoadAfter);
+
         }
 
         private SAPbouiCOM.StaticText StaticText0;
@@ -82,6 +84,35 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             }
 
 
+        }
+
+        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            oForm.Freeze(true);
+            try
+            {
+                SetItemsEnabled(oForm, false, "ETCODE");
+            }
+            finally
+            {
+                oForm.Freeze(false);
+            }
+
+        }
+        private void SetItemsEnabled(SAPbouiCOM.Form oForm, bool enabled, params string[] itemIds)
+        {
+            foreach (string itemId in itemIds)
+            {
+                try
+                {
+                    oForm.Items.Item(itemId).Enabled = enabled;
+                }
+                catch
+                {
+
+                }
+            }
         }
 
         private void ETGENDER_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)

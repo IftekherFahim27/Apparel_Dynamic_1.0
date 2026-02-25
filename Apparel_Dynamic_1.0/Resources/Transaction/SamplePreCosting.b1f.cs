@@ -1138,7 +1138,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 oCol.ValidValues.Remove(0, SAPbouiCOM.BoSearchKey.psk_Index);
 
 
-            string query = $@"Select Distinct ""U_Code"", ""U_Name""
+            string query = $@"Select Distinct ""U_STAGECODE"", ""U_STAGENAME""
                                 from ""@FIL_MR_RSM1""
                                 where ""Code"" = '{routeCode}'";
 
@@ -1148,8 +1148,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
             while (!rs.EoF)
             {
-                string v = rs.Fields.Item("U_Code").Value.ToString().Trim();
-                string d = rs.Fields.Item("U_Name").Value.ToString().Trim();
+                string v = rs.Fields.Item("U_STAGECODE").Value.ToString().Trim();
+                string d = rs.Fields.Item("U_STAGENAME").Value.ToString().Trim();
 
                 if (!ValidValueExists(oCol, v))
                     oCol.ValidValues.Add(v, d);
