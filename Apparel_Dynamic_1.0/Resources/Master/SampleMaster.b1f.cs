@@ -27,6 +27,9 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         private SAPbouiCOM.LinkedButton LKMERCOD, LKCRDCOD;
         private SAPbouiCOM.Folder FOLCLRSZ, FOLITEM, FOLCRDDT, FOLATTCH, FOLCOLR;
         private SAPbouiCOM.Matrix MTXCOLOR, MTXSIZE, MTXITEM, MTXBUYER, MTXATTCH;
+
+
+
         private SAPbouiCOM.Button ADDButton, CancelButton, BTNITMTX, BTNITMCR, BRWSBTN, DISPBTN, DELBTN;
 
         private SAPbouiCOM.ComboBox CBSERIES;
@@ -68,6 +71,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.ETSLCNDT = ((SAPbouiCOM.EditText)(this.GetItem("ETSLCNDT").Specific));
             this.ETITMGNM = ((SAPbouiCOM.EditText)(this.GetItem("ETITMGNM").Specific));
             this.ETRUTSTG = ((SAPbouiCOM.EditText)(this.GetItem("ETRUTSTG").Specific));
+            this.ETRUTSTG.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETRUTSTG_ChooseFromListBefore);
             this.ETRUTSTG.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETRUTSTG_ChooseFromListAfter);
             this.ETUOM = ((SAPbouiCOM.EditText)(this.GetItem("ETUOM").Specific));
             this.ETCRDCOD = ((SAPbouiCOM.EditText)(this.GetItem("ETCRDCOD").Specific));
@@ -235,9 +239,9 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                             newItem.SRIAndBatchManageMethod = SAPbobsCOM.BoManageMethod.bomm_OnEveryTransaction;
 
                             // User-defined fields
-                            newItem.UserFields.Fields.Item("U_StyleNo").Value = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSLCODE").Specific).Value.Trim();
-                            newItem.UserFields.Fields.Item("U_SizeCode").Value = pDataSource.GetValue("U_SIZECODE", i).Trim();
-                            newItem.UserFields.Fields.Item("U_ColourCode").Value = pDataSource.GetValue("U_COLOCODE", i).Trim();
+                            newItem.UserFields.Fields.Item("U_STYLECODE").Value = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSLCODE").Specific).Value.Trim();
+                            newItem.UserFields.Fields.Item("U_SIZECODE").Value = pDataSource.GetValue("U_SIZECODE", i).Trim();
+                            newItem.UserFields.Fields.Item("U_COLORCODE").Value = pDataSource.GetValue("U_COLOCODE", i).Trim();
                             //newItem.UserFields.Fields.Item("U_BrandCode").Value = pDataSource.GetValue("U_BrandCode", i).Trim();
                             //newItem.UserFields.Fields.Item("U_SeasonCode").Value = pDataSource.GetValue("U_SeasonCode", i).Trim();
                             //newItem.UserFields.Fields.Item("U_BOMReq").Value = pDataSource.GetValue("U_BOMReq", i).Trim();
@@ -300,9 +304,9 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                                 existingItem.ManageBatchNumbers = SAPbobsCOM.BoYesNoEnum.tYES;
                                 existingItem.SRIAndBatchManageMethod = SAPbobsCOM.BoManageMethod.bomm_OnEveryTransaction;
 
-                                existingItem.UserFields.Fields.Item("U_StyleNo").Value = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSLCODE").Specific).Value.Trim();
-                                existingItem.UserFields.Fields.Item("U_SizeCode").Value = pDataSource.GetValue("U_SIZECODE", i).Trim();
-                                existingItem.UserFields.Fields.Item("U_ColourCode").Value = pDataSource.GetValue("U_COLOCODE", i).Trim();
+                                existingItem.UserFields.Fields.Item("U_STYLECODE").Value = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSLCODE").Specific).Value.Trim();
+                                existingItem.UserFields.Fields.Item("U_SIZECODE").Value = pDataSource.GetValue("U_SIZECODE", i).Trim();
+                                existingItem.UserFields.Fields.Item("U_COLORCODE").Value = pDataSource.GetValue("U_COLOCODE", i).Trim();
                                 //existingItem.UserFields.Fields.Item("U_BrandCode").Value = pDataSource.GetValue("U_BrandCode", i).Trim();
                                 //existingItem.UserFields.Fields.Item("U_SeasonCode").Value = pDataSource.GetValue("U_SeasonCode", i).Trim();
                                 //existingItem.UserFields.Fields.Item("U_BOMReq").Value = pDataSource.GetValue("U_BOMReq", i).Trim();
@@ -376,100 +380,138 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         }
         private void BTNITMTX_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-
-
             SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
             SAPbobsCOM.Recordset oRS = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+            SAPbobsCOM.Recordset oRSCheck = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
             SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXITEM").Specific;
             SAPbouiCOM.DBDataSource pDS = oForm.DataSources.DBDataSources.Item("@FIL_DR_SMPLITEM");
 
             string docEntry = ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value;
             if (string.IsNullOrEmpty(docEntry))
-            {
                 return;
-            }
-            else
+
+            string query = $@"
+                                SELECT
+                                    ROW_NUMBER() OVER (ORDER BY C.""U_COLOCODE"", S.""U_SIZECODE"") AS ""LineId"",
+                                    'N' AS ""U_CREATEFLAG"",
+                                    C.""U_COLOCODE"" AS ""U_COLOCODE"",
+                                    C.""U_COLONAME"" AS ""U_COLONAME"",
+                                    S.""U_SIZECODE"" AS ""U_SIZECODE"",
+                                    S.""U_SIZENAME"" AS ""U_SIZENAME"",
+                                    M.""U_UOM"" AS ""U_UOM"",
+                                    M.""U_SMPLCODE"" || '-' || C.""U_COLOCODE"" || '-' || S.""U_SIZECODE"" AS ""U_ITEMCODE"",
+                                    M.""U_SMPLDESC"" || '-' || C.""U_COLONAME"" || '-' || S.""U_SIZENAME"" AS ""U_ITEMNAME""
+                                FROM ""@FIL_DH_SMPLMAST"" M
+                                JOIN ""@FIL_DR_SMPLCOLO"" C ON C.""DocEntry"" = M.""DocEntry""
+                                JOIN ""@FIL_DR_SMPLSIZE"" S ON S.""DocEntry"" = M.""DocEntry""
+                                WHERE
+                                    M.""DocEntry"" = '{docEntry}'
+                                ORDER BY
+                                    C.""U_COLOCODE"", S.""U_SIZECODE""";
+
+            oForm.Freeze(true);
+            try
             {
-                string query = $@"
-                            SELECT
-                                ROW_NUMBER() OVER (ORDER BY C.""U_COLOCODE"", S.""U_SIZECODE"") AS ""LineId"",
-                                'N' AS ""U_CREATEFLAG"",
-                                C.""U_COLOCODE"" AS ""U_COLOCODE"",
-                                C.""U_COLONAME"" AS ""U_COLONAME"",
-                                S.""U_SIZECODE"" AS ""U_SIZECODE"",
-                                S.""U_SIZENAME"" AS ""U_SIZENAME"",
-                                M.""U_UOM"" AS ""U_UOM"",
-                                M.""U_SMPLCODE"" || '-' || C.""U_COLOCODE"" || '-' || S.""U_SIZECODE"" AS ""U_ITEMCODE"",
-                                M.""U_SMPLDESC"" || '-' || C.""U_COLONAME"" || '-' || S.""U_SIZENAME"" AS ""U_ITEMNAME""
-                            FROM ""FMIL_PROD"".""@FIL_DH_SMPLMAST"" M
-                            JOIN ""FMIL_PROD"".""@FIL_DR_SMPLCOLO"" C
-                                ON C.""DocEntry"" = M.""DocEntry""
-                            JOIN ""FMIL_PROD"".""@FIL_DR_SMPLSIZE"" S
-                                ON S.""DocEntry"" = M.""DocEntry""
-                            WHERE
-                                M.""DocEntry"" = '{docEntry}'
-                                AND COALESCE(C.""U_COLOURAPP"", 'N') = 'Y'
-                                AND COALESCE(S.""U_SIZEAPP"", 'N') = 'Y'
-                            ORDER BY
-                                C.""U_COLOCODE"", S.""U_SIZECODE""";
+                oRS.DoQuery(query);
 
-                oForm.Freeze(true);
-                try
+                // Clear previous data
+                pDS.Clear();
+                oMatrix.Clear();
+                oMatrix.LoadFromDataSource();
+
+                // Fill DS from recordset
+                while (!oRS.EoF)
                 {
-                    oRS.DoQuery(query);
+                    pDS.InsertRecord(pDS.Size);
+                    pDS.Offset = pDS.Size - 1;
 
-                    // --- Clear previous data ---
-                    pDS.Clear();
-                    oMatrix.Clear();
-                    oMatrix.LoadFromDataSource();
+                    pDS.SetValue("LineId", pDS.Offset, (pDS.Offset + 1).ToString());
+                    pDS.SetValue("U_CREATEFLAG", pDS.Offset, "N"); // default unchecked
 
-                    // --- Populate from recordset ---
-                    while (!oRS.EoF)
+                    pDS.SetValue("U_UOM", pDS.Offset, oRS.Fields.Item("U_UoM").Value.ToString());
+
+                    pDS.SetValue("U_COLOCODE", pDS.Offset, oRS.Fields.Item("U_COLOCODE").Value.ToString());
+                    pDS.SetValue("U_COLONAME", pDS.Offset, oRS.Fields.Item("U_COLONAME").Value.ToString());
+
+                    pDS.SetValue("U_SIZECODE", pDS.Offset, oRS.Fields.Item("U_SIZECODE").Value.ToString());
+                    pDS.SetValue("U_SIZENAME", pDS.Offset, oRS.Fields.Item("U_SIZENAME").Value.ToString());
+
+                    pDS.SetValue("U_ITEMCODE", pDS.Offset, oRS.Fields.Item("U_ITEMCODE").Value.ToString());
+                    pDS.SetValue("U_ITEMNAME", pDS.Offset, oRS.Fields.Item("U_ITEMNAME").Value.ToString());
+
+                    oRS.MoveNext();
+                }
+
+                // === NEW PART: check existing items in OITM and mark U_CREATEFLAG ===
+                if (pDS.Size > 0)
+                {
+                    System.Text.StringBuilder inList = new System.Text.StringBuilder();
+
+                    for (int i = 0; i < pDS.Size; i++)
                     {
-                        pDS.InsertRecord(pDS.Size);
-                        pDS.Offset = pDS.Size - 1;
+                        string itemCode = (pDS.GetValue("U_ITEMCODE", i) ?? "").Trim();
 
-                        pDS.SetValue("LineId", pDS.Offset, (pDS.Offset + 1).ToString());
-                        pDS.SetValue("U_CREATEFLAG", pDS.Offset, oRS.Fields.Item("U_CREATEFLAG").Value.ToString());
-                        pDS.SetValue("U_UOM", pDS.Offset, oRS.Fields.Item("U_UoM").Value.ToString());
+                        if (string.IsNullOrEmpty(itemCode))
+                            continue;
 
-                        pDS.SetValue("U_COLOCODE", pDS.Offset, oRS.Fields.Item("U_COLOCODE").Value.ToString());
-                        pDS.SetValue("U_COLONAME", pDS.Offset, oRS.Fields.Item("U_COLONAME").Value.ToString());
+                        // Escape single quote properly for HANA
+                        itemCode = itemCode.Replace("'", "''");
 
-                        pDS.SetValue("U_SIZECODE", pDS.Offset, oRS.Fields.Item("U_SIZECODE").Value.ToString());
-                        pDS.SetValue("U_SIZENAME", pDS.Offset, oRS.Fields.Item("U_SIZENAME").Value.ToString());
+                        if (inList.Length > 0)
+                            inList.Append(",");
 
-                        pDS.SetValue("U_ITEMCODE", pDS.Offset, oRS.Fields.Item("U_ITEMCODE").Value.ToString());
-                        pDS.SetValue("U_ITEMNAME", pDS.Offset, oRS.Fields.Item("U_ITEMNAME").Value.ToString());
-
-
-                        oRS.MoveNext();
+                        inList.Append("'").Append(itemCode).Append("'");
                     }
 
-                    // --- Refresh matrix ---
-                    oMatrix.LoadFromDataSource();
-                    oMatrix.AutoResizeColumns();
-
-
-                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                    if (inList.Length > 0)
                     {
-                        oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                        string checkQuery = $@"
+                                            SELECT ""ItemCode""
+                                            FROM ""OITM"" 
+                                            WHERE ""ItemCode"" IN ({inList})";
+
+                        oRSCheck.DoQuery(checkQuery);
+
+                        // Put existing itemcodes into a HashSet for fast lookup
+                        var existing = new System.Collections.Generic.HashSet<string>(System.StringComparer.OrdinalIgnoreCase);
+                        while (!oRSCheck.EoF)
+                        {
+                            existing.Add(oRSCheck.Fields.Item("ItemCode").Value.ToString().Trim());
+                            oRSCheck.MoveNext();
+                        }
+
+                        // Update datasource flags
+                        for (int i = 0; i < pDS.Size; i++)
+                        {
+                            string itemCode = (pDS.GetValue("U_ITEMCODE", i) ?? "").Trim();
+                            if (!string.IsNullOrEmpty(itemCode) && existing.Contains(itemCode))
+                            {
+                                pDS.SetValue("U_CREATEFLAG", i, "Y"); //checked
+                            }
+                            else
+                            {
+                                pDS.SetValue("U_CREATEFLAG", i, "N"); // unchecked
+                            }
+                        }
                     }
-
-                }
-                catch (Exception ex)
-                {
-                    Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-                }
-                finally
-                {
-                    oForm.Freeze(false);
                 }
 
+                // Refresh matrix
+                oMatrix.LoadFromDataSource();
+                oMatrix.AutoResizeColumns();
+
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
             }
-
-
-
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                oForm.Freeze(false);
+            }
         }
 
         private void ADDButton_PressedBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
@@ -574,90 +616,90 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 // Enable/disable other buttons based on matrix
                 SampleEnableButtons(ref oForm);
 
-                // --- Only check for changes if we already had previous states ---
-                bool newCheckedInSztType = false;
-                bool newCheckedInColor = false;
+                //// --- Only check for changes if we already had previous states ---
+                //bool newCheckedInSztType = false;
+                //bool newCheckedInColor = false;
 
-                if (prevSztTypeCheckboxStates.Count > 0)
-                    newCheckedInSztType = HasCheckboxChanges(oForm, "MTXSIZE", "CLSZAPL", prevSztTypeCheckboxStates);
+                //if (prevSztTypeCheckboxStates.Count > 0)
+                //    newCheckedInSztType = HasCheckboxChanges(oForm, "MTXSIZE", "CLSZAPL", prevSztTypeCheckboxStates);
 
-                if (prevColorCheckboxStates.Count > 0)
-                    newCheckedInColor = HasCheckboxChanges(oForm, "MTXCOLOR", "CLCLRAPL", prevColorCheckboxStates);
+                //if (prevColorCheckboxStates.Count > 0)
+                //    newCheckedInColor = HasCheckboxChanges(oForm, "MTXCOLOR", "CLCLRAPL", prevColorCheckboxStates);
 
-                if (newCheckedInSztType || newCheckedInColor)
-                {
-                    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
-                    oBtnItmTx.Enabled = true;
+                //if (newCheckedInSztType || newCheckedInColor)
+                //{
+                //    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
+                //    oBtnItmTx.Enabled = true;
 
-                    Application.SBO_Application.StatusBar.SetText(
-                        "Detected new checked rows in matrix — BTNITMTX enabled.",
-                        SAPbouiCOM.BoMessageTime.bmt_Short,
-                        SAPbouiCOM.BoStatusBarMessageType.smt_Success
-                    );
-                }
-                else
-                {
-                    //Disable if no new checks
-                    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
-                    oBtnItmTx.Enabled = false;
-                }
-                // --- Always refresh states AFTER processing ---
-                CaptureCheckboxStates(oForm, "MTXSIZE", "CLSZAPL", prevSztTypeCheckboxStates);
-                CaptureCheckboxStates(oForm, "MTXCOLOR", "CLCLRAPL", prevColorCheckboxStates);
+                //    Application.SBO_Application.StatusBar.SetText(
+                //        "Detected new checked rows in matrix — BTNITMTX enabled.",
+                //        SAPbouiCOM.BoMessageTime.bmt_Short,
+                //        SAPbouiCOM.BoStatusBarMessageType.smt_Success
+                //    );
+                //}
+                //else
+                //{
+                //    //Disable if no new checks
+                //    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
+                //    oBtnItmTx.Enabled = false;
+                //}
+                //// --- Always refresh states AFTER processing ---
+                ////CaptureCheckboxStates(oForm, "MTXSIZE", "CLSZAPL", prevSztTypeCheckboxStates);
+                ////CaptureCheckboxStates(oForm, "MTXCOLOR", "CLCLRAPL", prevColorCheckboxStates);
             }
 
         }
 
         // --- Generic reusable method to store checkbox states ---
-        private void CaptureCheckboxStates(SAPbouiCOM.Form oForm, string matrixId, string columnId, Dictionary<int, bool> targetDict)
-        {
-            try
-            {
-                targetDict.Clear();
-                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixId).Specific;
+        //private void CaptureCheckboxStates(SAPbouiCOM.Form oForm, string matrixId, string columnId, Dictionary<int, bool> targetDict)
+        //{
+        //    try
+        //    {
+        //        targetDict.Clear();
+        //        SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixId).Specific;
 
-                for (int i = 1; i <= oMatrix.RowCount; i++)
-                {
-                    SAPbouiCOM.CheckBox chk = (SAPbouiCOM.CheckBox)oMatrix.Columns.Item(columnId).Cells.Item(i).Specific;
-                    targetDict[i] = chk.Checked;
-                }
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.StatusBar.SetText($"Error capturing states for {matrixId}: {ex.Message}",
-                    SAPbouiCOM.BoMessageTime.bmt_Short,
-                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-            }
-        }
+        //        for (int i = 1; i <= oMatrix.RowCount; i++)
+        //        {
+        //            SAPbouiCOM.CheckBox chk = (SAPbouiCOM.CheckBox)oMatrix.Columns.Item(columnId).Cells.Item(i).Specific;
+        //            targetDict[i] = chk.Checked;
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        Application.SBO_Application.StatusBar.SetText($"Error capturing states for {matrixId}: {ex.Message}",
+        //            SAPbouiCOM.BoMessageTime.bmt_Short,
+        //            SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+        //    }
+        //}
 
-        private bool HasCheckboxChanges(SAPbouiCOM.Form oForm, string matrixId, string columnId, Dictionary<int, bool> prevStates)
-        {
-            try
-            {
-                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixId).Specific;
+        //private bool HasCheckboxChanges(SAPbouiCOM.Form oForm, string matrixId, string columnId, Dictionary<int, bool> prevStates)
+        //{
+        //    try
+        //    {
+        //        SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixId).Specific;
 
-                for (int i = 1; i <= oMatrix.RowCount; i++)
-                {
-                    SAPbouiCOM.CheckBox chk = (SAPbouiCOM.CheckBox)oMatrix.Columns.Item(columnId).Cells.Item(i).Specific;
-                    bool prevState = prevStates.ContainsKey(i) ? prevStates[i] : false;
+        //        for (int i = 1; i <= oMatrix.RowCount; i++)
+        //        {
+        //            SAPbouiCOM.CheckBox chk = (SAPbouiCOM.CheckBox)oMatrix.Columns.Item(columnId).Cells.Item(i).Specific;
+        //            bool prevState = prevStates.ContainsKey(i) ? prevStates[i] : false;
 
-                    // Detect any change: checked → unchecked OR unchecked → checked
-                    if (chk.Checked != prevState)
-                    {
-                        return true;
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.StatusBar.SetText(
-                    $"Error checking checkbox changes for {matrixId}: {ex.Message}",
-                    SAPbouiCOM.BoMessageTime.bmt_Short,
-                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-            }
+        //            Detect any change: checked → unchecked OR unchecked → checked
+        //            if (chk.Checked != prevState)
+        //            {
+        //                return true;
+        //            }
+        //            }
+        //            }
+        //    catch (Exception ex)
+        //    {
+        //        Application.SBO_Application.StatusBar.SetText(
+        //            $"Error checking checkbox changes for {matrixId}: {ex.Message}",
+        //            SAPbouiCOM.BoMessageTime.bmt_Short,
+        //            SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+        //    }
 
-            return false;
-        }
+        //    return false;
+        //}
 
         public static void AddLineIfLastRowHasValue(
            SAPbouiCOM.Form oForm,
@@ -856,22 +898,61 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         private void MTXSIZE_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
+
             try
             {
                 SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
                 string cflUID = cflArg.ChooseFromListUID;
 
-                if (cflUID == "CFL_SIZE")
+                if (cflUID != "CFL_SIZE")
+                    return;
+
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                // Matrix + Column where size code is stored
+                SAPbouiCOM.Matrix oMtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific; // <-- your matrix id
+                string colCode = "CLSZCODE"; // <-- your size code column id
+
+                // Collect already used size codes from matrix
+                HashSet<string> usedCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                for (int i = 1; i <= oMtx.RowCount; i++)
                 {
-                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
-                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
-                    SAPbouiCOM.Condition oCon1 = oCons.Add();
-                    oCon1.Alias = "U_ACTIVE";
-                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                    oCon1.CondVal = "Y";
-                    oCFL.SetConditions(oCons);
+                    var cell = (SAPbouiCOM.EditText)oMtx.Columns.Item(colCode).Cells.Item(i).Specific;
+                    string code = (cell.Value ?? "").Trim();
+                    if (!string.IsNullOrEmpty(code))
+                        usedCodes.Add(code);
                 }
+
+                SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
+                SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
+
+                //Active only
+                SAPbouiCOM.Condition cActive = oCons.Add();
+                cActive.Alias = "U_ACTIVE";
+                cActive.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                cActive.CondVal = "Y";
+
+                // If there are used codes, add AND + NOT EQUAL for each
+                if (usedCodes.Count > 0)
+                {
+                    cActive.Relationship = SAPbouiCOM.BoConditionRelationship.cr_AND;
+
+                    int idx = 0;
+                    foreach (string c in usedCodes)
+                    {
+                        SAPbouiCOM.Condition cond = oCons.Add();
+                        cond.Alias = "Code"; // or "U_SIZECODE" if CFL object doesn't have Code
+                        cond.Operation = SAPbouiCOM.BoConditionOperation.co_NOT_EQUAL;
+                        cond.CondVal = c;
+
+                        idx++;
+                        if (idx < usedCodes.Count)
+                            cond.Relationship = SAPbouiCOM.BoConditionRelationship.cr_AND;
+                    }
+                }
+
+                oCFL.SetConditions(oCons);
             }
             catch (Exception ex)
             {
@@ -882,7 +963,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 );
                 BubbleEvent = false;
             }
-
         }
 
         private void MTXBUYER_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -938,27 +1018,66 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         private void MTXCOLOR_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;
+
             try
             {
                 SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
                 string cflUID = cflArg.ChooseFromListUID;
 
-                if (cflUID == "CFL_CLOR")
+                if (cflUID != "CFL_CLOR")
+                    return;
+
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                // Matrix + Column where size code is stored
+                SAPbouiCOM.Matrix oMtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific; // <-- your matrix id
+                string colCode = "CLCLRCOD"; // <-- your size code column id
+
+                // Collect already used size codes from matrix
+                HashSet<string> usedCodes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                for (int i = 1; i <= oMtx.RowCount; i++)
                 {
-                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
-                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
-                    SAPbouiCOM.Condition oCon1 = oCons.Add();
-                    oCon1.Alias = "U_ACTIVE";
-                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                    oCon1.CondVal = "Y";
-                    oCFL.SetConditions(oCons);
+                    var cell = (SAPbouiCOM.EditText)oMtx.Columns.Item(colCode).Cells.Item(i).Specific;
+                    string code = (cell.Value ?? "").Trim();
+                    if (!string.IsNullOrEmpty(code))
+                        usedCodes.Add(code);
                 }
+
+                SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
+                SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
+
+                //Active only
+                SAPbouiCOM.Condition cActive = oCons.Add();
+                cActive.Alias = "U_ACTIVE";
+                cActive.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                cActive.CondVal = "Y";
+
+                // If there are used codes, add AND + NOT EQUAL for each
+                if (usedCodes.Count > 0)
+                {
+                    cActive.Relationship = SAPbouiCOM.BoConditionRelationship.cr_AND;
+
+                    int idx = 0;
+                    foreach (string c in usedCodes)
+                    {
+                        SAPbouiCOM.Condition cond = oCons.Add();
+                        cond.Alias = "Code"; // or "U_SIZECODE" if CFL object doesn't have Code
+                        cond.Operation = SAPbouiCOM.BoConditionOperation.co_NOT_EQUAL;
+                        cond.CondVal = c;
+
+                        idx++;
+                        if (idx < usedCodes.Count)
+                            cond.Relationship = SAPbouiCOM.BoConditionRelationship.cr_AND;
+                    }
+                }
+
+                oCFL.SetConditions(oCons);
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText(
-                    "Error filtering Size CFL: " + ex.Message,
+                    "Error filtering Colour CFL: " + ex.Message,
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
@@ -975,13 +1094,14 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
                 SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific;
                 SAPbouiCOM.DBDataSource DBDataSourceLine = oForm.DataSources.DBDataSources.Item("@FIL_DR_SMPLCOLO");
-                SAPbouiCOM.DataTable oDataTable = cflArg.SelectedObjects;
+                SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
 
-                if (oDataTable.Rows.Count > 0)
-                {
-                    string code = oDataTable.GetValue("Code", 0).ToString();
-                    string name = oDataTable.GetValue("Name", 0).ToString();
-                    string pantone = oDataTable.GetValue("U_PANTONE", 0).ToString();
+                if (dt == null || dt.Rows.Count == 0)
+                    return;
+                
+                    string code = dt.GetValue("Code", 0).ToString();
+                    string name = dt.GetValue("Name", 0).ToString();
+                    string pantone = dt.GetValue("U_PANTONE", 0).ToString();
                     int row = pVal.Row;
                     //Set Values
                     oMatrix.SetCellWithoutValidation(row, "CLCLRCOD", code);
@@ -996,7 +1116,12 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     {
                         Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
                     }
+
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                {
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
                 }
+
             }
             catch (Exception ex)
             {
@@ -1015,12 +1140,13 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
                 SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
                 SAPbouiCOM.DBDataSource DBDataSourceLine = oForm.DataSources.DBDataSources.Item("@FIL_DR_SMPLSIZE");
-                SAPbouiCOM.DataTable oDataTable = cflArg.SelectedObjects;
+                SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
 
-                if (oDataTable.Rows.Count > 0)
-                {
-                    string code = oDataTable.GetValue("Code", 0).ToString();
-                    string name = oDataTable.GetValue("Name", 0).ToString();
+                if (dt == null || dt.Rows.Count == 0)
+                    return;
+
+                    string code = dt.GetValue("Code", 0).ToString();
+                    string name = dt.GetValue("Name", 0).ToString();
 
                     int row = pVal.Row; // matrix row where CFL triggered
                     //Set Values
@@ -1035,7 +1161,12 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     {
                         Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
                     }
+
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                {
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
                 }
+
             }
             catch (Exception ex)
             {
@@ -1138,6 +1269,37 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         }
 
+        private void ETRUTSTG_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+            try
+            {
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+                string cflUID = cflArg.ChooseFromListUID;
+
+                if (cflUID == "CFL_ROUT")
+                {
+                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
+                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
+                    SAPbouiCOM.Condition oCon1 = oCons.Add();
+                    oCon1.Alias = "U_ACTIVE";
+                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon1.CondVal = "Y";
+                    oCFL.SetConditions(oCons);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error filtering Route Master CFL: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+                BubbleEvent = false;
+            }
+
+        }
 
 
         private void ETITMGRP_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)

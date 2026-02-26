@@ -600,7 +600,6 @@ namespace Apparel_Dynamic_1._0
                             {
                                 //Enable off
                                 SetItemsEnabled(oForm, true, "ETSMPLNM", "ETBUYER", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
-
                                 break;
                             }
                         case "FIL_FRM_ROUTEMSTR":
@@ -696,17 +695,6 @@ namespace Apparel_Dynamic_1._0
                                 SetComStageEnable(oForm);
                                 break;
                             }
-
-                        case "FIL_FRM_SMPLPCST":
-                            {
-                                //Enable off
-                                SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
-                                SetItemsEnabled(oForm, true, "BTNLCSTH", "BTNVRNUP");
-                                AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
-                                string route = GetRouteFromSampleCode(oForm);
-                                LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
-                                break;
-                            }
                         case "FIL_FRM_SMPLMSTR":
                             {
                                 //Matrix Open 
@@ -767,18 +755,6 @@ namespace Apparel_Dynamic_1._0
                                 break;
                             }
                         
-                        case "FIL_FRM_SMPLPCST":
-                            {
-                                //Enable off
-                                SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
-                                SetItemsEnabled(oForm, true, "BTNLCSTH", "BTNVRNUP");
-                                AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
-                                string route = GetRouteFromSampleCode(oForm);
-                                LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
-                                break;
-                            }
-
-                       
                        
                     }
                 }
@@ -817,18 +793,6 @@ namespace Apparel_Dynamic_1._0
                                 SetComStageEnable(oForm);
                                 break;
                             }
-                        case "FIL_FRM_SMPLPCST":
-                            {
-                                //Enable off
-                                SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
-                                SetItemsEnabled(oForm, true, "BTNLCSTH", "BTNVRNUP");
-                                AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
-                                string route = GetRouteFromSampleCode(oForm);
-                                LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
-                                break;
-                            }
-
-                       
                     }
                 }
                 //Last
@@ -866,20 +830,7 @@ namespace Apparel_Dynamic_1._0
                                 oUomItem.Enabled = false;
                                 SetComStageEnable(oForm);
                                 break;
-                            }
-                       
-                        case "FIL_FRM_SMPLPCST":
-                            {
-                                //Enable off
-                                SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
-                                SetItemsEnabled(oForm, true, "BTNLCSTH", "BTNVRNUP");
-                                AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
-                                string route = GetRouteFromSampleCode(oForm);
-                                LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
-
-                                break;
-                            }
-                       
+                            }                  
                     }
                 }
                 //duplicate
@@ -921,73 +872,6 @@ namespace Apparel_Dynamic_1._0
 
         //_____________________________________________________ Method for Working Purpose________________________________________
         
-        private string GetRouteFromSampleCode(SAPbouiCOM.Form oForm)
-        {
-            try
-            {
-                string sampleCode = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLCD").Specific).Value.Trim();
-
-                if (string.IsNullOrEmpty(sampleCode))
-                    return string.Empty;
-
-                // Prepare SQL Query
-                string query = $@"SELECT TOP 1 ""U_ROUTSTAG"" 
-                          FROM ""@FIL_DH_SMPLMAST"" 
-                          WHERE ""U_SMPLCODE"" = '{sampleCode}'";
-
-                SAPbobsCOM.Recordset oRec = (SAPbobsCOM.Recordset)
-                    Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                oRec.DoQuery(query);
-
-                if (!oRec.EoF)
-                {
-                    return oRec.Fields.Item("U_ROUTSTAG").Value.ToString();
-                }
-
-                return string.Empty;
-            }
-            catch (Exception ex)
-            {
-                return string.Empty;
-            }
-        }
-
-
-        private void LoadRouteWiseComboToMatrixColumn(SAPbouiCOM.Form oForm, string matrixId, string comboColId, string routeCode)
-        {
-            SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixId).Specific;
-            SAPbouiCOM.Column oCol = oMatrix.Columns.Item(comboColId);
-
-            if (oCol.Type != SAPbouiCOM.BoFormItemTypes.it_COMBO_BOX)
-                throw new Exception($"Column {comboColId} is not a ComboBox column.");
-
-            //Remove Prev Values
-            while (oCol.ValidValues.Count > 0)
-                oCol.ValidValues.Remove(0, SAPbouiCOM.BoSearchKey.psk_Index);
-
-
-            string query = $@"Select Distinct ""U_STAGECODE"", ""U_STAGENAME""
-                                from ""@FIL_MR_RSM1""
-                                where ""Code"" = '{routeCode}'";
-
-            SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            rs.DoQuery(query);
-            oCol.ValidValues.Add("", "");
-
-            while (!rs.EoF)
-            {
-                string v = rs.Fields.Item("U_Code").Value.ToString().Trim();
-                string d = rs.Fields.Item("U_Name").Value.ToString().Trim();
-
-                if (!ValidValueExists(oCol, v))
-                    oCol.ValidValues.Add(v, d);
-
-                rs.MoveNext();
-            }
-
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(rs);
-        }
-
         private bool ValidValueExists(SAPbouiCOM.Column col, string value)
         {
             for (int i = 0; i < col.ValidValues.Count; i++)

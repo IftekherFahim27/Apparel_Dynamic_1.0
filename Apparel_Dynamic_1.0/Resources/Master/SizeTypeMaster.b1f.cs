@@ -300,26 +300,54 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
                 if (oDataTable == null || oDataTable.Rows.Count == 0)
                     return;
-                
-                    string code = oDataTable.GetValue("Code", 0).ToString();
-                    string name = oDataTable.GetValue("Name", 0).ToString();
-                    int row = pVal.Row;
-                    oMatrix.SetCellWithoutValidation(row, "CLSZCODE", code);
-                    oMatrix.SetCellWithoutValidation(row, "CLSZNAME", name);
-                    oMatrix.FlushToDataSource();
 
-                    int lastRow = oMatrix.RowCount;
-                    bool lastRowHasData = !string.IsNullOrWhiteSpace(((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLSZCODE").Cells.Item(lastRow).Specific).Value);
-                    if (pVal.Row == lastRow && lastRowHasData)
+                string code = oDataTable.GetValue("Code", 0).ToString().Trim();
+                string name = oDataTable.GetValue("Name", 0).ToString().Trim();
+
+                int row = pVal.Row;
+
+                //sometimes CFL returns row 0
+                if (row <= 0)
+                {
+                    row = oMatrix.GetNextSelectedRow(0, SAPbouiCOM.BoOrderType.ot_RowOrder);
+                    if (row <= 0) row = 1;
+                }
+
+                
+                if (oMatrix.RowCount == 0)
+                {
+                    Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
+                }
+                while (row > oMatrix.RowCount)
+                {
+                    Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
+                }
+
+                // set values
+                oMatrix.SetCellWithoutValidation(row, "CLSZCODE", code);
+                oMatrix.SetCellWithoutValidation(row, "CLSZNAME", name);
+
+                oMatrix.FlushToDataSource();
+
+                
+                int lastRow = oMatrix.RowCount;
+                if (lastRow >= 1)
+                {
+                    string lastCode =
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLSZCODE").Cells.Item(lastRow).Specific).Value;
+
+                    bool lastRowHasData = !string.IsNullOrWhiteSpace(lastCode);
+
+                    if (row == lastRow && lastRowHasData)
                     {
                         Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
                     }
+                }
 
-                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
-                    {
-                        oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
-                    }
-                
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                {
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                }
             }
             catch (Exception ex)
             {

@@ -96,12 +96,56 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         public override void OnInitializeFormEvents()
         {
+            this.DataLoadAfter += new DataLoadAfterHandler(this.Form_DataLoadAfter);
+
         }
 
 
         private void OnCustomInitialize()
         {
 
+        }
+        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            //Enable off
+            SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
+            SetItemsEnabled(oForm, true, "BTNLCSTH", "BTNVRNUP");
+            AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
+            string route = GetRouteFromSampleCode(oForm);
+            LoadRouteWiseComboToMatrixColumn(oForm, "MTXCMPNT", "CLRSTGCD", route);
+
+        }
+
+        private string GetRouteFromSampleCode(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                string sampleCode = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLCD").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(sampleCode))
+                    return string.Empty;
+
+                // Prepare SQL Query
+                string query = $@"SELECT TOP 1 ""U_ROUTSTAG"" 
+                          FROM ""@FIL_DH_SMPLMAST"" 
+                          WHERE ""U_SMPLCODE"" = '{sampleCode}'";
+
+                SAPbobsCOM.Recordset oRec = (SAPbobsCOM.Recordset)
+                    Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                oRec.DoQuery(query);
+
+                if (!oRec.EoF)
+                {
+                    return oRec.Fields.Item("U_ROUTSTAG").Value.ToString();
+                }
+
+                return string.Empty;
+            }
+            catch (Exception ex)
+            {
+                return string.Empty;
+            }
         }
 
         private void LKSMPLCD_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -380,6 +424,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBUYER", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
         }
 
+
+
         private void SetItemsEnabled(SAPbouiCOM.Form oForm, bool enabled, params string[] itemIds)
         {
             foreach (string itemId in itemIds)
@@ -530,8 +576,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     }
 
                     v++;
-                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = v.ToString();
 
+
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = v.ToString();
                     // Matrix Other Cost
                     SAPbouiCOM.Matrix mtxOtherCost = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXOTCST").Specific;
                     UpdateMatrixVersion(mtxOtherCost, "CLVERSN", v);
@@ -648,8 +695,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 {
                     oMatrix.AddRow();
 
-                    string code = Convert.ToString(rs.Fields.Item("Code").Value).Trim();
-                    string name = Convert.ToString(rs.Fields.Item("Name").Value).Trim();
+                    string code = Convert.ToString(rs.Fields.Item("AlcCode").Value).Trim();
+                    string name = Convert.ToString(rs.Fields.Item("AlcName").Value).Trim();
 
                     ((SAPbouiCOM.EditText)oMatrix.Columns.Item("#").Cells.Item(row).Specific).Value = row.ToString();
                     ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCSTHCD").Cells.Item(row).Specific).Value = code;
