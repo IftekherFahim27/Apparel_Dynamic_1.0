@@ -207,35 +207,58 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 if (oDataTable == null || oDataTable.Rows.Count == 0)
                     return;
 
-                string code = oDataTable.GetValue("Code", 0).ToString();
-                string name = oDataTable.GetValue("Desc", 0).ToString();
+                string code = oDataTable.GetValue("Code", 0).ToString().Trim();
+                string name = oDataTable.GetValue("Desc", 0).ToString().Trim();
 
-                int row = pVal.Row; // matrix row where CFL triggered
+                int row = pVal.Row;
+
+                //CFL sometimes returns row 0
+                if (row <= 0)
+                {
+                    
+                    row = oMatrix.GetNextSelectedRow(0, SAPbouiCOM.BoOrderType.ot_RowOrder);
+                    if (row <= 0) row = 1;
+                }
+
+                if (oMatrix.RowCount == 0)
+                {
+                    Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
+                }
+                while (row > oMatrix.RowCount)
+                {
+                    Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
+                }
+
+                // set values
                 oMatrix.SetCellWithoutValidation(row, "CLSTGCOD", code);
                 oMatrix.SetCellWithoutValidation(row, "CLSTGNAM", name);
+
                 oMatrix.FlushToDataSource();
 
-                // Add new row if last row has data
+                // ✅ SAFETY: check last row only if RowCount >= 1
                 int lastRow = oMatrix.RowCount;
-                bool lastRowHasData = !string.IsNullOrWhiteSpace(((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLSTGCOD").Cells.Item(lastRow).Specific).Value);
-                if (pVal.Row == lastRow && lastRowHasData)
+                if (lastRow >= 1)
                 {
-                   Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
+                    string lastCode =
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLSTGCOD").Cells.Item(lastRow).Specific).Value;
+
+                    bool lastRowHasData = !string.IsNullOrWhiteSpace(lastCode);
+
+                    if (row == lastRow && lastRowHasData)
+                    {
+                        Global.GFunc.SetNewLine(oMatrix, DBDataSourceLine, 1, "");
+                    }
                 }
 
                 if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
-                {
-                   oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
-                }
-                
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText("Route Stage CFL Error: " + ex.Message,
-                   SAPbouiCOM.BoMessageTime.bmt_Short,
-                   SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
-
         }
 
         private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
