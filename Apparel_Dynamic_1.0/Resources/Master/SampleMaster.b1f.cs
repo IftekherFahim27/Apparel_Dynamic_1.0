@@ -32,13 +32,11 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         private SAPbouiCOM.Button ADDButton, CancelButton, BTNITMTX, BTNITMCR, BRWSBTN, DISPBTN, DELBTN;
 
-        private SAPbouiCOM.ComboBox CBSERIES;
 
+
+        private SAPbouiCOM.ComboBox CBSERIES;
         private string sampleCode = "";
 
-        // 🔹 Global storage for both matrices’ previous checkbox states
-        private Dictionary<int, bool> prevSztTypeCheckboxStates = new Dictionary<int, bool>();
-        private Dictionary<int, bool> prevColorCheckboxStates = new Dictionary<int, bool>();
 
 
         public override void OnInitializeComponent()
@@ -89,9 +87,11 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.FOLCRDDT = ((SAPbouiCOM.Folder)(this.GetItem("FOLCRDDT").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.MTXCOLOR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCOLOR").Specific));
+            this.MTXCOLOR.ValidateAfter += new SAPbouiCOM._IMatrixEvents_ValidateAfterEventHandler(this.MTXCOLOR_ValidateAfter);
             this.MTXCOLOR.ChooseFromListBefore += new SAPbouiCOM._IMatrixEvents_ChooseFromListBeforeEventHandler(this.MTXCOLOR_ChooseFromListBefore);
             this.MTXCOLOR.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXCOLOR_ChooseFromListAfter);
             this.MTXSIZE = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSIZE").Specific));
+            this.MTXSIZE.ValidateAfter += new SAPbouiCOM._IMatrixEvents_ValidateAfterEventHandler(this.MTXSIZE_ValidateAfter);
             this.MTXSIZE.ChooseFromListBefore += new SAPbouiCOM._IMatrixEvents_ChooseFromListBeforeEventHandler(this.MTXSIZE_ChooseFromListBefore);
             this.MTXSIZE.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXSIZE_ChooseFromListAfter);
             this.MTXITEM = ((SAPbouiCOM.Matrix)(this.GetItem("MTXITEM").Specific));
@@ -125,7 +125,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         /// </summary>
         public override void OnInitializeFormEvents()
         {
-
+            this.DataLoadAfter += new DataLoadAfterHandler(this.Form_DataLoadAfter);
 
         }
 
@@ -135,6 +135,129 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         {
 
         }
+
+        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
+        {
+            SAPbouiCOM.Form oForm = null;
+
+            // ============================
+            // CHANGE ONLY THESE 4 VALUES
+            // ============================
+            const string DS_ITEM_TABLE = "@FIL_DR_SMPLITEM";  // <-- MTXITEM datasource table (YOUR CHILD TABLE)
+            const string FLD_ITMCOD = "U_ITEMCODE";          // <-- ItemCode field name in datasource
+            const string FLD_SZCODE = "U_SIZECODE";          // <-- SizeCode field name in datasource
+            const string FLD_CLRCOD = "U_COLOCODE";          // <-- ColorCode field name in datasource
+
+            try
+            {
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm.Freeze(true);
+
+                // Matrices
+                SAPbouiCOM.Matrix mtxSize = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
+                SAPbouiCOM.Matrix mtxColor = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific;
+
+                // DBDataSource (truth)
+                SAPbouiCOM.DBDataSource dsItem = oForm.DataSources.DBDataSources.Item(DS_ITEM_TABLE);
+
+                // Collect valid SizeCodes and ColorCodes (only when Item exists in OITM)
+                HashSet<string> usedSizes = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+                HashSet<string> usedColors = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
+
+                SAPbobsCOM.Recordset oRS = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                // Loop through datasource records (0-based)
+                for (int i = 0; i < dsItem.Size; i++)
+                {
+                    string itemCode = (dsItem.GetValue(FLD_ITMCOD, i) ?? "").Trim();
+                    if (string.IsNullOrWhiteSpace(itemCode)) continue;
+
+                    if (ItemExistsInOITM(oRS, itemCode))
+                    {
+                        string sizeCode = (dsItem.GetValue(FLD_SZCODE, i) ?? "").Trim();
+                        string colorCode = (dsItem.GetValue(FLD_CLRCOD, i) ?? "").Trim();
+
+                        if (!string.IsNullOrWhiteSpace(sizeCode))
+                            usedSizes.Add(sizeCode);
+
+                        if (!string.IsNullOrWhiteSpace(colorCode))
+                            usedColors.Add(colorCode);
+                    }
+                }
+
+                // Ensure size/color matrices are loaded from their datasources before disabling
+                mtxSize.LoadFromDataSource();
+                mtxColor.LoadFromDataSource();
+
+                // Disable matching rows in MTXSIZE and MTXCOLOR
+                DisableCellsByCode(mtxSize, "CLSZCODE", usedSizes);
+                DisableCellsByCode(mtxColor, "CLCLRCOD", usedColors);
+
+                mtxSize.AutoResizeColumns();
+                mtxColor.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Form_DataLoadAfter error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oForm != null) oForm.Freeze(false);
+            }
+        }
+
+        private bool ItemExistsInOITM(SAPbobsCOM.Recordset rs, string itemCode)
+        {
+            // escape single quotes
+            string safeItem = (itemCode ?? "").Replace("'", "''");
+
+            // Works for HANA (quoted identifiers)
+            string q = $@"SELECT ""ItemCode"" FROM OITM WHERE ""ItemCode"" = '{safeItem}'";
+            rs.DoQuery(q);
+
+            return !rs.EoF;
+        }
+
+        private void DisableCellsByCode(SAPbouiCOM.Matrix matrix, string codeColumnId, HashSet<string> codesToDisable)
+        {
+            int colIndex = GetColumnIndex(matrix, codeColumnId);
+
+            for (int r = 1; r <= matrix.RowCount; r++)
+            {
+                string code = GetMatrixEditValue(matrix, codeColumnId, r);
+                if (string.IsNullOrWhiteSpace(code)) continue;
+
+                if (codesToDisable.Contains(code.Trim()))
+                {
+                    matrix.CommonSetting.SetCellEditable(r, colIndex, false);
+                }
+                else
+                {
+                    // keep editable for others (optional)
+                    matrix.CommonSetting.SetCellEditable(r, colIndex, true);
+                }
+            }
+        }
+
+        private string GetMatrixEditValue(SAPbouiCOM.Matrix matrix, string colId, int row)
+        {
+            // In your size/color matrices these columns should be EditText
+            return (((SAPbouiCOM.EditText)matrix.Columns.Item(colId).Cells.Item(row).Specific).Value ?? "").Trim();
+        }
+
+        private int GetColumnIndex(SAPbouiCOM.Matrix matrix, string columnId)
+        {
+            for (int i = 1; i <= matrix.Columns.Count; i++)
+            {
+                if (matrix.Columns.Item(i).UniqueID == columnId)
+                    return i;
+            }
+            throw new Exception("Column not found: " + columnId);
+        }
+
 
         private void ETSLCODE_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
@@ -895,6 +1018,144 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             }
 
         }
+
+        private void MTXCOLOR_ValidateAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                if (pVal.ColUID != "CLCLRCOD") return;
+
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific;
+
+                int row = pVal.Row;
+                if (row <= 0) return;
+
+                oForm.Freeze(true);
+                try
+                {
+                    string code = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCLRCOD").Cells.Item(row).Specific).Value
+                                    .Replace("\0", "").Trim();
+
+                    if (string.IsNullOrEmpty(code))
+                    {
+                        //clear row and add new line and lineID resequence 
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCLRNAM").Cells.Item(row).Specific).Value = "";
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLPANTON").Cells.Item(row).Specific).Value = "";
+                        RemoveRowIfCodeEmptyAndResequence(oForm, oMatrix, "@FIL_DR_SMPLCOLO", "U_COLOCODE");
+                        AddLineIfLastRowHasValue(oForm, "MTXCOLOR", "@FIL_DR_SMPLCOLO", "U_COLOCODE");
+                    }
+
+                    //Closed Both Button
+                    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
+                    SAPbouiCOM.Item oBtnItmCr = oForm.Items.Item("BTNITMCR");
+                    oBtnItmTx.Enabled = false;
+                    oBtnItmCr.Enabled = false;
+
+                    //Clear Item Matrix 
+                    SAPbouiCOM.Matrix mtxItem = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXITEM").Specific;
+                    SAPbouiCOM.DBDataSource itemDS = oForm.DataSources.DBDataSources.Item("@FIL_DR_SMPLITEM");
+                    itemDS.Clear();
+                    mtxItem.Clear();
+                    mtxItem.LoadFromDataSource();
+
+                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                        oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+
+                }
+                finally
+                {
+                    oForm.Freeze(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Validation Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+
+        }
+
+        private void MTXSIZE_ValidateAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                if (pVal.ColUID != "CLSZCODE") return;
+
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
+
+                int row = pVal.Row;
+                if (row <= 0) return;
+
+                oForm.Freeze(true);
+                try
+                {
+                    string code = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLSZCODE").Cells.Item(row).Specific).Value
+                                    .Replace("\0", "").Trim();
+
+                    if (string.IsNullOrEmpty(code))
+                    {
+                        //clear row and add new line and lineID resequence 
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLSZNAME").Cells.Item(row).Specific).Value = "";
+                        RemoveRowIfCodeEmptyAndResequence(oForm, oMatrix, "@FIL_DR_SMPLSIZE", "U_SIZECODE");
+                        AddLineIfLastRowHasValue(oForm, "MTXSIZE", "@FIL_DR_SMPLSIZE", "U_SIZECODE");
+                    }
+                    
+                    //Closed Both Button
+                    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
+                    SAPbouiCOM.Item oBtnItmCr = oForm.Items.Item("BTNITMCR");
+                    oBtnItmTx.Enabled = false;
+                    oBtnItmCr.Enabled = false;
+
+                    //Clear Item Matrix 
+                    SAPbouiCOM.Matrix mtxItem = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXITEM").Specific;
+                    SAPbouiCOM.DBDataSource itemDS = oForm.DataSources.DBDataSources.Item("@FIL_DR_SMPLITEM");
+                    itemDS.Clear();
+                    mtxItem.Clear();
+                    mtxItem.LoadFromDataSource();
+
+                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                        oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                }
+                finally
+                {
+                    oForm.Freeze(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Validation Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+
+        }
+
+        private void RemoveRowIfCodeEmptyAndResequence(SAPbouiCOM.Form oForm, SAPbouiCOM.Matrix matrix, string dbDatasourceUID, string codeFieldName)
+        {
+            matrix.FlushToDataSource();
+            SAPbouiCOM.DBDataSource ds = oForm.DataSources.DBDataSources.Item(dbDatasourceUID);
+            for (int i = ds.Size - 1; i >= 0; i--)
+            {
+                string code = (ds.GetValue(codeFieldName, i) ?? "").Replace("\0", "").Trim();
+
+                if (string.IsNullOrEmpty(code))
+                {
+                    ds.RemoveRecord(i);
+                }
+            }
+            for (int i = 0; i < ds.Size; i++)
+            {
+                ds.SetValue("LineId", i, (i + 1).ToString());
+            }
+
+            matrix.LoadFromDataSource();
+        }
+
         private void MTXSIZE_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
         {
             BubbleEvent = true;

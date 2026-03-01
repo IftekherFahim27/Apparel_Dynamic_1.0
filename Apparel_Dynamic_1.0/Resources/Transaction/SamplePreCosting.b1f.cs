@@ -416,12 +416,18 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 string ocmbvalue = ocmb.Selected.Value;
                 long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_PRECOSTING");
                 oDBH.SetValue("DocNum", 0, docno.ToString());
+
+                //Date
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETDATE").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = "1"; //Default version 
+                                                                                          //Enable off
+                SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBUYER", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
             }
-            //Date
-            ((SAPbouiCOM.EditText)oForm.Items.Item("ETDATE").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
-            ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = "1"; //Default version 
-            //Enable off
-            SetItemsEnabled(oForm, false, "ETSMPLNM", "ETBUYER", "ETBYRNM", "ETDOCNUM", "ETDATE", "ETVERSON");
+            else if(oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+            {
+                AddLineIfLastRowHasValue(oForm, "MTXCMPNT", "@FIL_DR_PRECOSTCOMP", "U_ROUTSTAG");
+            }
+            
         }
 
 
@@ -576,6 +582,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     }
 
                     v++;
+
+                    //SAPbouiCOM.DBDataSource dsH = oForm.DataSources.DBDataSources.Item("@FIL_DH_PRECOSTING");
+                    //dsH.SetValue("U_VERSION", 0, v.ToString());
 
 
                     ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = v.ToString();
@@ -761,6 +770,14 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 return BubbleEvent = false;
             }
 
+            // NEW: unique combination validation (Sample + Buyer)
+            if (IsDuplicateSampleBuyer(oForm, sampleCode, buyer))
+            {
+                Global.GFunc.ShowError($"Duplicate not allowed: Sample [{sampleCode}] + Buyer [{buyer}] already exists.");
+                oForm.ActiveItem = "ETBUYER";
+                return BubbleEvent = false;
+            }
+
             PreventEmptyLastRow(oForm, "@FIL_DR_PRECOSTCOMP", MTXCMPNT, "U_ROUTSTAG");
             ValidateRouteCompStage(oForm, ref BubbleEvent);
             if (!BubbleEvent)
@@ -772,6 +789,60 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
 
             return BubbleEvent;
+        }
+
+        private bool IsDuplicateSampleBuyer(SAPbouiCOM.Form oForm, string sampleCode, string buyerCode)
+        {
+            sampleCode = (sampleCode ?? "").Replace("\0", "").Trim();
+            buyerCode = (buyerCode ?? "").Replace("\0", "").Trim();
+
+            if (string.IsNullOrWhiteSpace(sampleCode) || string.IsNullOrWhiteSpace(buyerCode))
+                return false;
+
+            // Read current DocEntry from your edittext ETDOCTRY
+            string curDocEntry = "";
+            try
+            {
+                curDocEntry = ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value;
+                curDocEntry = (curDocEntry ?? "").Replace("\0", "").Trim();
+            }
+            catch { curDocEntry = ""; }
+
+            string safeSample = sampleCode.Replace("'", "''");
+            string safeBuyer = buyerCode.Replace("'", "''");
+
+            string q;
+
+            // If ADD MODE (no docentry yet) -> block if any exists
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || string.IsNullOrEmpty(curDocEntry))
+            {
+                q = $@"
+            SELECT COUNT(*) AS ""CNT""
+            FROM ""@FIL_DH_PRECOSTING""
+            WHERE ""U_SMPLCODE"" = '{safeSample}'
+              AND ""U_CARDCODE"" = '{safeBuyer}'";
+            }
+            else
+            {
+                // UPDATE MODE -> exclude this DocEntry
+                q = $@"
+            SELECT COUNT(*) AS ""CNT""
+            FROM ""@FIL_DH_PRECOSTING""
+            WHERE ""U_SMPLCODE"" = '{safeSample}'
+              AND ""U_CARDCODE"" = '{safeBuyer}'
+              AND ""DocEntry"" <> {curDocEntry}";
+            }
+
+            SAPbobsCOM.Recordset rs =
+                (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            rs.DoQuery(q);
+
+            int cnt = 0;
+            if (!rs.EoF)
+                int.TryParse(rs.Fields.Item("CNT").Value.ToString(), out cnt);
+
+            return cnt > 0;
         }
 
         private bool ValidateRouteCompStage(SAPbouiCOM.Form oForm, ref bool BubbleEvent)
