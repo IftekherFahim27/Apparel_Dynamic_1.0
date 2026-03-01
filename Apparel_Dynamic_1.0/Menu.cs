@@ -410,10 +410,13 @@ namespace Apparel_Dynamic_1._0
                             string ocmbvalue = ocmb.Selected.Value;
                             long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_PRECOSTING");
                             oDBH.SetValue("DocNum", 0, docno.ToString());
+
+                            //Date
+                            ((SAPbouiCOM.EditText)oForm.Items.Item("ETDATE").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+                            ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = "1"; //Default version 
+
                         }
-                        //Date
-                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETDATE").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
-                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = "1"; //Default version 
+                        
                     }
                     catch (Exception e)
                     {
