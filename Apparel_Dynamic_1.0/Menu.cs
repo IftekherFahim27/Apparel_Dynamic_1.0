@@ -349,7 +349,7 @@ namespace Apparel_Dynamic_1._0
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_MST_SZTPMSTR")
                 {
                     string formUID = "FIL_FRM_SZTPMSTR";
-                    if (IsFormOpen(formUID))
+                    if (IsFormOpen(formUID)) 
                     {
                         Global.G_UI_Application.Forms.Item(formUID).Select();
                         Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
@@ -369,6 +369,55 @@ namespace Apparel_Dynamic_1._0
                     catch (Exception ex)
                     {
                         Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
+                    }
+                }
+                //Style Master
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_SM")
+                {
+                    string formUID = "FIL_FRM_STYLMSTR";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    StyleMaster activeForm = new StyleMaster();
+                    activeForm.Show();
+                    SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_STYLMSTR");
+                    try
+                    {
+                        SAPbouiCOM.Matrix MTSZ = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
+                        SAPbouiCOM.Matrix MTXCLR = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific;
+                        SAPbouiCOM.Matrix MTXSBCLR = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSBCLR").Specific;
+                        SAPbouiCOM.Matrix MTXITM = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXITEM").Specific;
+                        SAPbouiCOM.Matrix MTXATTAC = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+                        MTSZ.AutoResizeColumns();
+                        MTXCLR.AutoResizeColumns();
+                        MTXSBCLR.AutoResizeColumns();
+                        MTXITM.AutoResizeColumns();
+                        MTXATTAC.AutoResizeColumns();
+
+                        //Series Initialization
+                        SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_SMPLMAST");   //DEFINE  DATASOURCES.
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                            Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_SMPLMAST");  //Object Type
+                            string ocmbvalue = ocmb.Selected.Value;
+                            long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_SMPLMAST");
+
+                            oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+                        }
+                        //Date
+                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETSLCNDT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + e.Message);
                     }
                 }
                 //___________________________________________________________Transaction________________________________________________
