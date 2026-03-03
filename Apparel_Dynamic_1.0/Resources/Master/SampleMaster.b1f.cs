@@ -193,6 +193,11 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 DisableCellsByCode(mtxSize, "CLSZCODE", usedSizes);
                 DisableCellsByCode(mtxColor, "CLCLRCOD", usedColors);
 
+                // Add new row if last row has data
+                AddLineIfLastRowHasValue(oForm, "MTXCOLOR", "@FIL_DR_SMPLCOLO", "U_COLOCODE");
+                AddLineIfLastRowHasValue(oForm, "MTXSIZE", "@FIL_DR_SMPLSIZE", "U_SIZECODE");
+                AddLineIfLastRowHasValue(oForm, "MTXBUYER", "@FIL_DR_SMPLBUYER", "U_CARDCODE");
+
                 mtxSize.AutoResizeColumns();
                 mtxColor.AutoResizeColumns();
             }
@@ -739,38 +744,8 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 // Enable/disable other buttons based on matrix
                 SampleEnableButtons(ref oForm);
 
-                //// --- Only check for changes if we already had previous states ---
-                //bool newCheckedInSztType = false;
-                //bool newCheckedInColor = false;
-
-                //if (prevSztTypeCheckboxStates.Count > 0)
-                //    newCheckedInSztType = HasCheckboxChanges(oForm, "MTXSIZE", "CLSZAPL", prevSztTypeCheckboxStates);
-
-                //if (prevColorCheckboxStates.Count > 0)
-                //    newCheckedInColor = HasCheckboxChanges(oForm, "MTXCOLOR", "CLCLRAPL", prevColorCheckboxStates);
-
-                //if (newCheckedInSztType || newCheckedInColor)
-                //{
-                //    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
-                //    oBtnItmTx.Enabled = true;
-
-                //    Application.SBO_Application.StatusBar.SetText(
-                //        "Detected new checked rows in matrix — BTNITMTX enabled.",
-                //        SAPbouiCOM.BoMessageTime.bmt_Short,
-                //        SAPbouiCOM.BoStatusBarMessageType.smt_Success
-                //    );
-                //}
-                //else
-                //{
-                //    //Disable if no new checks
-                //    SAPbouiCOM.Item oBtnItmTx = oForm.Items.Item("BTNITMTX");
-                //    oBtnItmTx.Enabled = false;
-                //}
-                //// --- Always refresh states AFTER processing ---
-                ////CaptureCheckboxStates(oForm, "MTXSIZE", "CLSZAPL", prevSztTypeCheckboxStates);
-                ////CaptureCheckboxStates(oForm, "MTXCOLOR", "CLCLRAPL", prevColorCheckboxStates);
             }
-
+            
         }
 
         // --- Generic reusable method to store checkbox states ---
