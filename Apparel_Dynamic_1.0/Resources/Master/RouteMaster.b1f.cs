@@ -417,6 +417,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
                         // 2) remove this row + resequence LineId
                         RemoveRowIfCodeEmptyAndResequence(oForm, m, "@FIL_MR_RSM1", "U_STAGECODE");
+                        EnsureLine(oForm, "MTXSTAGE", "@FIL_MR_RSM1");
                         AddLineIfLastRowHasValue(oForm, "MTXSTAGE", "@FIL_MR_RSM1", "U_STAGECODE");
                     }
 
@@ -463,6 +464,9 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             // Reload matrix UI from updated datasource
             matrix.LoadFromDataSource();
         }
+
+
+
         private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
         {
             string code = oForm.DataSources.DBDataSources.Item("@FIL_MH_ORSM").GetValue("Code", 0);
