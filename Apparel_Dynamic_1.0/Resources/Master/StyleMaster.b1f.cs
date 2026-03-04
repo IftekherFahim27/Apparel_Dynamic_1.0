@@ -46,95 +46,91 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         public override void OnInitializeComponent()
         {
-            // -------- Static Text --------
-            this.STSLCODE = (SAPbouiCOM.StaticText)this.GetItem("STSLCODE").Specific;
-            this.STCSCODE = (SAPbouiCOM.StaticText)this.GetItem("STCSCODE").Specific;
-            this.STCSDESC = (SAPbouiCOM.StaticText)this.GetItem("STCSDESC").Specific;
-            this.STGSM = (SAPbouiCOM.StaticText)this.GetItem("STGSM").Specific;
-            this.STGENDER = (SAPbouiCOM.StaticText)this.GetItem("STGENDER").Specific;
-            this.STSMTPCD = (SAPbouiCOM.StaticText)this.GetItem("STSMTPCD").Specific;
-            this.STPDTPCD = (SAPbouiCOM.StaticText)this.GetItem("STPDTPCD").Specific;
-            this.STPDLNCD = (SAPbouiCOM.StaticText)this.GetItem("STPDLNCD").Specific;
-            this.STPDGPCD = (SAPbouiCOM.StaticText)this.GetItem("STPDGPCD").Specific;
-            this.STBRNDCD = (SAPbouiCOM.StaticText)this.GetItem("STBRNDCD").Specific;
-            this.STDEPTCD = (SAPbouiCOM.StaticText)this.GetItem("STDEPTCD").Specific;
-            this.STDOCNUM = (SAPbouiCOM.StaticText)this.GetItem("STDOCNUM").Specific;
-            this.STSMPBSE = (SAPbouiCOM.StaticText)this.GetItem("STSMPBSE").Specific;
-            this.STSMPLCD = (SAPbouiCOM.StaticText)this.GetItem("STSMPLCD").Specific;
-            this.STPDLDTM = (SAPbouiCOM.StaticText)this.GetItem("STPDLDTM").Specific;
-            this.STHSCODE = (SAPbouiCOM.StaticText)this.GetItem("STHSCODE").Specific;
-            this.STRTSGCD = (SAPbouiCOM.StaticText)this.GetItem("STRTSGCD").Specific;
-            this.STMERDCD = (SAPbouiCOM.StaticText)this.GetItem("STMERDCD").Specific;
-            this.STBUYRCD = (SAPbouiCOM.StaticText)this.GetItem("STBUYRCD").Specific;
-            this.STSBDVSN = (SAPbouiCOM.StaticText)this.GetItem("STSBDVSN").Specific;
-            this.STUOM = (SAPbouiCOM.StaticText)this.GetItem("STUOM").Specific;
-            this.STSZTPCD = (SAPbouiCOM.StaticText)this.GetItem("STSZTPCD").Specific;
-            this.STSUBCLR = (SAPbouiCOM.StaticText)this.GetItem("STSUBCLR").Specific;
-
-            // -------- Edit Text --------
-            this.ETSLCODE = (SAPbouiCOM.EditText)this.GetItem("ETSLCODE").Specific;
-            this.ETCSCODE = (SAPbouiCOM.EditText)this.GetItem("ETCSCODE").Specific;
-            this.ETCSDESC = (SAPbouiCOM.EditText)this.GetItem("ETCSDESC").Specific;
-            this.ETGSM = (SAPbouiCOM.EditText)this.GetItem("ETGSM").Specific;
-            this.ETGENDER = (SAPbouiCOM.EditText)this.GetItem("ETGENDER").Specific;
-            this.ETSMTPCD = (SAPbouiCOM.EditText)this.GetItem("ETSMTPCD").Specific;
-            this.ETSMTPNM = (SAPbouiCOM.EditText)this.GetItem("ETSMTPNM").Specific;
-            this.ETPDTPCD = (SAPbouiCOM.EditText)this.GetItem("ETPDTPCD").Specific;
-            this.ETPDTPNM = (SAPbouiCOM.EditText)this.GetItem("ETPDTPNM").Specific;
-            this.ETPDLNCD = (SAPbouiCOM.EditText)this.GetItem("ETPDLNCD").Specific;
-            this.ETPDLNNM = (SAPbouiCOM.EditText)this.GetItem("ETPDLNNM").Specific;
-            this.ETPDGPCD = (SAPbouiCOM.EditText)this.GetItem("ETPDGPCD").Specific;
-            this.ETPDGPNM = (SAPbouiCOM.EditText)this.GetItem("ETPDGPNM").Specific;
-            this.ETBRNDCD = (SAPbouiCOM.EditText)this.GetItem("ETBRNDCD").Specific;
-            this.ETBRNDNM = (SAPbouiCOM.EditText)this.GetItem("STBRNDNM").Specific; // (your item id is STBRNDNM)
-            this.ETDEPTCD = (SAPbouiCOM.EditText)this.GetItem("ETDEPTCD").Specific;
-            this.ETDEPTNM = (SAPbouiCOM.EditText)this.GetItem("ETDEPTNM").Specific;
-            this.ETDOCTRY = (SAPbouiCOM.EditText)this.GetItem("ETDOCTRY").Specific;
-            this.ETDOCNUM = (SAPbouiCOM.EditText)this.GetItem("ETDOCNUM").Specific;
-            this.ETSMPLCD = (SAPbouiCOM.EditText)this.GetItem("ETSMPLCD").Specific;
-            this.ETSMPLNM = (SAPbouiCOM.EditText)this.GetItem("STSMPLNM ").Specific; // NOTE: your ID has a trailing space!
-            this.ETUOM = (SAPbouiCOM.EditText)this.GetItem("ETUOM").Specific;
-            this.ETPDLDTM = (SAPbouiCOM.EditText)this.GetItem("ETPDLDTM").Specific;
-            this.ETHSCODE = (SAPbouiCOM.EditText)this.GetItem("ETHSCODE").Specific;
-            this.ETRTSGCD = (SAPbouiCOM.EditText)this.GetItem("ETRTSGCD").Specific;
-            this.ETRTSGNM = (SAPbouiCOM.EditText)this.GetItem("ETRTSGNM").Specific;
-            this.ETMERDCD = (SAPbouiCOM.EditText)this.GetItem("ETMERDCD").Specific;
-            this.ETMERDNM = (SAPbouiCOM.EditText)this.GetItem("ETMERDNM").Specific;
-            this.ETBUYRCD = (SAPbouiCOM.EditText)this.GetItem("ETBUYRCD").Specific;
-            this.ETBUYRNM = (SAPbouiCOM.EditText)this.GetItem("ETBUYRNM").Specific;
-            this.ETSDSNCD = (SAPbouiCOM.EditText)this.GetItem("ETSDSNCD").Specific;
-            this.ETSDSNNM = (SAPbouiCOM.EditText)this.GetItem("ETSDSNNM").Specific;
-            this.ETSZTPCD = (SAPbouiCOM.EditText)this.GetItem("ETSZTPCD").Specific;
-
-            // -------- ComboBox --------
-            this.CBSERIES = (SAPbouiCOM.ComboBox)this.GetItem("CBSERIES").Specific;
-            this.CBSMPBSE = (SAPbouiCOM.ComboBox)this.GetItem("CBSMPBSE").Specific;
-
-            // -------- Folder --------
-            this.FOLSIZE = (SAPbouiCOM.Folder)this.GetItem("FOLSIZE").Specific;
-            this.FOLCOLOR = (SAPbouiCOM.Folder)this.GetItem("FOLCOLOR").Specific;
-            this.FOLITEM = (SAPbouiCOM.Folder)this.GetItem("FOLITEM").Specific;
-            this.FOLATTAC = (SAPbouiCOM.Folder)this.GetItem("FOLATTAC").Specific;
-
-            // -------- Matrix --------
-            this.MTXSIZE = (SAPbouiCOM.Matrix)this.GetItem("MTXSIZE").Specific;
-            this.MTXCOLOR = (SAPbouiCOM.Matrix)this.GetItem("MTXCOLOR").Specific;
-            this.MTXSBCLR = (SAPbouiCOM.Matrix)this.GetItem("MTXSBCLR").Specific;
-            this.MTXITEM = (SAPbouiCOM.Matrix)this.GetItem("MTXITEM").Specific;
-            this.MTXATTCH = (SAPbouiCOM.Matrix)this.GetItem("MTXATTCH").Specific;
-
-            // -------- Button --------
-            this.ADDButton = (SAPbouiCOM.Button)this.GetItem("1").Specific;
-            this.CancelButton = (SAPbouiCOM.Button)this.GetItem("2").Specific;
-
-            this.BTNITMTX = (SAPbouiCOM.Button)this.GetItem("BTNITMTX").Specific;
-            this.BTNITMCR = (SAPbouiCOM.Button)this.GetItem("BTNITMCR").Specific;
-            this.BTNLODSZ = (SAPbouiCOM.Button)this.GetItem("BTNLODSZ").Specific;
-            this.BRWSBTN = (SAPbouiCOM.Button)this.GetItem("BRWSBTN").Specific;
-            this.DISPBTN = (SAPbouiCOM.Button)this.GetItem("DISPBTN").Specific;
-            this.DELBTN = (SAPbouiCOM.Button)this.GetItem("DELBTN").Specific;
-
+            //  -------- Static Text --------
+            this.STSLCODE = ((SAPbouiCOM.StaticText)(this.GetItem("STSLCODE").Specific));
+            this.STCSCODE = ((SAPbouiCOM.StaticText)(this.GetItem("STCSCODE").Specific));
+            this.STCSDESC = ((SAPbouiCOM.StaticText)(this.GetItem("STCSDESC").Specific));
+            this.STGSM = ((SAPbouiCOM.StaticText)(this.GetItem("STGSM").Specific));
+            this.STGENDER = ((SAPbouiCOM.StaticText)(this.GetItem("STGENDER").Specific));
+            this.STSMTPCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSMTPCD").Specific));
+            this.STPDTPCD = ((SAPbouiCOM.StaticText)(this.GetItem("STPDTPCD").Specific));
+            this.STPDLNCD = ((SAPbouiCOM.StaticText)(this.GetItem("STPDLNCD").Specific));
+            this.STPDGPCD = ((SAPbouiCOM.StaticText)(this.GetItem("STPDGPCD").Specific));
+            this.STBRNDCD = ((SAPbouiCOM.StaticText)(this.GetItem("STBRNDCD").Specific));
+            this.STDEPTCD = ((SAPbouiCOM.StaticText)(this.GetItem("STDEPTCD").Specific));
+            this.STDOCNUM = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
+            this.STSMPBSE = ((SAPbouiCOM.StaticText)(this.GetItem("STSMPBSE").Specific));
+            this.STSMPLCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSMPLCD").Specific));
+            this.STPDLDTM = ((SAPbouiCOM.StaticText)(this.GetItem("STPDLDTM").Specific));
+            this.STHSCODE = ((SAPbouiCOM.StaticText)(this.GetItem("STHSCODE").Specific));
+            this.STRTSGCD = ((SAPbouiCOM.StaticText)(this.GetItem("STRTSGCD").Specific));
+            this.STMERDCD = ((SAPbouiCOM.StaticText)(this.GetItem("STMERDCD").Specific));
+            this.STBUYRCD = ((SAPbouiCOM.StaticText)(this.GetItem("STBUYRCD").Specific));
+            this.STSBDVSN = ((SAPbouiCOM.StaticText)(this.GetItem("STSBDVSN").Specific));
+            this.STUOM = ((SAPbouiCOM.StaticText)(this.GetItem("STUOM").Specific));
+            this.STSZTPCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSZTPCD").Specific));
+            this.STSUBCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STSUBCLR").Specific));
+            //  -------- Edit Text --------
+            this.ETSLCODE = ((SAPbouiCOM.EditText)(this.GetItem("ETSLCODE").Specific));
+            this.ETCSCODE = ((SAPbouiCOM.EditText)(this.GetItem("ETCSCODE").Specific));
+            this.ETCSDESC = ((SAPbouiCOM.EditText)(this.GetItem("ETCSDESC").Specific));
+            this.ETGSM = ((SAPbouiCOM.EditText)(this.GetItem("ETGSM").Specific));
+            this.ETGENDER = ((SAPbouiCOM.EditText)(this.GetItem("ETGENDER").Specific));
+            this.ETSMTPCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSMTPCD").Specific));
+            this.ETSMTPNM = ((SAPbouiCOM.EditText)(this.GetItem("ETSMTPNM").Specific));
+            this.ETPDTPCD = ((SAPbouiCOM.EditText)(this.GetItem("ETPDTPCD").Specific));
+            this.ETPDTPNM = ((SAPbouiCOM.EditText)(this.GetItem("ETPDTPNM").Specific));
+            this.ETPDLNCD = ((SAPbouiCOM.EditText)(this.GetItem("ETPDLNCD").Specific));
+            this.ETPDLNNM = ((SAPbouiCOM.EditText)(this.GetItem("ETPDLNNM").Specific));
+            this.ETPDGPCD = ((SAPbouiCOM.EditText)(this.GetItem("ETPDGPCD").Specific));
+            this.ETPDGPNM = ((SAPbouiCOM.EditText)(this.GetItem("ETPDGPNM").Specific));
+            this.ETBRNDCD = ((SAPbouiCOM.EditText)(this.GetItem("ETBRNDCD").Specific));
+            this.ETBRNDNM = ((SAPbouiCOM.EditText)(this.GetItem("STBRNDNM").Specific));
+            this.ETDEPTCD = ((SAPbouiCOM.EditText)(this.GetItem("ETDEPTCD").Specific));
+            this.ETDEPTNM = ((SAPbouiCOM.EditText)(this.GetItem("ETDEPTNM").Specific));
+            this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
+            this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
+            this.ETSMPLCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSMPLCD").Specific));
+            this.ETSMPLNM = ((SAPbouiCOM.EditText)(this.GetItem("STSMPLNM ").Specific));
+            this.ETUOM = ((SAPbouiCOM.EditText)(this.GetItem("ETUOM").Specific));
+            this.ETPDLDTM = ((SAPbouiCOM.EditText)(this.GetItem("ETPDLDTM").Specific));
+            this.ETHSCODE = ((SAPbouiCOM.EditText)(this.GetItem("ETHSCODE").Specific));
+            this.ETRTSGCD = ((SAPbouiCOM.EditText)(this.GetItem("ETRTSGCD").Specific));
+            this.ETRTSGNM = ((SAPbouiCOM.EditText)(this.GetItem("ETRTSGNM").Specific));
+            this.ETMERDCD = ((SAPbouiCOM.EditText)(this.GetItem("ETMERDCD").Specific));
+            this.ETMERDNM = ((SAPbouiCOM.EditText)(this.GetItem("ETMERDNM").Specific));
+            this.ETBUYRCD = ((SAPbouiCOM.EditText)(this.GetItem("ETBUYRCD").Specific));
+            this.ETBUYRNM = ((SAPbouiCOM.EditText)(this.GetItem("ETBUYRNM").Specific));
+            this.ETSDSNCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSDSNCD").Specific));
+            this.ETSDSNNM = ((SAPbouiCOM.EditText)(this.GetItem("ETSDSNNM").Specific));
+            this.ETSZTPCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSZTPCD").Specific));
+            //  -------- ComboBox --------
+            this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
+            this.CBSMPBSE = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSMPBSE").Specific));
+            //  -------- Folder --------
+            this.FOLSIZE = ((SAPbouiCOM.Folder)(this.GetItem("FOLSIZE").Specific));
+            this.FOLCOLOR = ((SAPbouiCOM.Folder)(this.GetItem("FOLCOLOR").Specific));
+            this.FOLITEM = ((SAPbouiCOM.Folder)(this.GetItem("FOLITEM").Specific));
+            this.FOLATTAC = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTAC").Specific));
+            //  -------- Matrix --------
+            this.MTXSIZE = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSIZE").Specific));
+            this.MTXCOLOR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCOLOR").Specific));
+            this.MTXSBCLR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSBCLR").Specific));
+            this.MTXITEM = ((SAPbouiCOM.Matrix)(this.GetItem("MTXITEM").Specific));
+            this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
+            //  -------- Button --------
+            this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
+            this.BTNITMTX = ((SAPbouiCOM.Button)(this.GetItem("BTNITMTX").Specific));
+            this.BTNITMCR = ((SAPbouiCOM.Button)(this.GetItem("BTNITMCR").Specific));
+            this.BTNLODSZ = ((SAPbouiCOM.Button)(this.GetItem("BTNLODSZ").Specific));
+            this.BRWSBTN = ((SAPbouiCOM.Button)(this.GetItem("BRWSBTN").Specific));
+            this.DISPBTN = ((SAPbouiCOM.Button)(this.GetItem("DISPBTN").Specific));
+            this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
+            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("STSLDESC").Specific));
+            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("ETSLDESC").Specific));
             this.OnCustomInitialize();
+
         }
         /// <summary>
         /// Initialize form event. Called by framework before form creation.
@@ -242,5 +238,8 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 try { if (oForm != null) oForm.Freeze(false); } catch { }
             }
         }
+
+        private SAPbouiCOM.StaticText StaticText0;
+        private SAPbouiCOM.EditText EditText0;
     }
 }

@@ -78,6 +78,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
                         // 2) remove this row + resequence LineId
                         RemoveRowIfCodeEmptyAndResequence(oForm, oMtx, "@FIL_MR_STM1", "U_SIZECODE");
+                        EnsureLine(oForm, "MTXSIZE", "@FIL_MR_STM1");
                         AddLineIfLastRowHasValue(oForm, "MTXSIZE", "@FIL_MR_STM1", "U_SIZECODE");
                     }
 

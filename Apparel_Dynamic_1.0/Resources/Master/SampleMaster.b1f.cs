@@ -519,6 +519,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             if (string.IsNullOrEmpty(docEntry))
                 return;
 
+
             string query = $@"
                                 SELECT
                                     ROW_NUMBER() OVER (ORDER BY C.""U_COLOCODE"", S.""U_SIZECODE"") AS ""LineId"",
