@@ -143,10 +143,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             // ============================
             // CHANGE ONLY THESE 4 VALUES
             // ============================
-            const string DS_ITEM_TABLE = "@FIL_DR_SMPLITEM";  // <-- MTXITEM datasource table (YOUR CHILD TABLE)
-            const string FLD_ITMCOD = "U_ITEMCODE";          // <-- ItemCode field name in datasource
-            const string FLD_SZCODE = "U_SIZECODE";          // <-- SizeCode field name in datasource
-            const string FLD_CLRCOD = "U_COLOCODE";          // <-- ColorCode field name in datasource
+            const string DS_ITEM_TABLE = "@FIL_DR_SMPLITEM";
+            const string FLD_ITMCOD = "U_ITEMCODE";
+            const string FLD_SZCODE = "U_SIZECODE";
+            const string FLD_CLRCOD = "U_COLOCODE"; 
 
             try
             {
@@ -503,9 +503,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     oForm.Freeze(false);
                 }
             }
-
-
         }
+
+
+
         private void BTNITMTX_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
@@ -519,6 +520,37 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             if (string.IsNullOrEmpty(docEntry))
                 return;
 
+            string validateQuery = $@"
+                                    SELECT 
+                                        (SELECT COUNT(*) 
+                                            FROM ""@FIL_DR_SMPLCOLO"" 
+                                            WHERE ""DocEntry"" = '{docEntry}' 
+                                              AND IFNULL(""U_COLOCODE"", '') <> '') AS ""ColorCnt"",
+                                        (SELECT COUNT(*) 
+                                            FROM ""@FIL_DR_SMPLSIZE"" 
+                                            WHERE ""DocEntry"" = '{docEntry}' 
+                                              AND IFNULL(""U_SIZECODE"", '') <> '') AS ""SizeCnt""
+                                    FROM ""DUMMY""";
+
+            oRSCheck.DoQuery(validateQuery);
+
+            int colorCnt = 0, sizeCnt = 0;
+            if (!oRSCheck.EoF)
+            {
+                colorCnt = Convert.ToInt32(oRSCheck.Fields.Item("ColorCnt").Value);
+                sizeCnt = Convert.ToInt32(oRSCheck.Fields.Item("SizeCnt").Value);
+            }
+
+            if (colorCnt < 1 || sizeCnt < 1)
+            {
+                string msg =
+                    (colorCnt < 1 && sizeCnt < 1) ? "At least 1 Color and 1 Size must be added for this DocEntry." :
+                    (colorCnt < 1) ? "At least 1 Color must be added for this DocEntry." :
+                                     "At least 1 Size must be added for this DocEntry.";
+
+                Application.SBO_Application.MessageBox(msg, 1, "OK");
+                return;
+            }
 
             string query = $@"
                                 SELECT
@@ -719,7 +751,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 oForm.Items.Item("1").Click();
                 oForm.Mode = SAPbouiCOM.BoFormMode.fm_OK_MODE;
                 SampleEnableButtons(ref oForm);
-
+                //if no row exists
+                EnsureLine(oForm, "MTXSIZE", "@FIL_DR_SMPLSIZE");
+                EnsureLine(oForm, "MTXCOLOR", "@FIL_DR_SMPLCOLO");
+                EnsureLine(oForm, "MTXBUYER", "@FIL_DR_SMPLBUYER");
                 // Add new row if last row has data
                 AddLineIfLastRowHasValue(oForm, "MTXCOLOR", "@FIL_DR_SMPLCOLO", "U_COLOCODE");
                 AddLineIfLastRowHasValue(oForm, "MTXSIZE", "@FIL_DR_SMPLSIZE", "U_SIZECODE");
@@ -736,7 +771,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 SAPbouiCOM.Item oSampleCode = oForm.Items.Item("ETSLCODE");
                 if (oSampleCode.Enabled)
                     oSampleCode.Enabled = false;
-
+                //if no row exists
+                EnsureLine(oForm, "MTXSIZE", "@FIL_DR_SMPLSIZE");
+                EnsureLine(oForm, "MTXCOLOR", "@FIL_DR_SMPLCOLO");
+                EnsureLine(oForm, "MTXBUYER", "@FIL_DR_SMPLBUYER");
                 // Add new row if last row has data
                 AddLineIfLastRowHasValue(oForm, "MTXCOLOR", "@FIL_DR_SMPLCOLO", "U_COLOCODE");
                 AddLineIfLastRowHasValue(oForm, "MTXSIZE", "@FIL_DR_SMPLSIZE", "U_SIZECODE");
@@ -865,8 +903,50 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 // --- Case 1: Matrix empty or one blank row ---
                 if (matrixEmpty)
                 {
-                    oBtnItmTx.Enabled = !string.IsNullOrEmpty(sampleId);
                     oBtnItmCr.Enabled = false;
+
+                    // Must have SampleId first
+                    if (string.IsNullOrEmpty(sampleId))
+                    {
+                        oBtnItmTx.Enabled = false;
+                        return;
+                    }
+
+                    // Must have DocEntry to validate color/size
+                    if (string.IsNullOrEmpty(docEntry))
+                    {
+                        oBtnItmTx.Enabled = false;
+                        return;
+                    }
+
+                    // Validate: at least 1 color + 1 size exists for this DocEntry
+                    SAPbobsCOM.Recordset oRecVal = (SAPbobsCOM.Recordset)
+                        Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                    string validateQuery = $@"
+                                            SELECT 
+                                                (SELECT COUNT(*) 
+                                                   FROM ""@FIL_DR_SMPLCOLO"" 
+                                                  WHERE ""DocEntry"" = '{docEntry}'
+                                                    AND IFNULL(""U_COLOCODE"", '') <> '') AS ""ColorCnt"",
+                                                (SELECT COUNT(*) 
+                                                   FROM ""@FIL_DR_SMPLSIZE"" 
+                                                  WHERE ""DocEntry"" = '{docEntry}'
+                                                    AND IFNULL(""U_SIZECODE"", '') <> '') AS ""SizeCnt""
+                                            FROM ""DUMMY""";
+
+                    oRecVal.DoQuery(validateQuery);
+
+                    int colorCnt = 0, sizeCnt = 0;
+                    if (!oRecVal.EoF)
+                    {
+                        colorCnt = Convert.ToInt32(oRecVal.Fields.Item("ColorCnt").Value);
+                        sizeCnt = Convert.ToInt32(oRecVal.Fields.Item("SizeCnt").Value);
+                    }
+
+                    // Enable BTNITMTX only if both exist
+                    oBtnItmTx.Enabled = (colorCnt >= 1 && sizeCnt >= 1);
+
                     return;
                 }
 
@@ -933,6 +1013,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                         }
                         MTXATTCH.LoadFromDataSource();
                         Application.SBO_Application.MessageBox("Selected row deleted.");
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                        {
+                            oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                        }
                     }
                     else
                     {
@@ -991,6 +1075,11 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
                 ((SAPbouiCOM.EditText)MTXATTCH.Columns.Item("CLATTACH").Cells.Item(lastRow).Specific).Value = filePath;
                 MTXATTCH.FlushToDataSource();
+
+                if (oForm.Mode==SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                {
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                }
             }
 
         }
