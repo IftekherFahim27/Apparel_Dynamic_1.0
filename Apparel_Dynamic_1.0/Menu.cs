@@ -966,8 +966,50 @@ namespace Apparel_Dynamic_1._0
                 // --- Case 1: Matrix empty or one blank row ---
                 if (matrixEmpty)
                 {
-                    oBtnItmTx.Enabled = !string.IsNullOrEmpty(sampleId);
                     oBtnItmCr.Enabled = false;
+
+                    // Must have SampleId first
+                    if (string.IsNullOrEmpty(sampleId))
+                    {
+                        oBtnItmTx.Enabled = false;
+                        return;
+                    }
+
+                    // Must have DocEntry to validate color/size
+                    if (string.IsNullOrEmpty(docEntry))
+                    {
+                        oBtnItmTx.Enabled = false;
+                        return;
+                    }
+
+                    // Validate: at least 1 color + 1 size exists for this DocEntry
+                    SAPbobsCOM.Recordset oRecVal = (SAPbobsCOM.Recordset)
+                        Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                   string validateQuery = $@"
+                                        SELECT 
+                                            (SELECT COUNT(*) 
+                                               FROM ""@FIL_DR_SMPLCOLO"" 
+                                              WHERE ""DocEntry"" = '{docEntry}'
+                                                AND IFNULL(""U_COLOCODE"", '') <> '') AS ""ColorCnt"",
+                                            (SELECT COUNT(*) 
+                                               FROM ""@FIL_DR_SMPLSIZE"" 
+                                              WHERE ""DocEntry"" = '{docEntry}'
+                                                AND IFNULL(""U_SIZECODE"", '') <> '') AS ""SizeCnt""
+                                        FROM ""DUMMY""";
+
+                    oRecVal.DoQuery(validateQuery);
+
+                    int colorCnt = 0, sizeCnt = 0;
+                    if (!oRecVal.EoF)
+                    {
+                        colorCnt = Convert.ToInt32(oRecVal.Fields.Item("ColorCnt").Value);
+                        sizeCnt = Convert.ToInt32(oRecVal.Fields.Item("SizeCnt").Value);
+                    }
+
+                    // Enable BTNITMTX only if both exist
+                    oBtnItmTx.Enabled = (colorCnt >= 1 && sizeCnt >= 1);
+
                     return;
                 }
 
