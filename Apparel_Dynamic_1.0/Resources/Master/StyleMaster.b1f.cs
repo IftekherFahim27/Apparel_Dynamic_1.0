@@ -592,7 +592,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 );
                 BubbleEvent = false;
             }
-
         }
 
         private void ETPDGPCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
