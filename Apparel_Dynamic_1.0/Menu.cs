@@ -702,6 +702,9 @@ namespace Apparel_Dynamic_1._0
                             {
                                 SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
                                 oUomItem.Enabled = true;
+
+                                SAPbouiCOM.Item oGenItem = oForm.Items.Item("ETGENDER");
+                                oGenItem.Enabled = true;
                                 break;
                             }
                         case "FIL_FRM_BRNDMSTR":

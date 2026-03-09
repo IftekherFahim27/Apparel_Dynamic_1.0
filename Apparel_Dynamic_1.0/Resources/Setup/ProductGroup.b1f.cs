@@ -39,6 +39,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             this.ETPDLINE = ((SAPbouiCOM.EditText)(this.GetItem("ETPDLINE").Specific));
             this.ETPDLINE.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETPDLINE_ChooseFromListAfter);
             this.ETPDLINE.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETPDLINE_ChooseFromListBefore);
+            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("STGENDER").Specific));
+            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("ETGENDER").Specific));
             this.OnCustomInitialize();
 
         }
@@ -62,7 +64,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             oForm.Freeze(true);
             try
             {
-                SetItemsEnabled(oForm, false, "ETCODE");
+                SetItemsEnabled(oForm, false, "ETCODE","ETGENDER");
             }
             finally
             {
@@ -140,8 +142,11 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                 return;
 
             string Code = dt.GetValue("Code", 0).ToString();
+            string Gender = dt.GetValue("U_GENDER", 0).ToString();
             SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETPDLINE").Specific;
             ETCD.Value = Code;
+            SAPbouiCOM.EditText ETGN = (SAPbouiCOM.EditText)oForm.Items.Item("ETGENDER").Specific;
+            ETGN.Value = Gender;
 
         }
 
@@ -298,5 +303,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             return BubbleEvent;
         }
 
+        private SAPbouiCOM.StaticText StaticText0;
+        private SAPbouiCOM.EditText EditText0;
     }
 }
