@@ -36,6 +36,8 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                                     ETRTSGNM, ETMERDCD, ETMERDNM, ETBUYRCD,
                                     ETBUYRNM, ETSDSNCD, ETSDSNNM, ETSZTPCD;
 
+       
+
         // -------- ComboBox --------
         private SAPbouiCOM.ComboBox CBSERIES, CBSMPBSE;
 
@@ -51,7 +53,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         public override void OnInitializeComponent()
         {
-            //      -------- Static Text --------
+            //        -------- Static Text --------
             this.STSLCODE = ((SAPbouiCOM.StaticText)(this.GetItem("STSLCODE").Specific));
             this.STCSCODE = ((SAPbouiCOM.StaticText)(this.GetItem("STCSCODE").Specific));
             this.STCSDESC = ((SAPbouiCOM.StaticText)(this.GetItem("STCSDESC").Specific));
@@ -75,7 +77,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.STUOM = ((SAPbouiCOM.StaticText)(this.GetItem("STUOM").Specific));
             this.STSZTPCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSZTPCD").Specific));
             this.STSUBCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STSUBCLR").Specific));
-            //      -------- Edit Text --------
+            //        -------- Edit Text --------
             this.ETSLCODE = ((SAPbouiCOM.EditText)(this.GetItem("ETSLCODE").Specific));
             this.ETCSCODE = ((SAPbouiCOM.EditText)(this.GetItem("ETCSCODE").Specific));
             this.ETCSDESC = ((SAPbouiCOM.EditText)(this.GetItem("ETCSDESC").Specific));
@@ -84,8 +86,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.ETGENDER.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETGENDER_ChooseFromListAfter);
             this.ETGENDER.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETGENDER_ChooseFromListBefore);
             this.ETSMTPCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSMTPCD").Specific));
-            this.ETSMTPCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETSMTPCD_ChooseFromListAfter);
-            this.ETSMTPCD.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETSMTPCD_ChooseFromListBefore);
             this.ETSMTPNM = ((SAPbouiCOM.EditText)(this.GetItem("ETSMTPNM").Specific));
             this.ETPDTPCD = ((SAPbouiCOM.EditText)(this.GetItem("ETPDTPCD").Specific));
             this.ETPDTPNM = ((SAPbouiCOM.EditText)(this.GetItem("ETPDTPNM").Specific));
@@ -106,8 +106,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
             this.ETSMPLCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSMPLCD").Specific));
             this.ETSMPLCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETSMPLCD_ChooseFromListAfter);
-            this.ETSMPLCD.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETSMPLCD_ChooseFromListBefore);
-            this.ETSMPLNM = ((SAPbouiCOM.EditText)(this.GetItem("STSMPLNM ").Specific));
+            this.ETSMPLNM = ((SAPbouiCOM.EditText)(this.GetItem("ETSMPLNM").Specific));
             this.ETUOM = ((SAPbouiCOM.EditText)(this.GetItem("ETUOM").Specific));
             this.ETPDLDTM = ((SAPbouiCOM.EditText)(this.GetItem("ETPDLDTM").Specific));
             this.ETHSCODE = ((SAPbouiCOM.EditText)(this.GetItem("ETHSCODE").Specific));
@@ -128,15 +127,16 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.ETSZTPCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSZTPCD").Specific));
             this.ETSZTPCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETSZTPCD_ChooseFromListAfter);
             this.ETSZTPCD.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETSZTPCD_ChooseFromListBefore);
-            //      -------- ComboBox --------
+            //        -------- ComboBox --------
             this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.CBSMPBSE = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSMPBSE").Specific));
-            //      -------- Folder --------
+            this.CBSMPBSE.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBSMPBSE_ComboSelectAfter);
+            //        -------- Folder --------
             this.FOLSIZE = ((SAPbouiCOM.Folder)(this.GetItem("FOLSIZE").Specific));
             this.FOLCOLOR = ((SAPbouiCOM.Folder)(this.GetItem("FOLCOLOR").Specific));
             this.FOLITEM = ((SAPbouiCOM.Folder)(this.GetItem("FOLITEM").Specific));
             this.FOLATTAC = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTAC").Specific));
-            //      -------- Matrix --------
+            //        -------- Matrix --------
             this.MTXSIZE = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSIZE").Specific));
             this.MTXCOLOR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCOLOR").Specific));
             this.MTXCOLOR.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXCOLOR_ChooseFromListAfter);
@@ -144,7 +144,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             this.MTXSBCLR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXSBCLR").Specific));
             this.MTXITEM = ((SAPbouiCOM.Matrix)(this.GetItem("MTXITEM").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
-            //      -------- Button --------
+            //        -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNITMTX = ((SAPbouiCOM.Button)(this.GetItem("BTNITMTX").Specific));
@@ -174,36 +174,65 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         }
 
-        private void ETSMPLCD_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        private void CBSMPBSE_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-            BubbleEvent = true;
             try
             {
-                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
-                string cflUID = cflArg.ChooseFromListUID;
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSMPBSE").Specific;
+                SAPbouiCOM.EditText oESMPLCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLCD").Specific;
+                SAPbouiCOM.EditText oESMPLNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLNM").Specific;
+                SAPbouiCOM.EditText oESMTPCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPCD").Specific;
+                SAPbouiCOM.EditText oETSMTPNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPNM").Specific;
 
-                if (cflUID == "CFL_SMST")
+                string value = oCombo.Value.Trim();
+
+                if (value == "Y")
                 {
-                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
-                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
-                    SAPbouiCOM.Condition oCon1 = oCons.Add();
-                    oCon1.Alias = "U_ACTIVE";
-                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                    oCon1.CondVal = "Y";
-                    oCFL.SetConditions(oCons);
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Style is Based On Sample Master",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+
+                    SetItemsEnabled(oForm, true, "ETSMPLCD");
+                    oESMPLCD.ChooseFromListUID = "CFL_SMST";
+                    oESMPLCD.ChooseFromListAlias = "DocNum";
+                }
+                else if (value == "N")
+                {
+                    Application.SBO_Application.StatusBar.SetText(
+                       "Style is build on Scratch",
+                       SAPbouiCOM.BoMessageTime.bmt_Short,
+                       SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+
+                    SetItemsEnabled(oForm, false, "ETSMPLCD");
+                    oESMPLCD.Value = "";
+                    oESMPLNM.Value = "";
+                    oESMTPCD.Value = "";
+                    oETSMTPNM.Value = "";
                 }
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.StatusBar.SetText(
-                    "Error filtering Sample Master CFL: " + ex.Message,
-                    SAPbouiCOM.BoMessageTime.bmt_Short,
-                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
-                );
-                BubbleEvent = false;
+                Application.SBO_Application.MessageBox(ex.Message);
             }
         }
+
+        private void SetItemsEnabled(SAPbouiCOM.Form oForm, bool enabled, params string[] itemIds)
+        {
+            foreach (string itemId in itemIds)
+            {
+                try
+                {
+                    oForm.Items.Item(itemId).Enabled = enabled;
+                }
+                catch
+                {
+
+                }
+            }
+        }
+       
 
         private void ETSMPLCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
@@ -213,13 +242,19 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             if (dt == null || dt.Rows.Count == 0)
                 return;
 
-            string Code = dt.GetValue("Code", 0).ToString().Trim();
-            string Name = dt.GetValue("Name", 0).ToString().Trim();
+            string Code = dt.GetValue("DocNum", 0).ToString().Trim();
+            string Name = dt.GetValue("DocEntry", 0).ToString().Trim();
+            string smplType = dt.GetValue("U_SMPLTYPC", 0).ToString().Trim();
+            string smplTpName = dt.GetValue("U_SMPLTYPN", 0).ToString().Trim();
 
             SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLCD").Specific;
             ETCD.Value = Code;
             SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLNM").Specific;
             ETNM.Value = Name;
+            SAPbouiCOM.EditText ETTPCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPCD").Specific;
+            ETTPCD.Value = smplType;
+            SAPbouiCOM.EditText ETTPNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPNM").Specific;
+            ETTPNM.Value = smplTpName;
 
         }
 
@@ -705,60 +740,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                 BubbleEvent = false;
             }
-        }
-
-
-
-
-
-        private void ETSMTPCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
-        {
-            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
-            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
-            if (dt == null || dt.Rows.Count == 0)
-                return;
-
-            string Code = dt.GetValue("Code", 0).ToString().Trim();
-            string Name = dt.GetValue("Name", 0).ToString().Trim();
-
-            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPCD").Specific;
-            ETCD.Value = Code;
-            SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPNM").Specific;
-            ETNM.Value = Name;
-
-        }
-
-        private void ETSMTPCD_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
-        {
-            BubbleEvent = true;
-            try
-            {
-                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
-                string cflUID = cflArg.ChooseFromListUID;
-
-                if (cflUID == "CFL_SMPTP")
-                {
-                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
-                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
-                    SAPbouiCOM.Condition oCon1 = oCons.Add();
-                    oCon1.Alias = "U_ACTIVE";
-                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                    oCon1.CondVal = "Y";
-                    oCFL.SetConditions(oCons);
-                }
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.StatusBar.SetText(
-                    "Error filtering Sample Type CFL: " + ex.Message,
-                    SAPbouiCOM.BoMessageTime.bmt_Short,
-                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
-                );
-                BubbleEvent = false;
-            }
-
         }
 
         private void ETGENDER_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
