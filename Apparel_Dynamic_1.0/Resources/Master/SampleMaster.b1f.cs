@@ -1050,7 +1050,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     break;
                 }
             }
-
         }
 
         private void BRWSBTN_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -1059,14 +1058,12 @@ namespace Apparel_Dynamic_1._0.Resources.Master
             SAPbouiCOM.DBDataSource DBDataSourceLine = oForm.DataSources.DBDataSources.Item("@FIL_DR_SMPLATACH");
             SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
 
-
             string filePath = FileDialogHelper.ShowFileDialog();
             if (!string.IsNullOrEmpty(filePath))
             {
                 int lastRow = MTXATTCH.VisualRowCount;
                 bool needNewRow = (lastRow == 0) ||
                                   !string.IsNullOrEmpty(((SAPbouiCOM.EditText)MTXATTCH.Columns.Item("CLATTACH").Cells.Item(lastRow).Specific).Value);
-
                 if (needNewRow)
                 {
                     Global.GFunc.SetNewLine(MTXATTCH, DBDataSourceLine, 1, "");
@@ -1101,7 +1098,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 {
                     string code = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCLRCOD").Cells.Item(row).Specific).Value
                                     .Replace("\0", "").Trim();
-
                     if (string.IsNullOrEmpty(code))
                     {
                         //clear row and add new line and lineID resequence 

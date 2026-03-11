@@ -184,7 +184,7 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                     (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
                 string query = $@"
-                                SELECT 1 FROM ""@FIL_DR_PSMST""
+                                SELECT 1 FROM ""@FIL_DH_OPSM""
                                 WHERE ""U_SIZETYPE"" = '{sizeTypeCode}'
                                 LIMIT 1";
 
