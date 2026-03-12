@@ -1146,7 +1146,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.MessageBox("Error: " + ex.Message);
+                //Application.SBO_Application.MessageBox("Error: " + ex.Message);
             }
 
         }
