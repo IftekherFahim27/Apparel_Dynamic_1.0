@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Apparel_Dynamic_1._0.Helper;
 using Apparel_Dynamic_1._0.Resources.Master;
+using Apparel_Dynamic_1._0.Resources.Version;
 
 namespace Apparel_Dynamic_1._0.Resources.Transaction
 {
@@ -178,6 +179,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private void GRDVERSN_DoubleClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
             try
             {
                 if (pVal.Row < 0)
@@ -194,19 +196,19 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 SAPbouiCOM.DataTable oDT = oGrid.DataTable;
                 int row = pVal.Row;
 
-                SelDocEntry = oDT.GetValue("DocEntry", row).ToString().Trim();
-                SelDocNum = oDT.GetValue("DocNum", row).ToString().Trim();
-                SelVersion = oDT.GetValue("Version", row).ToString().Trim();
-                SelLogInst = oDT.GetValue("MAX_LOGINST", row).ToString().Trim();
+                string selDocEntry = oDT.GetValue("DocEntry", row).ToString().Trim();
+                string selDocNum = oDT.GetValue("DocNum", row).ToString().Trim();
+                string selVersion = oDT.GetValue("Version", row).ToString().Trim();
+                string selLogInst = oDT.GetValue("MAX_LOGINST", row).ToString().Trim();
 
                 string check = $@"
-                                SELECT 
-                                    CASE 
-                                        WHEN MAX(""LogInst"") = '{SelLogInst}' THEN 1 
-                                        ELSE 0
-                                    END AS ""IsEqual""
-                                FROM ""@AFIL_DH_PRECOSTING""
-                                WHERE ""DocEntry"" = '{SelDocEntry}';";
+                        SELECT 
+                            CASE 
+                                WHEN MAX(""LogInst"") = '{selLogInst}' THEN 1 
+                                ELSE 0
+                            END AS ""IsEqual""
+                        FROM ""@AFIL_DH_PRECOSTING""
+                        WHERE ""DocEntry"" = '{selDocEntry}'";
 
                 SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
                 rs.DoQuery(check);
@@ -217,29 +219,17 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
                     if (isEqual == 1)
                     {
-                        Application.SBO_Application.MessageBox(
-                            "You are currently in this version.");
-
+                        Application.SBO_Application.MessageBox("You are currently in this version.");
                         return;
                     }
-                    else
-                    {
-                        Application.SBO_Application.StatusBar.SetText(
-                           $"Loading Version {SelVersion}",
-                           SAPbouiCOM.BoMessageTime.bmt_Short,
-                           SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
 
-                        oForm.Freeze(true);
-                        ClearForm(oForm);
-                        oForm.PaneLevel = 1;
-                        LoadHeaderVersion(oForm, SelDocEntry, SelDocNum, SelVersion, SelLogInst);
-                        LoadComponentMatrix(oForm, SelDocEntry, SelVersion, SelLogInst);
-                        LoadOtherCostMatrix(oForm, SelDocEntry, SelVersion, SelLogInst);
-                        oForm.Mode = SAPbouiCOM.BoFormMode.fm_VIEW_MODE;
-                    }
+                    Application.SBO_Application.StatusBar.SetText(
+                        $"Opening Version {selVersion} in new form...",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Success);
+
+                    OpenVersionInNewForm(selDocEntry, selDocNum, selVersion, selLogInst);
                 }
-
-
             }
             catch (Exception ex)
             {
@@ -248,9 +238,53 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     SAPbouiCOM.BoMessageTime.bmt_Long,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
+        }
+
+        private void OpenVersionInNewForm(string docEntry, string docNum, string version, string logInst)
+        {
+            SAPbouiCOM.Form newForm = null;
+
+            try
+            {
+                // Open same form in new instance
+                SamplePreCostVersionLog frm = new SamplePreCostVersionLog();   // <-- replace with your actual form class name
+                frm.Show();
+
+                newForm = (SAPbouiCOM.Form)frm.UIAPIRawForm;
+
+                if (newForm == null)
+                    throw new Exception("New form could not be opened.");
+
+                newForm.Freeze(true);
+
+                // Optional form title change
+                newForm.Title = $"PreCosting - Version {version}";
+
+                // Clear form first
+                ClearForm(newForm);
+
+                // Set pane if needed
+                newForm.PaneLevel = 1;
+
+                // Load selected version data into new form
+                LoadHeaderVersion(newForm, docEntry, docNum, version, logInst);
+                LoadComponentMatrix(newForm, docEntry, version, logInst);
+                LoadOtherCostMatrix(newForm, docEntry, version, logInst);
+
+                // Open in view mode
+                newForm.Mode = SAPbouiCOM.BoFormMode.fm_VIEW_MODE;
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "OpenVersionInNewForm Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Long,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
             finally
             {
-                oForm.Freeze(false);
+                if (newForm != null)
+                    newForm.Freeze(false);
             }
         }
 
@@ -277,16 +311,28 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             mtxOth.Clear();
             oDT.Clear();
         }
-        private void LoadHeaderVersion(SAPbouiCOM.Form oForm, string docEntry, string docNum, string version,string log)
+        private void LoadHeaderVersion(SAPbouiCOM.Form oForm, string docEntry, string docNum, string version, string log)
         {
             string sql = $@"
-                            SELECT ""DocEntry"", ""DocNum"" ,""U_VERSION"", ""U_SMPLCODE"" ,""U_SMPLDESC"",
-                                    ""U_CARDCODE"" ,""U_CARDNAME"", ""U_CURRENCY"" ,""U_TOTCONAMT"", ""U_DOCDATE""
-                            FROM ""@AFIL_DH_PRECOSTING"" 
-                            WHERE ""DocEntry""='{docEntry}' 
-                              AND ""DocNum""='{docNum}'
-                              AND ""U_VERSION""='{version}'
-                              AND ""LogInst""='{log}'";
+                            SELECT 
+                                T0.""DocEntry"",
+                                T0.""DocNum"",
+                                T0.""Series"",
+                                T1.""SeriesName"",
+                                T0.""U_VERSION"",
+                                T0.""U_SMPLCODE"",
+                                T0.""U_SMPLDESC"",
+                                T0.""U_CARDCODE"",
+                                T0.""U_CARDNAME"",
+                                T0.""U_CURRENCY"",
+                                T0.""U_TOTCONAMT"",
+                                T0.""U_DOCDATE""
+                            FROM ""@AFIL_DH_PRECOSTING"" T0
+                            LEFT JOIN ""NNM1"" T1 ON T0.""Series"" = T1.""Series""
+                            WHERE T0.""DocEntry"" = '{docEntry}'
+                              AND T0.""DocNum"" = '{docNum}'
+                              AND T0.""U_VERSION"" = '{version}'
+                              AND T0.""LogInst"" = '{log}'";
 
             SAPbobsCOM.Recordset rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
             rs.DoQuery(sql);
@@ -295,6 +341,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             {
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value = rs.Fields.Item("DocEntry").Value.ToString();
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCNUM").Specific).Value = rs.Fields.Item("DocNum").Value.ToString();
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETSERIES").Specific).Value = rs.Fields.Item("SeriesName").Value.ToString();
+
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETVERSON").Specific).Value = rs.Fields.Item("U_VERSION").Value.ToString();
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLCD").Specific).Value = rs.Fields.Item("U_SMPLCODE").Value.ToString();
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLNM").Specific).Value = rs.Fields.Item("U_SMPLDESC").Value.ToString();
@@ -302,9 +350,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETBYRNM").Specific).Value = rs.Fields.Item("U_CARDNAME").Value.ToString();
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETCURR").Specific).Value = rs.Fields.Item("U_CURRENCY").Value.ToString();
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETTCNAMT").Specific).Value = rs.Fields.Item("U_TOTCONAMT").Value.ToString();
-                DateTime docDate = (DateTime)rs.Fields.Item("U_DOCDATE").Value;
-                ((SAPbouiCOM.EditText)oForm.Items.Item("ETDATE").Specific).Value = docDate.ToString("yyyyMMdd");
 
+                DateTime docDate = Convert.ToDateTime(rs.Fields.Item("U_DOCDATE").Value);
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETDATE").Specific).Value = docDate.ToString("yyyyMMdd");
             }
         }
         private void LoadComponentMatrix(SAPbouiCOM.Form oForm, string docEntry, string version, string log)
@@ -363,6 +411,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 row++;
                 rs.MoveNext();
             }
+            mtx.AutoResizeColumns();
         }
 
 
@@ -402,6 +451,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 row++;
                 rs.MoveNext();
             }
+            mtx.AutoResizeColumns();
         }
 
         private void ADDButton_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -1148,7 +1198,6 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             {
                 //Application.SBO_Application.MessageBox("Error: " + ex.Message);
             }
-
         }
 
         private void MTXCMPNT_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
