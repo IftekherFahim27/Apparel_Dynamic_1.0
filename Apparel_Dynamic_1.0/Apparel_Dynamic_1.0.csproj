@@ -105,6 +105,9 @@
     <Compile Include="Resources\Transaction\SamplePreCosting.b1f.cs">
       <DependentUpon>SamplePreCosting.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Version\SamplePreCostVersionLog.b1f.cs">
+      <DependentUpon>SamplePreCostVersionLog.b1f</DependentUpon>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Folder Include="AddFiles\Database Design\" />
@@ -162,6 +165,9 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Transaction\SamplePreCosting.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Version\SamplePreCostVersionLog.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
   </ItemGroup>
