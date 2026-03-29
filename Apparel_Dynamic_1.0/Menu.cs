@@ -38,6 +38,7 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_PRODGRP", "Product Group ", 10, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_BRAND", "Brand", 11, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_SBDVSN", "Sub Division", 12, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_DEPT", "Departmentg", 13, 1, false);
 
 
                 //Apparel ->  Master
@@ -270,6 +271,20 @@ namespace Apparel_Dynamic_1._0
                     SubDivision activeForm = new SubDivision();
                     activeForm.Show();
                 }
+                //Dept
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_DEPT")
+                {
+                    string formUID = "FIL_FRM_DEPT";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    Department activeForm = new Department();
+                    activeForm.Show();
+                }
                 //___________________________________________________________Master________________________________________________
                 //Sample Master
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_SAM_SM")
@@ -398,6 +413,9 @@ namespace Apparel_Dynamic_1._0
                         MTXSBCLR.AutoResizeColumns();
                         MTXITM.AutoResizeColumns();
                         MTXATTAC.AutoResizeColumns();
+
+                        EnsureLine(oForm, "MTXCOLOR", "@FIL_DR_PSMCO");
+                        EnsureLine(oForm, "MTXSBCLR", "@FIL_DR_SUBCLR");
 
                         //Series Initialization
                         SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM");   //DEFINE  DATASOURCES.
