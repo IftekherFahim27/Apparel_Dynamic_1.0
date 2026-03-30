@@ -38,7 +38,7 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_PRODGRP", "Product Group ", 10, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_BRAND", "Brand", 11, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_SBDVSN", "Sub Division", 12, 1, false);
-                CreateMainMenu("APP_STP", "APP_STP_DEPT", "Departmentg", 13, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_DEPT", "Department", 13, 1, false);
 
 
                 //Apparel ->  Master
