@@ -220,7 +220,12 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 // Matrices
                 SAPbouiCOM.Matrix mtxSize = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
                 SAPbouiCOM.Matrix mtxColor = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific;
-                
+
+
+                SetItemsEnabled(oForm, false, "ETSLCODE", "ETGENAME", "ETPDGPNM", "ETPDTPNM", "ETPDLNNM",
+                                "ETBRNDNM", "ETDEPTNM", "ETSDSNNM", "ETPDTPCD", "ETPDLNCD", 
+                                "ETDOCNUM", "ETSMPLNM", "ETSMTPNM", "ETRTSGNM", "ETMERDNM", "ETBUYRNM", "ETSMTPCD");
+
                 SampleEnableButtons(ref oForm);
                 //if no row exists
                 EnsureLine(oForm, "MTXCOLOR", "@FIL_DR_PSMCO");
@@ -229,6 +234,22 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 AddLineIfLastRowHasValue(oForm, "MTXCOLOR", "@FIL_DR_PSMCO", "U_COLORCODE");
                 AddLineIfLastRowHasValue(oForm, "MTXSBCLR", "@FIL_DR_SUBCLR", "U_BASECLR");
 
+                // ==========================
+                // Enable/Disable ETSMPLCD
+                // based on U_SMPLBASE
+                // ==========================
+                SAPbouiCOM.DBDataSource dsHeader = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM");
+                string sampleBase = dsHeader.GetValue("U_SMPLBASE", 0).Trim();
+
+                if (sampleBase == "Y")
+                {
+                    SetItemsEnabled(oForm, true, "ETSMPLCD");
+                }
+                else
+                {
+                    SetItemsEnabled(oForm, false, "ETSMPLCD");
+                }
+            
             }
             catch (Exception ex)
             {
@@ -287,59 +308,70 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
         {
-            styleCode = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_STYLECODE", 0).Trim();
-            string styleDesc = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_STYLENM", 0).Trim();
-            string Uom = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_UOM", 0).Trim();
-            string route = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_ROUTESTAGE", 0).Trim();
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
+            {
+                styleCode = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_STYLECODE", 0).Trim();
+                string styleDesc = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_STYLENM", 0).Trim();
+                string Uom = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_UOM", 0).Trim();
+                string route = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_ROUTESTAGE", 0).Trim();
+                string samplebase = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_SMPLBASE", 0).Trim();
 
-            if (styleCode == "")
-            {
-                Global.GFunc.ShowError("Enter Style Code");
-                oForm.ActiveItem = "ETSLCODE";
-                return BubbleEvent = false;
-            }
-            if (styleDesc == "")
-            {
-                Global.GFunc.ShowError("Enter Style Desc");
-                oForm.ActiveItem = "ETSLDESC";
-                return BubbleEvent = false;
-            }
-            else if (Uom == "")
-            {
-                Global.GFunc.ShowError("Enter UoM");
-                oForm.ActiveItem = "ETUOM";
-                return BubbleEvent = false;
-            }
-            else if (route == "")
-            {
-                Global.GFunc.ShowError("Enter Route Stage");
-                oForm.ActiveItem = "ETRTSGCD";
-                return BubbleEvent = false;
-            }
-
-            if (oForm.Mode==SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
-            {
-                // extra validation for color and sub color matrix
-                if (!ValidateBaseColorAgainstColorMatrix(oForm))
+                if (styleCode == "")
                 {
+                    Global.GFunc.ShowError("Enter Style Code");
+                    oForm.ActiveItem = "ETSLCODE";
+                    return BubbleEvent = false;
+                }
+                if (styleDesc == "")
+                {
+                    Global.GFunc.ShowError("Enter Style Desc");
+                    oForm.ActiveItem = "ETSLDESC";
+                    return BubbleEvent = false;
+                }
+                else if (Uom == "")
+                {
+                    Global.GFunc.ShowError("Enter UoM");
+                    oForm.ActiveItem = "ETUOM";
+                    return BubbleEvent = false;
+                }
+                else if (route == "")
+                {
+                    Global.GFunc.ShowError("Enter Route Stage");
+                    oForm.ActiveItem = "ETRTSGCD";
                     return BubbleEvent = false;
                 }
 
-                // sub color validation
-                if (!ValidateSubColorMatrix(oForm))
+                if (samplebase == "Y")
                 {
-                    return BubbleEvent = false;
+                    string sample = oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM").GetValue("U_SMPLDOCNUM", 0);
+                    if (sample == "")
+                    {
+                        Global.GFunc.ShowError("Enter Sample Master");
+                        oForm.ActiveItem = "ETSMPLCD";
+                        return BubbleEvent = false;
+                    }
                 }
-            }
 
+                    // extra validation for color and sub color matrix
+                    if (!ValidateBaseColorAgainstColorMatrix(oForm))
+                    {
+                        return BubbleEvent = false;
+                    }
+
+                    // sub color validation
+                    if (!ValidateSubColorMatrix(oForm))
+                    {
+                        return BubbleEvent = false;
+                    }
+
+                // PreventEmptyLastRow(oForm, "@FIL_DR_PSMST", MTXSIZE, "U_SIZECODE");
+                PreventEmptyLastRow(oForm, "@FIL_DR_PSMCO", MTXCOLOR, "U_COLORCODE");
+                PreventEmptyLastRow(oForm, "@FIL_DR_PSMIP", MTXITEM, "U_ITEMCODE");
+                PreventEmptyLastRow(oForm, "@FIL_DR_SUBCLR", MTXSBCLR, "U_BASECLR");
+                PreventEmptyLastRow(oForm, "@FIL_DR_PSMATCH", MTXATTCH, "U_ATCHMENT");
+
+            }
             
-
-            // PreventEmptyLastRow(oForm, "@FIL_DR_PSMST", MTXSIZE, "U_SIZECODE");
-            PreventEmptyLastRow(oForm, "@FIL_DR_PSMCO", MTXCOLOR, "U_COLORCODE");
-            PreventEmptyLastRow(oForm, "@FIL_DR_PSMIP", MTXITEM, "U_ITEMCODE");
-            PreventEmptyLastRow(oForm, "@FIL_DR_SUBCLR", MTXSBCLR, "U_BASECLR");
-            PreventEmptyLastRow(oForm, "@FIL_DR_PSMATCH", MTXATTCH, "U_ATCHMENT");
-
             return BubbleEvent;
         }
 
@@ -1642,6 +1674,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         private void ETSMPLCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+            {
+                return;
+            }
             SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
             SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
             if (dt == null || dt.Rows.Count == 0)
@@ -2054,6 +2090,10 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
             try
             {
+                if (oForm.Mode==SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+                {
+                    return;
+                }
                 SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
                 SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
 

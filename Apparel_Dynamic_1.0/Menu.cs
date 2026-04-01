@@ -542,7 +542,7 @@ namespace Apparel_Dynamic_1._0
                                 SAPbouiCOM.Item oBtnItmCr = oForm.Items.Item("BTNITMCR");
                                 oBtnItmCr.Enabled = false;
                                 oBtnItmTx.Enabled = false;
-
+                                SetItemsEnabled(oForm, false, "ETDOCNUM", "ETSLTYNM", "ETITMGNM", "ETRUTSNM", "ETMERNAM", "ETCRDNAM");
                                 break;
                             }
                         case "FIL_FRM_SMPLPCST":
@@ -634,6 +634,42 @@ namespace Apparel_Dynamic_1._0
                                 SetItemsEnabled(oForm, true, "ETCODE");
                                 break;
                             }
+                        case "FIL_FRM_STYLMSTR":
+                            {
+
+                                    SAPbouiCOM.Matrix MTSZ = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific;
+                                    SAPbouiCOM.Matrix MTXCLR = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific;
+                                    SAPbouiCOM.Matrix MTXSBCLR = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXSBCLR").Specific;
+                                    SAPbouiCOM.Matrix MTXITM = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXITEM").Specific;
+                                    SAPbouiCOM.Matrix MTXATTAC = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+                                    MTSZ.AutoResizeColumns();
+                                    MTXCLR.AutoResizeColumns();
+                                    MTXSBCLR.AutoResizeColumns();
+                                    MTXITM.AutoResizeColumns();
+                                    MTXATTAC.AutoResizeColumns();
+
+                                    EnsureLine(oForm, "MTXCOLOR", "@FIL_DR_PSMCO");
+                                    EnsureLine(oForm, "MTXSBCLR", "@FIL_DR_SUBCLR");
+
+                                    //Series Initialization
+                                    SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_OPSM");   //DEFINE  DATASOURCES.
+                                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                                    {
+                                        SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                                        Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_OPSM");  //Object Type
+                                        string ocmbvalue = ocmb.Selected.Value;
+                                        long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_OPSM");
+
+                                        oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+                                    }
+
+                                SetItemsEnabled(oForm, false, "ETGENAME", "ETPDGPNM", "ETPDTPNM", "ETPDLNNM",
+                                "ETBRNDNM", "ETDEPTNM", "ETSDSNNM", "ETPDTPCD", "ETPDLNCD","ETSMPLCD",
+                                "ETDOCNUM", "ETSMPLNM", "ETSMTPNM", "ETRTSGNM", "ETMERDNM", "ETBUYRNM", "ETSMTPCD");
+
+                                break;
+                            }
                     }
                 }
                 //Find Mode
@@ -659,6 +695,8 @@ namespace Apparel_Dynamic_1._0
                                 SAPbouiCOM.Item oBtnItmCr = oForm.Items.Item("BTNITMCR");
                                 oBtnItmCr.Enabled = false;
                                 oBtnItmTx.Enabled = false;
+
+                                SetItemsEnabled(oForm, true, "ETDOCNUM", "ETSLTYNM", "ETITMGNM", "ETRUTSNM", "ETMERNAM", "ETCRDNAM");
                                 SampleEnableButtons(oForm);
                                 break;
                             }
@@ -748,6 +786,14 @@ namespace Apparel_Dynamic_1._0
                                 SetItemsEnabled(oForm, true, "ETCODE");
                                 break;
                             }
+                        case "FIL_FRM_STYLMSTR":
+                            {
+                                SetItemsEnabled(oForm, true, "ETSLCODE", "ETGENAME", "ETPDGPNM", "ETPDTPNM", "ETPDLNNM", 
+                                "ETBRNDNM", "ETDEPTNM", "ETSDSNNM", "ETPDTPCD", "ETPDLNCD", "ETSMPLCD",
+                                "ETDOCNUM", "ETSMPLNM", "ETSMTPNM", "ETRTSGNM", "ETMERDNM", "ETBUYRNM","ETSMTPCD");
+                                break;
+                            }
+                       
                     }
                 }
                 //First
