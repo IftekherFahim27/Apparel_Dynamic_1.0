@@ -1050,7 +1050,36 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             try
             {
                 if (pVal.ColUID != "CLAMT") return;
+
                 SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCMPNT").Specific;
+
+                int row = pVal.Row;
+
+                // Get Route Stage Combo
+                SAPbouiCOM.ComboBox oRouteCombo =
+                    (SAPbouiCOM.ComboBox)mtx.Columns.Item("CLRSTGCD").Cells.Item(row).Specific;
+
+                string routeStage = oRouteCombo.Value.Trim();
+
+                // Get Amount Cell
+                SAPbouiCOM.EditText oAmt =
+                    (SAPbouiCOM.EditText)mtx.Columns.Item("CLAMT").Cells.Item(row).Specific;
+
+                string amtValue = oAmt.Value.Trim();
+
+                // If Route Stage empty but amount entered → reset amount to 0
+                if (string.IsNullOrWhiteSpace(routeStage) && !string.IsNullOrWhiteSpace(amtValue))
+                {
+                    oAmt.Value = "0.00";
+
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Route Stage is empty. Amount reset to 0.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                }
+
+                // Recalculate total
                 UpdateTotalAmountBothMatrices(oForm);
             }
             catch (Exception ex)
@@ -1074,31 +1103,70 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 total.ToString("0.00", System.Globalization.CultureInfo.InvariantCulture);
         }
 
+        //private double GetMatrixColumnSum(SAPbouiCOM.Form oForm, string matrixId, string colId)
+        //{
+        //    double sum = 0;
+
+        //    if (!oForm.Items.Item(matrixId).Visible) { /* optional */ }
+
+        //    SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixId).Specific;
+
+        //    for (int i = 1; i <= mtx.RowCount; i++)
+        //    {
+        //        string valStr = ((SAPbouiCOM.EditText)mtx.Columns.Item(colId).Cells.Item(i).Specific).Value;
+        //        if (string.IsNullOrWhiteSpace(valStr)) continue;
+
+        //        valStr = valStr.Trim().Replace(",", "");
+
+        //        if (double.TryParse(valStr, System.Globalization.NumberStyles.Any,
+        //                            System.Globalization.CultureInfo.InvariantCulture, out double amt))
+        //            sum += amt;
+        //        else if (double.TryParse(valStr, out amt))
+        //            sum += amt;
+        //    }
+
+        //    return sum;
+        //}
+
         private double GetMatrixColumnSum(SAPbouiCOM.Form oForm, string matrixId, string colId)
         {
             double sum = 0;
-
-            if (!oForm.Items.Item(matrixId).Visible) { /* optional */ }
-
             SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixId).Specific;
 
             for (int i = 1; i <= mtx.RowCount; i++)
             {
+                // Special rule only for MTXCMPNT:
+                // if route stage (CLRSTGCD) is blank, skip this row
+                if (matrixId == "MTXCMPNT")
+                {
+                    SAPbouiCOM.ComboBox oCombo = (SAPbouiCOM.ComboBox)mtx.Columns.Item("CLRSTGCD").Cells.Item(i).Specific;
+                    string routeStage = oCombo.Value.Trim();
+
+                    if (string.IsNullOrWhiteSpace(routeStage))
+                        continue;
+                }
+
                 string valStr = ((SAPbouiCOM.EditText)mtx.Columns.Item(colId).Cells.Item(i).Specific).Value;
-                if (string.IsNullOrWhiteSpace(valStr)) continue;
+                if (string.IsNullOrWhiteSpace(valStr))
+                    continue;
 
                 valStr = valStr.Trim().Replace(",", "");
 
-                if (double.TryParse(valStr, System.Globalization.NumberStyles.Any,
-                                    System.Globalization.CultureInfo.InvariantCulture, out double amt))
+                if (double.TryParse(valStr,
+                                    System.Globalization.NumberStyles.Any,
+                                    System.Globalization.CultureInfo.InvariantCulture,
+                                    out double amt))
+                {
                     sum += amt;
+                }
                 else if (double.TryParse(valStr, out amt))
+                {
                     sum += amt;
+                }
             }
 
             return sum;
         }
-
 
         private void MTXCMPNT_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
         {
