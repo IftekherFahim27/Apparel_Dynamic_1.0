@@ -50,6 +50,7 @@
     <Compile Include="Helper\Global.cs" />
     <Compile Include="Helper\GlobalFunction.cs" />
     <Compile Include="Helper\NetworkShareHelper.cs" />
+    <Compile Include="Modules\SalesQuotation.cs" />
     <Compile Include="Modules\StandardFormManipulation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Menu.cs" />

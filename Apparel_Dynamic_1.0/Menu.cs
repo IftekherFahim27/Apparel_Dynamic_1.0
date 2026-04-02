@@ -434,6 +434,35 @@ namespace Apparel_Dynamic_1._0
                         Application.SBO_Application.MessageBox("Error Found : " + e.Message);
                     }
                 }
+                //Draft Order
+                //Sales Quotation
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_DRO")
+                {
+                    try
+                    {
+                        string formType = "2049";
+                        foreach (SAPbouiCOM.Form form in Application.SBO_Application.Forms)
+                        {
+                            if (form.TypeEx == formType)
+                            {
+                                form.Select();
+                                Application.SBO_Application.StatusBar.SetText("Sales Order Draft form is already open.",
+                                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                                    SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                                return;
+                            }
+                        }
+
+                        // Activate (open) the Sales Order Draft form
+                        Application.SBO_Application.ActivateMenuItem("2049");
+                        
+                    }
+                    catch (Exception ex)
+                    {
+                        Application.SBO_Application.MessageBox("Error while opening Sales Order Draft form: " + ex.Message);
+                    }
+                }
+
                 //___________________________________________________________Transaction________________________________________________
                 //Sample PreCositng
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_SAM_SPC")
