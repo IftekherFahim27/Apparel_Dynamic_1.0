@@ -1044,50 +1044,78 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
         }
 
-
+        //
+        private bool _isAmtQtyClearRunning = false;
         private void MTXCMPNT_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
+            if (_isAmtQtyClearRunning) return;
+
             try
             {
-                if (pVal.ColUID != "CLAMT") return;
+                if (pVal.Row <= 0) return;
 
                 SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-                SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCMPNT").Specific;
+                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCMPNT").Specific;
 
-                int row = pVal.Row;
+                string routeStage = ((SAPbouiCOM.ComboBox)oMatrix.Columns.Item("CLRSTGCD")
+                                        .Cells.Item(pVal.Row).Specific).Value.Trim();
 
-                // Get Route Stage Combo
-                SAPbouiCOM.ComboBox oRouteCombo =
-                    (SAPbouiCOM.ComboBox)mtx.Columns.Item("CLRSTGCD").Cells.Item(row).Specific;
-
-                string routeStage = oRouteCombo.Value.Trim();
-
-                // Get Amount Cell
                 SAPbouiCOM.EditText oAmt =
-                    (SAPbouiCOM.EditText)mtx.Columns.Item("CLAMT").Cells.Item(row).Specific;
+                    (SAPbouiCOM.EditText)oMatrix.Columns.Item("CLAMT").Cells.Item(pVal.Row).Specific;
 
-                string amtValue = oAmt.Value.Trim();
+                SAPbouiCOM.EditText oQty =
+                    (SAPbouiCOM.EditText)oMatrix.Columns.Item("CLQTY").Cells.Item(pVal.Row).Specific;
 
-                // If Route Stage empty but amount entered → reset amount to 0
-                if (string.IsNullOrWhiteSpace(routeStage) && !string.IsNullOrWhiteSpace(amtValue))
+                // Quantity Lost Focus
+                if (pVal.ColUID == "CLQTY")
                 {
-                    oAmt.Value = "0.00";
+                    string qtyValue = oQty.Value.Trim();
 
-                    Application.SBO_Application.StatusBar.SetText(
-                        "Route Stage is empty. Amount reset to 0.",
-                        SAPbouiCOM.BoMessageTime.bmt_Short,
-                        SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                    if (string.IsNullOrWhiteSpace(routeStage) &&
+                        !string.IsNullOrWhiteSpace(qtyValue) &&
+                        qtyValue != "0" && qtyValue != "0.00")
+                    {
+                        _isAmtQtyClearRunning = true;
+
+                        oQty.Value = "";
+                        oAmt.Value = "";
+
+                        UpdateTotalAmountBothMatrices(oForm);
+                    }
+
+                    return;
                 }
 
-                // Recalculate total
-                UpdateTotalAmountBothMatrices(oForm);
+                // Amount Lost Focus
+                if (pVal.ColUID == "CLAMT")
+                {
+                    string amtValue = oAmt.Value.Trim();
+
+                    if (string.IsNullOrWhiteSpace(routeStage) &&
+                        !string.IsNullOrWhiteSpace(amtValue) &&
+                        amtValue != "0" && amtValue != "0.00")
+                    {
+                        _isAmtQtyClearRunning = true;
+
+                        oAmt.Value = "";
+                        oQty.Value = "";
+
+                        UpdateTotalAmountBothMatrices(oForm);
+                    }
+
+                    return;
+                }
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText(
-                    "Error on Amount Calculation: " + ex.Message,
+                    ex.Message,
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                _isAmtQtyClearRunning = false;
             }
         }
 

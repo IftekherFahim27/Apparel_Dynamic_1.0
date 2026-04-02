@@ -32,6 +32,9 @@ namespace Apparel_Dynamic_1._0
                 //StandardFormManipulation objSFM;
                 //objSFM = new StandardFormManipulation();
 
+                SalesQuotation objSalQuote;
+                objSalQuote = new SalesQuotation();
+
                 oApp.RegisterMenuEventHandler(MyMenu.SBO_Application_MenuEvent);
                 Application.SBO_Application.AppEvent += new SAPbouiCOM._IApplicationEvents_AppEventEventHandler(SBO_Application_AppEvent);
                 oApp.Run();
