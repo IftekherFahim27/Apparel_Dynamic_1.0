@@ -264,7 +264,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_STYLENM");
                             Global.G_Form.Items.Item("STSTYLDS").LinkTo = "ETSTYLDS";
 
-                            // Add EditText for Buyer's Style Name
+                            // Add EditText for Style docentry
                             Global.G_Form.Items.Add("ETSLNTRY", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETSLNTRY").Top = Global.G_Form.Items.Item("ETSTYLDS").Top;
                             Global.G_Form.Items.Item("ETSLNTRY").Left = Global.G_Form.Items.Item("ETSTYLDS").Left + Global.G_Form.Items.Item("ETSTYLDS").Width + 5;
@@ -367,7 +367,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("STQty").Top = Global.G_Form.Items.Item("38").Top + Global.G_Form.Items.Item("38").Height + 15;
                             Global.G_Form.Items.Item("STQty").Left = Global.G_Form.Items.Item("86").Left;
                             Global.G_Form.Items.Item("STQty").Width = Global.G_Form.Items.Item("86").Width;
-                            Global.G_Form.Items.Item("STQty").FromPane = 1;
+                            Global.G_Form.Items.Item("STQty").FromPane =1;
                             Global.G_Form.Items.Item("STQty").ToPane = 1;
 
                             // ********** Qty EditText **********
@@ -377,6 +377,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETQty").Width = Global.G_Form.Items.Item("ETStyleNo").Width;
                             Global.G_Form.Items.Item("ETQty").FromPane = 1;
                             Global.G_Form.Items.Item("ETQty").ToPane = 1;
+                            Global.G_Form.Items.Item("ETQty").Enabled = false;
                             Global.G_Form.Items.Item("ETQty").SetAutoManagedAttribute(
                                 SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
                                 1,
@@ -426,7 +427,7 @@ namespace Apparel_Dynamic_1._0.Modules
                     {
                         if (!string.IsNullOrWhiteSpace(Global.G_Form.DataSources.DBDataSources.Item("OQUT").GetValue("U_CRSZNTRY", 0).ToString().Trim()))
                         {
-                            //LoadGrid(ref Global.G_Form, true);
+                            LoadGrid(ref Global.G_Form, true);
                         }
 
                     }
@@ -517,11 +518,16 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.oDataTable = Global.G_Form.DataSources.DataTables.Item("DT_0");
                             double Total = 0;
 
-                            // Loop through columns starting from index 3
-                            for (int j = 3; j <= Global.oDataTable.Columns.Count - 1; j++)
+                            for (int j = 2; j < Global.oDataTable.Columns.Count; j++)
                             {
+                                string colName = Global.oDataTable.Columns.Item(j).Name;
+
+                                if (colName == "Total")
+                                    continue;
+
                                 double cellValue = 0;
                                 double.TryParse(Global.oDataTable.Columns.Item(j).Cells.Item(pVal.Row).Value.ToString(), out cellValue);
+
                                 Total += cellValue;
                             }
 
@@ -714,7 +720,7 @@ namespace Apparel_Dynamic_1._0.Modules
                         try
                         {
                             Global.G_Form.Freeze(true);
-                            //LoadMatrix(ref Global.G_Form);
+                            LoadMatrix(ref Global.G_Form);
                             Global.G_Form.Freeze(false);
                         }
                         catch (Exception ex)
@@ -738,7 +744,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             {
                                 Global.oComp.StartTransaction();
 
-                               // InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
+                                InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
 
                                 Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
                             }
@@ -753,7 +759,7 @@ namespace Apparel_Dynamic_1._0.Modules
                                 try
                                 {
                                     Global.oComp.StartTransaction();
-                                    //InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
+                                    InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
                                     Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
                                 }
                                 catch (Exception ex2)
@@ -799,6 +805,105 @@ namespace Apparel_Dynamic_1._0.Modules
         private void SBO_Application_FormDataEvent(ref SAPbouiCOM.BusinessObjectInfo BusinessObjectInfo, out bool BubbleEvent)
         {
             BubbleEvent = true;
+            if (BusinessObjectInfo.BeforeAction == false && BusinessObjectInfo.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD)
+            {
+                Global.G_Form = Global.G_UI_Application.Forms.Item(BusinessObjectInfo.FormUID);
+                switch (BusinessObjectInfo.FormTypeEx)
+                {
+                    case "149":
+                        {
+                            try
+                            {
+                                Global.G_Form.Freeze(true);
+                                LoadGrid(ref Global.G_Form, true);
+                                Global.G_Form.Freeze(false);
+                            }
+                            catch (Exception ex)
+                            {
+                                Global.G_Form.Freeze(false);
+                            }
+
+
+                            break;
+                        }
+                }
+            }
+            else if (BusinessObjectInfo.BeforeAction == true && BusinessObjectInfo.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD)
+            {
+                Global.G_Form = Global.G_UI_Application.Forms.Item(BusinessObjectInfo.FormUID);
+                switch (BusinessObjectInfo.FormTypeEx)
+                {
+                    case "149":
+                        {
+                            try
+                            {
+                                Global.G_Form.Freeze(true);
+
+                                string ObjectType = BusinessObjectInfo.Type;
+                                //XmlDocument xmlobjEntry = new XmlDocument();
+                                //xmlobjEntry.LoadXml(BusinessObjectInfo.ObjectKey);
+                                //int ObjectEntry = Convert.ToInt32(xmlobjEntry.SelectSingleNode("//DocEntry").InnerText);
+
+                                int SizeEntry = string.IsNullOrEmpty(((SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific).Value)
+                                    ? 0
+                                    : Convert.ToInt32(((SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific).Value);
+
+                                try
+                                {
+                                    Global.oComp.StartTransaction();
+
+                                    if (ObjectType == "112")
+                                    {
+                                        InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
+                                    }
+
+                                    Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+                                }
+                                catch (Exception ex)
+                                {
+                                    try
+                                    {
+                                        Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                                    }
+                                    catch { }
+
+                                    try
+                                    {
+                                        Global.oComp.StartTransaction();
+
+                                        if (ObjectType == "112")
+                                        {
+                                            InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
+                                        }
+
+                                        Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+                                    }
+                                    catch (Exception ex2)
+                                    {
+                                        Global.G_UI_Application.StatusBar.SetText(ex2.Message, SAPbouiCOM.BoMessageTime.bmt_Short,
+                                             SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+
+                                        try
+                                        {
+                                            Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                                        }
+                                        catch { }
+                                    }
+                                }
+
+                                Global.G_Form.Freeze(false);
+                            }
+                            catch (Exception ex)
+                            {
+                                Global.G_Form.Freeze(false);
+                            }
+
+
+                            break;
+                        }
+                }
+            }
+
         }
 
 
@@ -887,65 +992,79 @@ namespace Apparel_Dynamic_1._0.Modules
 
                 if (FromDataEvent == false)
                 {
-                    SAPbouiCOM.EditText oETStyleNo = (SAPbouiCOM.EditText)pform.Items.Item("ETStyleNo").Specific;
+                    SAPbouiCOM.EditText oETSLNTRY =
+                        (SAPbouiCOM.EditText)pform.Items.Item("ETSLNTRY").Specific;
 
-                    qStr = @" SELECT '""' || STRING_AGG(""U_SizeCode"", ',' ORDER BY ""U_ORDER"") || '""' ""U_SizeCode""
-                     FROM (
-                         SELECT IFNULL(B.""U_ORDER"",0) ""U_ORDER"",A.""U_SizeCode""
-                         FROM ""@FIL_MR_PSMST"" A
-                         INNER JOIN ""@FIL_MR_STM1"" B 
-                                ON A.""U_SizeType""=B.""Code"" 
-                               AND B.""U_SizeCode""=A.""U_SizeCode""
-                         WHERE A.""Code""='" + oETStyleNo.Value + @"'
-                           AND A.""U_SizeAppl""='Y'
-                         GROUP BY IFNULL(B.""U_ORDER"",0),A.""U_SizeCode""
-                         ORDER BY IFNULL(B.""U_ORDER"",0)
-                     ) V1";
+                    qStr = @"
+                            SELECT A.""U_SIZECODE""
+                            FROM ""@FIL_DR_PSMST"" A
+                            INNER JOIN ""@FIL_MR_STM1"" B
+                                ON B.""U_SIZECODE"" = A.""U_SIZECODE""
+                            WHERE A.""DocEntry"" = '" + oETSLNTRY.Value.Trim() + @"'
+                            GROUP BY A.""U_SIZECODE""
+                            ORDER BY A.""U_SIZECODE""";
 
                     SAPbobsCOM.Recordset SizerSet =
                         (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
                     SizerSet.DoQuery(qStr);
 
-                    string SizeString = SizerSet.Fields.Item("U_SizeCode").Value.ToString();
+                    string SizeString = "";
 
-                    qStr = @"SELECT ""U_ColourName"" ""Colour Name"",
-                            ""U_ColourCode"" ""Colour Code"",
-                            ""Total"" ""Total"",0 AS """ +
-                                    SizeString.Replace(",", @""",0 AS """) + @"""
-                    FROM (
-                        SELECT 0 AS ""LineId"",B.""LineId"" AS ""RCount"",
-                               ""U_ColourCode"",""U_ColourName"",0 AS ""Total""
-                        FROM ""@FIL_MR_PSMST"" A
-                        INNER JOIN ""@FIL_MR_PSMCO"" B
-                               ON A.""Code""=B.""Code""
-                              AND B.""U_ColourAppl""='Y'
-                              AND A.""U_SizeAppl""='Y'
-                        WHERE A.""Code""='" + oETStyleNo.Value + @"'
-                        GROUP BY B.""LineId"",""U_ColourCode"",""U_ColourName""
-                    ) V1
-                    ORDER BY V1.""RCount""";
+                    while (!SizerSet.EoF)
+                    {
+                        string sizeCode = SizerSet.Fields.Item("U_SIZECODE").Value.ToString().Trim();
+                        string safeSizeCodeAlias = sizeCode.Replace("\"", "");
+
+                        SizeString += @"0 AS """ + safeSizeCodeAlias + @"""";
+
+                        SizerSet.MoveNext();
+
+                        if (!SizerSet.EoF)
+                            SizeString += ",";
+                    }
+
+                    qStr = @"
+                            SELECT ""U_COLORNAME"" AS ""Colour Name"",
+                                   ""U_COLORCODE"" AS ""Colour Code"""
+                                   + (string.IsNullOrWhiteSpace(SizeString) ? "" : "," + SizeString) + @",
+                                   ""Total"" AS ""Total""
+                            FROM
+                            (
+                                SELECT 0 AS ""LineId"",
+                                       B.""LineId"" AS ""RCount"",
+                                       B.""U_COLORCODE"",
+                                       B.""U_COLORNAME"",
+                                       0 AS ""Total""
+                                FROM ""@FIL_DR_PSMST"" A
+                                INNER JOIN ""@FIL_DR_PSMCO"" B
+                                    ON A.""DocEntry"" = B.""DocEntry""
+                                WHERE A.""DocEntry"" = '" + oETSLNTRY.Value.Trim() + @"'
+                                GROUP BY B.""LineId"", B.""U_COLORCODE"", B.""U_COLORNAME""
+                            ) V1
+                            ORDER BY V1.""RCount""";
                 }
                 else
                 {
-                    qStr = @"SELECT A.""U_SizeCode""
-                     FROM ""@FIL_DR_OQUT"" A
-                     INNER JOIN ""OQUT"" B ON B.""U_CRSZNTRY""=A.""DocEntry""
-                     INNER JOIN ""QUT1"" C 
-                            ON C.""DocEntry""=B.""DocEntry""
-                           AND A.""U_ColourCode""=C.""U_FGCOLOUR""
-                           AND A.""U_SizeCode""=C.""U_FGSIZE""
-                     INNER JOIN ""@FIL_MR_PSMST"" D 
-                            ON D.""Code""=C.""U_StyleCode""
-                           AND D.""U_SizeCode""=C.""U_FGSIZE""
-                           AND D.""U_SizeAppl""='Y'
-                     INNER JOIN ""@FIL_MR_STM1"" E
-                            ON D.""U_SizeType""=E.""Code""
-                           AND D.""U_SizeCode""=E.""U_SizeCode""
-                     WHERE A.""DocEntry""='" +
-                             pform.DataSources.DBDataSources.Item("OQUT")
-                             .GetValue("U_CRSZNTRY", 0).ToString().TrimEnd() + @"'
-                     GROUP BY E.""U_ORDER"",A.""U_SizeCode""
-                     ORDER BY E.""U_ORDER"",A.""U_SizeCode""";
+                    string docEntry = pform.DataSources.DBDataSources.Item("OQUT")
+                                      .GetValue("U_CRSZNTRY", 0).ToString().Trim();
+
+                    qStr = @"
+                            SELECT A.""U_SIZECODE""
+                            FROM ""@FIL_DR_OQUT"" A
+                            INNER JOIN ""OQUT"" B
+                                ON B.""U_CRSZNTRY"" = A.""DocEntry""
+                            INNER JOIN ""QUT1"" C
+                                ON C.""DocEntry"" = B.""DocEntry""
+                               AND A.""U_COLORCODE"" = C.""U_FGCOLOUR""
+                               AND A.""U_SIZECODE"" = C.""U_FGSIZE""
+                            INNER JOIN ""@FIL_DR_PSMST"" D
+                                ON D.""DocEntry"" = C.""U_STYLENTRY""
+                               AND D.""U_SIZECODE"" = C.""U_FGSIZE""
+                            INNER JOIN ""@FIL_MR_STM1"" E
+                                ON D.""U_SIZECODE"" = E.""U_SIZECODE""
+                            WHERE A.""DocEntry"" = '" + docEntry + @"'
+                            GROUP BY A.""U_SIZECODE""
+                            ORDER BY A.""U_SIZECODE""";
 
                     SAPbobsCOM.Recordset SizerSet1 =
                         (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
@@ -955,10 +1074,15 @@ namespace Apparel_Dynamic_1._0.Modules
 
                     while (!SizerSet1.EoF)
                     {
-                        SizeString += "SUM(CASE WHEN A.\"U_SizeCode\"='" +
-                                       SizerSet1.Fields.Item("U_SizeCode").Value.ToString() +
-                                       "' THEN \"U_Qty\" ELSE 0 END) \"" +
-                                       SizerSet1.Fields.Item("U_SizeCode").Value.ToString() + "\"";
+                        string sizeCode = SizerSet1.Fields.Item("U_SIZECODE").Value.ToString().Trim();
+                        string safeSizeCodeValue = sizeCode.Replace("'", "''");
+                        string safeSizeCodeAlias = sizeCode.Replace("\"", "");
+
+                        SizeString += @"SUM(CASE
+                                    WHEN A.""U_SIZECODE"" = '" + safeSizeCodeValue + @"'
+                                    THEN A.""U_Qty""
+                                    ELSE 0
+                                END) AS """ + safeSizeCodeAlias + @"""";
 
                         SizerSet1.MoveNext();
 
@@ -966,14 +1090,14 @@ namespace Apparel_Dynamic_1._0.Modules
                             SizeString += ",";
                     }
 
-                    qStr = @"SELECT ""U_ColourName"" ""Colour Name"",
-                            ""U_ColourCode"" ""Colour Code"",
-                            ""U_TotalQty"" ""Total""," + SizeString + @"
-                    FROM ""@FIL_DR_OQUT"" A
-                    WHERE A.""DocEntry""='" +
-                            pform.DataSources.DBDataSources.Item("OQUT")
-                            .GetValue("U_CRSZNTRY", 0).ToString().TrimEnd() + @"'
-                    GROUP BY ""U_ColourName"",""U_ColourCode"",""U_TotalQty""";
+                    qStr = @"
+                            SELECT A.""U_COLORNAME"" AS ""Colour Name"",
+                                   A.""U_COLORCODE"" AS ""Colour Code"",
+                                   SUM(A.""U_Qty"") AS ""Total"""
+                                           + (string.IsNullOrWhiteSpace(SizeString) ? "" : "," + SizeString) + @"
+                            FROM ""@FIL_DR_OQUT"" A
+                            WHERE A.""DocEntry"" = '" + docEntry + @"'
+                            GROUP BY A.""U_COLORNAME"", A.""U_COLORCODE""";
                 }
 
                 Global.oGrid = (SAPbouiCOM.Grid)pform.Items.Item("SCGrid").Specific;
