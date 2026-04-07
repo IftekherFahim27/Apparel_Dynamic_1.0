@@ -67,11 +67,12 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("LNOTNTRY").Height = Global.G_Form.Items.Item("LNOTNTRY").Height - 1;
                             Global.G_Form.Items.Item("LNOTNTRY").LinkTo = "ETOTTNO";
 
-                            // EditText (ETOTTNO)
+                                                                                    // EditText (ETOTNTRY)
+
                             Global.G_Form.Items.Add("ETOTNTRY", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETOTNTRY").Top = Global.G_Form.Items.Item("STOTTNO").Top;
-                            Global.G_Form.Items.Item("ETOTNTRY").Left = Global.G_Form.Items.Item("ETOTTNO").Left + Global.G_Form.Items.Item("ETOTTNO").Width + 5;
-                            Global.G_Form.Items.Item("ETOTNTRY").Width = (Global.G_Form.Items.Item("14").Width / 2) - 5;
+                            Global.G_Form.Items.Item("ETOTNTRY").Left = Global.G_Form.Items.Item("ETOTTNO").Left + Global.G_Form.Items.Item("ETOTTNO").Width + 2;
+                            Global.G_Form.Items.Item("ETOTNTRY").Width = (Global.G_Form.Items.Item("14").Width / 2) + 5 ;
                             Global.G_Form.Items.Item("ETOTNTRY").FromPane = 0;
                             Global.G_Form.Items.Item("ETOTNTRY").ToPane = 0;
                             Global.G_Form.Items.Item("ETOTNTRY").Enabled = false;
@@ -109,7 +110,8 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("STSCNO").ToPane = 0;
 
 
-                            // EditText (ETSCNTRY)
+                                                                                // EditText (ETSCNO)
+
                             Global.G_Form.Items.Add("ETSCNO", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETSCNO").Top = Global.G_Form.Items.Item("STSCNO").Top;
                             Global.G_Form.Items.Item("ETSCNO").Left = Global.G_Form.Items.Item("254000015").Left;
@@ -132,11 +134,12 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("LNSCNTRY").Height = Global.G_Form.Items.Item("LNSCNTRY").Height - 1;
                             Global.G_Form.Items.Item("LNSCNTRY").LinkTo = "ETSCNTRY";
 
-                            // EditText (ETSCNO)
+                                                                                // EditText (ETSCNTRY)
+
                             Global.G_Form.Items.Add("ETSCNTRY", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETSCNTRY").Top = Global.G_Form.Items.Item("STSCNO").Top;
-                            Global.G_Form.Items.Item("ETSCNTRY").Left = Global.G_Form.Items.Item("ETSCNO").Left + Global.G_Form.Items.Item("ETSCNO").Width + 5;
-                            Global.G_Form.Items.Item("ETSCNTRY").Width = (Global.G_Form.Items.Item("254000015").Width / 2) - 5;
+                            Global.G_Form.Items.Item("ETSCNTRY").Left = Global.G_Form.Items.Item("ETSCNO").Left + Global.G_Form.Items.Item("ETSCNO").Width + 2;
+                            Global.G_Form.Items.Item("ETSCNTRY").Width = (Global.G_Form.Items.Item("254000015").Width / 2) + 5;
                             Global.G_Form.Items.Item("ETSCNTRY").FromPane = 0;
                             Global.G_Form.Items.Item("ETSCNTRY").ToPane = 0;
                             Global.G_Form.Items.Item("ETSCNTRY").Enabled = false;
@@ -217,7 +220,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.oEdit.ChooseFromListUID = "CFL_OPSM";
                             Global.oEdit.ChooseFromListAlias = "U_STYLECODE";
 
-                            // Button (BTStyleNo)
+                                                                            // Button (BTNSTYLD)
                             Global.G_Form.Items.Add("BTNSTYLD", SAPbouiCOM.BoFormItemTypes.it_BUTTON);
                             Global.G_Form.Items.Item("BTNSTYLD").Top = Global.G_Form.Items.Item("STSTYLNO").Top;
                             Global.G_Form.Items.Item("BTNSTYLD").Left = Global.G_Form.Items.Item("ETSTYLNO").Left + Global.G_Form.Items.Item("ETSTYLNO").Width + 5;
@@ -249,8 +252,8 @@ namespace Apparel_Dynamic_1._0.Modules
                             // Add EditText for Buyer's Style No
                             Global.G_Form.Items.Add("ETSTYLDS", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETSTYLDS").Top = Global.G_Form.Items.Item("STSTYLDS").Top;
-                            Global.G_Form.Items.Item("ETSTYLDS").Left = Global.G_Form.Items.Item("STSTYLNO").Left;
-                            Global.G_Form.Items.Item("ETSTYLDS").Width = Global.G_Form.Items.Item("STSTYLNO").Width;
+                            Global.G_Form.Items.Item("ETSTYLDS").Left = Global.G_Form.Items.Item("STSTYLNO").Left + Global.G_Form.Items.Item("STSTYLDS").Width;
+                            Global.G_Form.Items.Item("ETSTYLDS").Width = Global.G_Form.Items.Item("ETSTYLNO").Width;
                             Global.G_Form.Items.Item("ETSTYLDS").Height = Global.G_Form.Items.Item("STSTYLNO").Height;
                             Global.G_Form.Items.Item("ETSTYLDS").FromPane = 0;
                             Global.G_Form.Items.Item("ETSTYLDS").ToPane = 0;
@@ -374,7 +377,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Add("ETQty", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETQty").Top = Global.G_Form.Items.Item("STQty").Top;
                             Global.G_Form.Items.Item("ETQty").Left = Global.G_Form.Items.Item("46").Left;
-                            Global.G_Form.Items.Item("ETQty").Width = Global.G_Form.Items.Item("ETStyleNo").Width;
+                            Global.G_Form.Items.Item("ETQty").Width = Global.G_Form.Items.Item("ETSTYLNO").Width;
                             Global.G_Form.Items.Item("ETQty").FromPane = 1;
                             Global.G_Form.Items.Item("ETQty").ToPane = 1;
                             Global.G_Form.Items.Item("ETQty").Enabled = false;
@@ -509,79 +512,57 @@ namespace Apparel_Dynamic_1._0.Modules
                         BubbleEvent = false;
                         return;
                     }
-                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CLICK && pVal.ItemUID == "SCGrid" && pVal.BeforeAction == false)
+                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_VALIDATE
+                            && pVal.ItemUID == "SCGrid"   && pVal.BeforeAction == false)
                     {
-                        Global.oGrid = (SAPbouiCOM.Grid)Global.G_Form.Items.Item("SCGrid").Specific;
                         try
                         {
                             Global.G_Form.Freeze(true);
+                            if (pVal.Row < 0 || string.IsNullOrWhiteSpace(pVal.ColUID))
+                                return;
+
+                            Global.oGrid = (SAPbouiCOM.Grid)Global.G_Form.Items.Item("SCGrid").Specific;
                             Global.oDataTable = Global.G_Form.DataSources.DataTables.Item("DT_0");
-                            double Total = 0;
 
-                            for (int j = 2; j < Global.oDataTable.Columns.Count; j++)
+                            int dtRow = Global.oGrid.GetDataTableRowIndex(pVal.Row);
+                            if (dtRow < 0)
+                                return;
+
+                            if (pVal.ColUID == "Total" || pVal.ColUID == "Colour Name" || pVal.ColUID == "Colour Code")
+                                return;
+
+                            double total = 0;
+
+                            for (int j = 0; j < Global.oDataTable.Columns.Count; j++)
                             {
-                                string colName = Global.oDataTable.Columns.Item(j).Name;
+                                string currentCol = Global.oDataTable.Columns.Item(j).Name;
 
-                                if (colName == "Total")
+                                if (currentCol == "Colour Name" || currentCol == "Colour Code" || currentCol == "Total")
                                     continue;
 
-                                double cellValue = 0;
-                                double.TryParse(Global.oDataTable.Columns.Item(j).Cells.Item(pVal.Row).Value.ToString(), out cellValue);
+                                object val = Global.oDataTable.Columns.Item(j).Cells.Item(dtRow).Value;
 
-                                Total += cellValue;
+                                double cellValue = 0;
+                                if (val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                                    double.TryParse(val.ToString(), out cellValue);
+
+                                total += cellValue;
                             }
 
-                            // Update "Total" column for the clicked row
-                            Global.oGrid.DataTable.Columns.Item("Total")
-                                 .Cells.Item(Global.oGrid.GetDataTableRowIndex(pVal.Row))
-                                 .Value = Total.ToString();
-
+                            Global.oDataTable.Columns.Item("Total").Cells.Item(dtRow).Value = total.ToString();
                             Global.G_Form.Freeze(false);
                         }
                         catch (Exception ex)
                         {
                             Global.G_Form.Freeze(false);
-                            Application.SBO_Application.StatusBar.SetText("Error in SCGrid Click: " + ex.Message,
-                                 SAPbouiCOM.BoMessageTime.bmt_Short,
-                                 SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+
+                            Application.SBO_Application.StatusBar.SetText(
+                                "Error in SCGrid Validate: " + ex.Message,
+                                SAPbouiCOM.BoMessageTime.bmt_Short,
+                                SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                         }
-
-
                     }
-                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_KEY_DOWN && pVal.ItemUID == "SCGrid" && pVal.BeforeAction == false && pVal.CharPressed == 9)
-                    {
-                        Global.oGrid = (SAPbouiCOM.Grid)Global.G_Form.Items.Item("SCGrid").Specific;
-                        try
-                        {
-                            Global.G_Form.Freeze(true);
-                            Global.oDataTable = Global.G_Form.DataSources.DataTables.Item("DT_0");
-                            double Total = 0;
 
-                            // Loop through columns starting from index 3
-                            for (int j = 3; j <= Global.oDataTable.Columns.Count - 1; j++)
-                            {
-                                double cellValue = 0;
-                                double.TryParse(Global.oDataTable.Columns.Item(j).Cells.Item(pVal.Row).Value.ToString(), out cellValue);
-                                Total += cellValue;
-                            }
-
-                            // Update "Total" column for the clicked row
-                            Global.oGrid.DataTable.Columns.Item("Total")
-                                 .Cells.Item(Global.oGrid.GetDataTableRowIndex(pVal.Row))
-                                 .Value = Total.ToString();
-
-                            Global.G_Form.Freeze(false);
-                        }
-                        catch (Exception ex)
-                        {
-                            Global.G_Form.Freeze(false);
-                            Application.SBO_Application.StatusBar.SetText("Error in SCGrid Click: " + ex.Message,
-                                 SAPbouiCOM.BoMessageTime.bmt_Short,
-                                 SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-                        }
-
-
-                    }
                     
                     //else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST && pVal.ItemUID == "ETOTTNTRY" && pVal.BeforeAction == true)
                     //{
@@ -706,8 +687,23 @@ namespace Apparel_Dynamic_1._0.Modules
                     {
                         try
                         {
+                            SAPbouiCOM.EditText oETSTYLNO =
+                                (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSTYLNO").Specific;
+
+                            if (string.IsNullOrWhiteSpace(oETSTYLNO.Value))
+                            {
+                                Application.SBO_Application.StatusBar.SetText(
+                                    "Please select a Style Master.",
+                                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                                    SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+
+                                return;
+                            }
+
                             Global.G_Form.Freeze(true);
+
                             LoadGrid(ref Global.G_Form, false);
+
                             Global.G_Form.Freeze(false);
                         }
                         catch (Exception ex)
@@ -787,7 +783,7 @@ namespace Apparel_Dynamic_1._0.Modules
                         try
                         {
                             Global.G_Form.Freeze(true);
-                           // LoadGrid(ref Global.G_Form, false);
+                            LoadGrid(ref Global.G_Form, false);
                             Global.G_Form.Freeze(false);
                         }
                         catch (Exception ex)
@@ -1126,84 +1122,107 @@ namespace Apparel_Dynamic_1._0.Modules
             {
                 SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)pForm.Items.Item("38").Specific;
                 SAPbouiCOM.DataTable oDataTable = pForm.DataSources.DataTables.Item("DT_0");
-                double TotalQty = Convert.ToDouble(((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value);
-                Global.oEdit = (SAPbouiCOM.EditText)pForm.Items.Item("ETStyleNo").Specific;
-                Global.oColumn = oMatrix.Columns.Item("U_FGCOLOUR");
-                Global.oColumn.Editable = true;
-                Global.oColumn = oMatrix.Columns.Item("U_FGSIZE");
-                Global.oColumn.Editable = true;
 
+                double TotalQty = 0;
+                double.TryParse(((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value, out TotalQty);
 
-                for (int j = 0; j <= oDataTable.Rows.Count - 1; j++)
+                string styleEntry = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLENTRY", 0).Trim();
+                string styleCode = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLECODE", 0).Trim();
+
+                if (string.IsNullOrWhiteSpace(styleEntry) || string.IsNullOrWhiteSpace(styleCode))
                 {
-                    string qStr = @"Select A.""ItemCode"", A.""U_ColourCode"",B.""U_ColourName"", A.""U_SizeCode"",C.""U_SizeName""
-                    From ""OITM"" A
-                    Inner Join ""@FIL_MR_PSMCO"" B On A.""U_StyleNo""=B.""Code"" And A.""U_ColourCode""=B.""U_ColourCode""
-                    Inner Join ""@FIL_MR_PSMST"" C On A.""U_StyleNo""=C.""Code"" And A.""U_SizeCode""=C.""U_SizeCode""
-                    Where A.""U_StyleNo""='" + Global.oEdit.Value + @"'
-                    And B.""U_ColourAppl""='Y' And C.""U_SizeAppl""='Y'
-                    And A.""U_ColourCode""='" + oDataTable.Columns.Item("Colour Code").Cells.Item(j).Value + @"'
-                    And A.""U_MAINFG""='Y'
-                    Order by B.""LineId"", C.""LineId""";
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Style Entry / Style Code is missing.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                    return;
+                }
 
-                    SAPbobsCOM.Recordset ColourSizerSet = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                    ColourSizerSet.DoQuery(qStr);
-                    oMatrix = (SAPbouiCOM.Matrix)pForm.Items.Item("38").Specific;
+                for (int j = 0; j < oDataTable.Rows.Count; j++)
+                {
+                    string colourCode = oDataTable.Columns.Item("Colour Code").Cells.Item(j).Value.ToString().Trim();
 
-                    while (!ColourSizerSet.EoF)
+                    string qStr = @"SELECT 
+                                A.""ItemCode"",
+                                A.""U_COLORCODE"",
+                                B.""U_COLORNAME"",
+                                A.""U_SIZECODE"",
+                                C.""U_SIZENAME""
+                            FROM ""OITM"" A
+                            INNER JOIN ""@FIL_DR_PSMCO"" B 
+                                ON B.""DocEntry"" = '" + styleEntry + @"'
+                               AND B.""U_COLORCODE"" = A.""U_COLORCODE""
+                            INNER JOIN ""@FIL_DR_PSMST"" C 
+                                ON C.""DocEntry"" = '" + styleEntry + @"'
+                               AND C.""U_SIZECODE"" = A.""U_SIZECODE""
+                            WHERE A.""U_STYLECODE"" = '" + styleCode + @"'
+                              AND A.""U_COLORCODE"" = '" + colourCode + @"'
+                            ORDER BY B.""LineId"", C.""LineId""";
+
+                    SAPbobsCOM.Recordset rs =
+                        (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                    rs.DoQuery(qStr);
+
+                    while (!rs.EoF)
                     {
-                        //object cellObj = oDataTable.Columns.Item(ColourSizerSet.Fields.Item("U_SizeCode").Value)
-                        //      .Cells.Item(j).Value;
-                        double cellValue = Convert.ToDouble(oDataTable.Columns.Item(ColourSizerSet.Fields.Item("U_SizeCode").Value).Cells.Item(j).Value.ToString());
+                        string sizeCode = rs.Fields.Item("U_SIZECODE").Value.ToString().Trim();
+
+                        double cellValue = 0;
+                        object cellObj = oDataTable.Columns.Item(sizeCode).Cells.Item(j).Value;
+
+                        if (cellObj != null && cellObj.ToString().Trim() != "")
+                            double.TryParse(cellObj.ToString(), out cellValue);
 
                         if (cellValue > 0)
                         {
-                            Global.G_UI_Application.StatusBar.SetText("Item Generation for " + ColourSizerSet.Fields.Item("ItemCode").Value,
-                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                            SAPbouiCOM.DBDataSource dsQUT1 = pForm.DataSources.DBDataSources.Item("QUT1");
 
-                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(oMatrix.RowCount).Specific).Value =
-                             ColourSizerSet.Fields.Item("ItemCode").Value.ToString();
+                            if (oMatrix.VisualRowCount == 0)
+                            {
+                                oMatrix.AddRow();
+                            }
+                            else
+                            {
+                                string lastItem = "";
+                                try
+                                {
+                                    lastItem = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1")
+                                        .Cells.Item(oMatrix.VisualRowCount).Specific).Value.Trim();
+                                }
+                                catch { }
 
-                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGCOLOUR").Cells.Item(oMatrix.RowCount - 1).Specific).Value =
-                              ColourSizerSet.Fields.Item("U_ColourCode").Value.ToString();
+                                if (!string.IsNullOrWhiteSpace(lastItem))
+                                    oMatrix.AddRow();
+                            }
 
-                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGCOLRNM").Cells.Item(oMatrix.RowCount - 1).Specific).Value =
-                            ColourSizerSet.Fields.Item("U_ColourName").Value.ToString();
+                            oMatrix.FlushToDataSource();
 
-                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGSIZE").Cells.Item(oMatrix.RowCount - 1).Specific).Value =
-                                ColourSizerSet.Fields.Item("U_SizeCode").Value.ToString();
+                            int dsRow = dsQUT1.Size - 1;
 
+                            dsQUT1.SetValue("ItemCode", dsRow, rs.Fields.Item("ItemCode").Value.ToString());
+                            dsQUT1.SetValue("U_FGCOLOUR", dsRow, rs.Fields.Item("U_COLORCODE").Value.ToString());
+                            dsQUT1.SetValue("U_FGCOLRNM", dsRow, rs.Fields.Item("U_COLORNAME").Value.ToString());
+                            dsQUT1.SetValue("U_FGSIZE", dsRow, rs.Fields.Item("U_SIZECODE").Value.ToString());
+                            dsQUT1.SetValue("U_STYLECODE", dsRow, styleCode);
+                            dsQUT1.SetValue("Quantity", dsRow, cellValue.ToString());
 
-                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_StyleCode").Cells.Item(oMatrix.RowCount - 1).Specific).Value =
-                                pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_StyleNo", 0).Trim();
+                            oMatrix.LoadFromDataSource();
 
-                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_BUYRSTCD").Cells.Item(oMatrix.RowCount - 1).Specific).Value =
-                                pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_BSTYLENO", 0).Trim();
-
-                            ((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(oMatrix.RowCount - 1).Specific).Value =
-                                oDataTable.Columns.Item(ColourSizerSet.Fields.Item("U_SizeCode").Value).Cells.Item(j).Value == null
-                                    ? ""
-                                    : oDataTable.Columns.Item(ColourSizerSet.Fields.Item("U_SizeCode").Value).Cells.Item(j).Value.ToString();
-
-                            TotalQty += Convert.ToDouble(((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(oMatrix.RowCount - 1).Specific).Value);
+                            TotalQty += cellValue;
                         }
 
-                        ColourSizerSet.MoveNext();
+                        rs.MoveNext();
                     }
                 }
 
-             ((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value = TotalQty.ToString();
-
-
-                Global.oColumn = oMatrix.Columns.Item("U_FGCOLOUR");
-                Global.oColumn.Editable = false;
-                Global.oColumn = oMatrix.Columns.Item("U_FGSIZE");
-                Global.oColumn.Editable = false;
-
+                ((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value = TotalQty.ToString();
             }
             catch (Exception ex)
             {
-                Application.SBO_Application.StatusBar.SetText("Error in Load Matrix: " + ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error in Load Matrix: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
         }
         private void InsertSizeDetails(SAPbouiCOM.Form pForm, string ObjType, string ObjEntry, int SizeEntry)
