@@ -249,7 +249,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("STSTYLDS").ToPane = 0;
                             
 
-                            // Add EditText for Buyer's Style No
+                            // Add EditText for Style Description
                             Global.G_Form.Items.Add("ETSTYLDS", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETSTYLDS").Top = Global.G_Form.Items.Item("STSTYLDS").Top;
                             Global.G_Form.Items.Item("ETSTYLDS").Left = Global.G_Form.Items.Item("STSTYLNO").Left + Global.G_Form.Items.Item("STSTYLDS").Width;
@@ -365,9 +365,9 @@ namespace Apparel_Dynamic_1._0.Modules
                             // ********** Qty Static **********
                             Global.G_Form.Items.Add("STQty", SAPbouiCOM.BoFormItemTypes.it_STATIC);
                             SAPbouiCOM.StaticText oStatic = (SAPbouiCOM.StaticText)Global.G_Form.Items.Item("STQty").Specific;
-                            oStatic.Caption = "Qty.";
+                            oStatic.Caption = "Total Qty.";
 
-                            Global.G_Form.Items.Item("STQty").Top = Global.G_Form.Items.Item("38").Top + Global.G_Form.Items.Item("38").Height + 15;
+                            Global.G_Form.Items.Item("STQty").Top = Global.G_Form.Items.Item("38").Top + Global.G_Form.Items.Item("38").Height + 5;
                             Global.G_Form.Items.Item("STQty").Left = Global.G_Form.Items.Item("86").Left;
                             Global.G_Form.Items.Item("STQty").Width = Global.G_Form.Items.Item("86").Width;
                             Global.G_Form.Items.Item("STQty").FromPane =1;
@@ -376,7 +376,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             // ********** Qty EditText **********
                             Global.G_Form.Items.Add("ETQty", SAPbouiCOM.BoFormItemTypes.it_EDIT);
                             Global.G_Form.Items.Item("ETQty").Top = Global.G_Form.Items.Item("STQty").Top;
-                            Global.G_Form.Items.Item("ETQty").Left = Global.G_Form.Items.Item("46").Left;
+                            Global.G_Form.Items.Item("ETQty").Left = Global.G_Form.Items.Item("STQty").Left+ Global.G_Form.Items.Item("STQty").Width;
                             Global.G_Form.Items.Item("ETQty").Width = Global.G_Form.Items.Item("ETSTYLNO").Width;
                             Global.G_Form.Items.Item("ETQty").FromPane = 1;
                             Global.G_Form.Items.Item("ETQty").ToPane = 1;
@@ -392,8 +392,9 @@ namespace Apparel_Dynamic_1._0.Modules
 
                             // ********** Get Item Button **********
                             Global.G_Form.Items.Add("BTQty", SAPbouiCOM.BoFormItemTypes.it_BUTTON);
-                            Global.G_Form.Items.Item("BTQty").Top = Global.G_Form.Items.Item("ETQty").Top;
-                            Global.G_Form.Items.Item("BTQty").Left = Global.G_Form.Items.Item("ETSTYLNO").Left + Global.G_Form.Items.Item("ETSTYLNO").Width + 5;
+                            //Global.G_Form.Items.Item("BTQty").Top = Global.G_Form.Items.Item("ETQty").Top;
+                            Global.G_Form.Items.Item("BTQty").Top = Global.G_Form.Items.Item("3").Top;
+                            Global.G_Form.Items.Item("BTQty").Left = Global.G_Form.Items.Item("3").Left + Global.G_Form.Items.Item("3").Width + 5;
                             Global.G_Form.Items.Item("BTQty").Width = (Global.G_Form.Items.Item("46").Width / 2) - 5;
                             Global.G_Form.Items.Item("BTQty").Height = Global.G_Form.Items.Item("ETQty").Height;
                             Global.G_Form.Items.Item("BTQty").FromPane = 1;
@@ -696,19 +697,31 @@ namespace Apparel_Dynamic_1._0.Modules
                                     "Please select a Style Master.",
                                     SAPbouiCOM.BoMessageTime.bmt_Short,
                                     SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
-
                                 return;
                             }
 
                             Global.G_Form.Freeze(true);
 
+                            // First clear matrix 38 if it already has rows/item codes
+                            ClearQuotationMatrix(ref Global.G_Form);
+
+                            // Then load grid
                             LoadGrid(ref Global.G_Form, false);
 
                             Global.G_Form.Freeze(false);
                         }
                         catch (Exception ex)
                         {
-                            Global.G_Form.Freeze(false);
+                            try
+                            {
+                                Global.G_Form.Freeze(false);
+                            }
+                            catch { }
+
+                            Application.SBO_Application.StatusBar.SetText(
+                                "Error in BTNSTYLD: " + ex.Message,
+                                SAPbouiCOM.BoMessageTime.bmt_Short,
+                                SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                         }
                     }
                     else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED && pVal.ItemUID == "BTQty" && pVal.BeforeAction == false)
@@ -801,105 +814,123 @@ namespace Apparel_Dynamic_1._0.Modules
         private void SBO_Application_FormDataEvent(ref SAPbouiCOM.BusinessObjectInfo BusinessObjectInfo, out bool BubbleEvent)
         {
             BubbleEvent = true;
-            if (BusinessObjectInfo.BeforeAction == false && BusinessObjectInfo.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD)
+
+            try
             {
-                Global.G_Form = Global.G_UI_Application.Forms.Item(BusinessObjectInfo.FormUID);
-                switch (BusinessObjectInfo.FormTypeEx)
+                if (BusinessObjectInfo.BeforeAction == false &&
+                    BusinessObjectInfo.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_LOAD)
                 {
-                    case "149":
-                        {
-                            try
+                    Global.G_Form = Global.G_UI_Application.Forms.Item(BusinessObjectInfo.FormUID);
+
+                    switch (BusinessObjectInfo.FormTypeEx)
+                    {
+                        case "149":
                             {
-                                Global.G_Form.Freeze(true);
-                                LoadGrid(ref Global.G_Form, true);
-                                Global.G_Form.Freeze(false);
-                            }
-                            catch (Exception ex)
-                            {
-                                Global.G_Form.Freeze(false);
-                            }
-
-
-                            break;
-                        }
-                }
-            }
-            else if (BusinessObjectInfo.BeforeAction == true && BusinessObjectInfo.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD)
-            {
-                Global.G_Form = Global.G_UI_Application.Forms.Item(BusinessObjectInfo.FormUID);
-                switch (BusinessObjectInfo.FormTypeEx)
-                {
-                    case "149":
-                        {
-                            try
-                            {
-                                Global.G_Form.Freeze(true);
-
-                                string ObjectType = BusinessObjectInfo.Type;
-                                //XmlDocument xmlobjEntry = new XmlDocument();
-                                //xmlobjEntry.LoadXml(BusinessObjectInfo.ObjectKey);
-                                //int ObjectEntry = Convert.ToInt32(xmlobjEntry.SelectSingleNode("//DocEntry").InnerText);
-
-                                int SizeEntry = string.IsNullOrEmpty(((SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific).Value)
-                                    ? 0
-                                    : Convert.ToInt32(((SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific).Value);
-
                                 try
                                 {
-                                    Global.oComp.StartTransaction();
+                                    Global.G_Form.Freeze(true);
 
-                                    if (ObjectType == "112")
-                                    {
-                                        InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
-                                    }
+                                    LoadGrid(ref Global.G_Form, true);
 
-                                    Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+                                    // Re-enable custom controls after loading previous/existing data
+                                   
+                                    Global.G_Form.Items.Item("BTNSTYLD").Enabled = true;
+                                    Global.G_Form.Items.Item("BTQty").Enabled = true;
+                                    Global.G_Form.Items.Item("ETSTYLNO").Enabled = true;
+                                    Global.G_Form.Items.Item("ETOTTNO").Enabled = true;
+                                    Global.G_Form.Items.Item("ETSCNO").Enabled = true;
+
+                                    Global.G_Form.Freeze(false);
                                 }
                                 catch (Exception ex)
                                 {
-                                    try
-                                    {
-                                        Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
-                                    }
-                                    catch { }
+                                    Global.G_Form.Freeze(false);
+                                    Application.SBO_Application.StatusBar.SetText(
+                                        "Error in FORM_DATA_LOAD: " + ex.Message,
+                                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                                        SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                                }
+
+                                break;
+                            }
+                    }
+                }
+                else if (BusinessObjectInfo.BeforeAction == true &&
+                         BusinessObjectInfo.EventType == SAPbouiCOM.BoEventTypes.et_FORM_DATA_ADD)
+                {
+                    Global.G_Form = Global.G_UI_Application.Forms.Item(BusinessObjectInfo.FormUID);
+
+                    switch (BusinessObjectInfo.FormTypeEx)
+                    {
+                        case "149":
+                            {
+                                try
+                                {
+                                    Global.G_Form.Freeze(true);
+
+                                    string ObjectType = BusinessObjectInfo.Type;
+
+                                    int SizeEntry = string.IsNullOrEmpty(((SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific).Value)
+                                        ? 0
+                                        : Convert.ToInt32(((SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific).Value);
 
                                     try
                                     {
-                                        Global.oComp.StartTransaction();
+                                        if (!Global.oComp.InTransaction)
+                                            Global.oComp.StartTransaction();
 
                                         if (ObjectType == "112")
                                         {
                                             InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
                                         }
 
-                                        Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+                                        if (Global.oComp.InTransaction)
+                                            Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
                                     }
-                                    catch (Exception ex2)
+                                    catch (Exception ex)
                                     {
-                                        Global.G_UI_Application.StatusBar.SetText(ex2.Message, SAPbouiCOM.BoMessageTime.bmt_Short,
-                                             SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-
                                         try
                                         {
-                                            Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                                            if (Global.oComp.InTransaction)
+                                                Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
                                         }
                                         catch { }
+
+                                        Application.SBO_Application.StatusBar.SetText(
+                                            "Error in FORM_DATA_ADD: " + ex.Message,
+                                            SAPbouiCOM.BoMessageTime.bmt_Short,
+                                            SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                                     }
+
+                                    Global.G_Form.Freeze(false);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Global.G_Form.Freeze(false);
+                                    Application.SBO_Application.StatusBar.SetText(
+                                        "Error in FORM_DATA_ADD Outer: " + ex.Message,
+                                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                                        SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                                 }
 
-                                Global.G_Form.Freeze(false);
+                                break;
                             }
-                            catch (Exception ex)
-                            {
-                                Global.G_Form.Freeze(false);
-                            }
-
-
-                            break;
-                        }
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                try
+                {
+                    Global.G_Form.Freeze(false);
+                }
+                catch { }
 
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error in SBO_Application_FormDataEvent: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
         }
 
 
@@ -1024,40 +1055,32 @@ namespace Apparel_Dynamic_1._0.Modules
                                    ""U_COLORCODE"" AS ""Colour Code"""
                                    + (string.IsNullOrWhiteSpace(SizeString) ? "" : "," + SizeString) + @",
                                    ""Total"" AS ""Total""
-                            FROM
-                            (
-                                SELECT 0 AS ""LineId"",
-                                       B.""LineId"" AS ""RCount"",
-                                       B.""U_COLORCODE"",
-                                       B.""U_COLORNAME"",
-                                       0 AS ""Total""
-                                FROM ""@FIL_DR_PSMST"" A
-                                INNER JOIN ""@FIL_DR_PSMCO"" B
-                                    ON A.""DocEntry"" = B.""DocEntry""
-                                WHERE A.""DocEntry"" = '" + oETSLNTRY.Value.Trim() + @"'
-                                GROUP BY B.""LineId"", B.""U_COLORCODE"", B.""U_COLORNAME""
-                            ) V1
-                            ORDER BY V1.""RCount""";
+                                    FROM
+                                    (
+                                            SELECT 0 AS ""LineId"",
+                                                   B.""LineId"" AS ""RCount"",
+                                                   B.""U_COLORCODE"",
+                                                   B.""U_COLORNAME"",
+                                                   0 AS ""Total""
+                                            FROM ""@FIL_DR_PSMST"" A
+                                            INNER JOIN ""@FIL_DR_PSMCO"" B
+                                                ON A.""DocEntry"" = B.""DocEntry""
+                                            WHERE A.""DocEntry"" = '" + oETSLNTRY.Value.Trim() + @"'
+                                            GROUP BY B.""LineId"", B.""U_COLORCODE"", B.""U_COLORNAME""
+                                    ) V1
+                                    ORDER BY V1.""RCount""";
                 }
                 else
                 {
                     string docEntry = pform.DataSources.DBDataSources.Item("OQUT")
                                       .GetValue("U_CRSZNTRY", 0).ToString().Trim();
 
+                    if (string.IsNullOrWhiteSpace(docEntry))
+                        return;
+
                     qStr = @"
                             SELECT A.""U_SIZECODE""
                             FROM ""@FIL_DR_OQUT"" A
-                            INNER JOIN ""OQUT"" B
-                                ON B.""U_CRSZNTRY"" = A.""DocEntry""
-                            INNER JOIN ""QUT1"" C
-                                ON C.""DocEntry"" = B.""DocEntry""
-                               AND A.""U_COLORCODE"" = C.""U_FGCOLOUR""
-                               AND A.""U_SIZECODE"" = C.""U_FGSIZE""
-                            INNER JOIN ""@FIL_DR_PSMST"" D
-                                ON D.""DocEntry"" = C.""U_STYLENTRY""
-                               AND D.""U_SIZECODE"" = C.""U_FGSIZE""
-                            INNER JOIN ""@FIL_MR_STM1"" E
-                                ON D.""U_SIZECODE"" = E.""U_SIZECODE""
                             WHERE A.""DocEntry"" = '" + docEntry + @"'
                             GROUP BY A.""U_SIZECODE""
                             ORDER BY A.""U_SIZECODE""";
@@ -1075,10 +1098,10 @@ namespace Apparel_Dynamic_1._0.Modules
                         string safeSizeCodeAlias = sizeCode.Replace("\"", "");
 
                         SizeString += @"SUM(CASE
-                                    WHEN A.""U_SIZECODE"" = '" + safeSizeCodeValue + @"'
-                                    THEN A.""U_Qty""
-                                    ELSE 0
-                                END) AS """ + safeSizeCodeAlias + @"""";
+                            WHEN A.""U_SIZECODE"" = '" + safeSizeCodeValue + @"'
+                            THEN A.""U_QTY""
+                            ELSE 0
+                        END) AS """ + safeSizeCodeAlias + @"""";
 
                         SizerSet1.MoveNext();
 
@@ -1088,12 +1111,13 @@ namespace Apparel_Dynamic_1._0.Modules
 
                     qStr = @"
                             SELECT A.""U_COLORNAME"" AS ""Colour Name"",
-                                   A.""U_COLORCODE"" AS ""Colour Code"",
-                                   SUM(A.""U_Qty"") AS ""Total"""
-                                           + (string.IsNullOrWhiteSpace(SizeString) ? "" : "," + SizeString) + @"
+                                   A.""U_COLORCODE"" AS ""Colour Code"""
+                                                   + (string.IsNullOrWhiteSpace(SizeString) ? "" : "," + SizeString) + @",
+                                   SUM(A.""U_QTY"") AS ""Total""
                             FROM ""@FIL_DR_OQUT"" A
                             WHERE A.""DocEntry"" = '" + docEntry + @"'
-                            GROUP BY A.""U_COLORNAME"", A.""U_COLORCODE""";
+                            GROUP BY A.""U_COLORNAME"", A.""U_COLORCODE""
+                            ORDER BY A.""U_COLORCODE""";
                 }
 
                 Global.oGrid = (SAPbouiCOM.Grid)pform.Items.Item("SCGrid").Specific;
@@ -1123,8 +1147,7 @@ namespace Apparel_Dynamic_1._0.Modules
                 SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)pForm.Items.Item("38").Specific;
                 SAPbouiCOM.DataTable oDataTable = pForm.DataSources.DataTables.Item("DT_0");
 
-                double TotalQty = 0;
-                double.TryParse(((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value, out TotalQty);
+                double TotalQty = 0; // always recalculate fresh
 
                 string styleEntry = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLENTRY", 0).Trim();
                 string styleCode = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLECODE", 0).Trim();
@@ -1138,25 +1161,28 @@ namespace Apparel_Dynamic_1._0.Modules
                     return;
                 }
 
-                for (int j = 0; j < oDataTable.Rows.Count; j++)
-                {
-                    string colourCode = oDataTable.Columns.Item("Colour Code").Cells.Item(j).Value.ToString().Trim();
+                Global.oColumn = oMatrix.Columns.Item("U_FGCOLOUR");
+                Global.oColumn.Editable = true;
 
-                    string qStr = @"SELECT 
-                                A.""ItemCode"",
-                                A.""U_COLORCODE"",
-                                B.""U_COLORNAME"",
-                                A.""U_SIZECODE"",
-                                C.""U_SIZENAME""
+                Global.oColumn = oMatrix.Columns.Item("U_FGSIZE");
+                Global.oColumn.Editable = true;
+
+                for (int j = 0; j <= oDataTable.Rows.Count - 1; j++)
+                {
+                    string qStr = @"SELECT A.""ItemCode"",
+                                   A.""U_COLORCODE"",
+                                   B.""U_COLORNAME"",
+                                   A.""U_SIZECODE"",
+                                   C.""U_SIZENAME""
                             FROM ""OITM"" A
-                            INNER JOIN ""@FIL_DR_PSMCO"" B 
+                            INNER JOIN ""@FIL_DR_PSMCO"" B
                                 ON B.""DocEntry"" = '" + styleEntry + @"'
                                AND B.""U_COLORCODE"" = A.""U_COLORCODE""
-                            INNER JOIN ""@FIL_DR_PSMST"" C 
+                            INNER JOIN ""@FIL_DR_PSMST"" C
                                 ON C.""DocEntry"" = '" + styleEntry + @"'
                                AND C.""U_SIZECODE"" = A.""U_SIZECODE""
                             WHERE A.""U_STYLECODE"" = '" + styleCode + @"'
-                              AND A.""U_COLORCODE"" = '" + colourCode + @"'
+                              AND A.""U_COLORCODE"" = '" + oDataTable.Columns.Item("Colour Code").Cells.Item(j).Value.ToString().Trim() + @"'
                             ORDER BY B.""LineId"", C.""LineId""";
 
                     SAPbobsCOM.Recordset rs =
@@ -1165,57 +1191,88 @@ namespace Apparel_Dynamic_1._0.Modules
 
                     while (!rs.EoF)
                     {
-                        string sizeCode = rs.Fields.Item("U_SIZECODE").Value.ToString().Trim();
-
                         double cellValue = 0;
-                        object cellObj = oDataTable.Columns.Item(sizeCode).Cells.Item(j).Value;
+                        string sizeCode = rs.Fields.Item("U_SIZECODE").Value.ToString().Trim();
+                        string itemCode = rs.Fields.Item("ItemCode").Value.ToString().Trim();
+                        string colorCode = rs.Fields.Item("U_COLORCODE").Value.ToString().Trim();
+                        string colorName = rs.Fields.Item("U_COLORNAME").Value.ToString().Trim();
+
+                        object cellObj = null;
+                        try
+                        {
+                            cellObj = oDataTable.Columns.Item(sizeCode).Cells.Item(j).Value;
+                        }
+                        catch
+                        {
+                            cellObj = null;
+                        }
 
                         if (cellObj != null && cellObj.ToString().Trim() != "")
                             double.TryParse(cellObj.ToString(), out cellValue);
 
                         if (cellValue > 0)
                         {
-                            SAPbouiCOM.DBDataSource dsQUT1 = pForm.DataSources.DBDataSources.Item("QUT1");
+                            int existingRow = FindMatrixRowByItemCode(oMatrix, itemCode);
 
-                            if (oMatrix.VisualRowCount == 0)
+                            if (existingRow > 0)
                             {
-                                oMatrix.AddRow();
+                                // Item already exists -> update qty only, no duplicate
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(existingRow).Specific).Value =
+                                    cellValue.ToString();
                             }
                             else
                             {
-                                string lastItem = "";
-                                try
-                                {
-                                    lastItem = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1")
-                                        .Cells.Item(oMatrix.VisualRowCount).Specific).Value.Trim();
-                                }
-                                catch { }
+                                // Add new row
+                                AddMatrixRowIfNeeded(oMatrix);
 
-                                if (!string.IsNullOrWhiteSpace(lastItem))
-                                    oMatrix.AddRow();
+                                int newRow = oMatrix.RowCount;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(newRow).Specific).Value =
+                                    itemCode;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGCOLOUR").Cells.Item(newRow).Specific).Value =
+                                    colorCode;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGCOLRNM").Cells.Item(newRow).Specific).Value =
+                                    colorName;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGSIZE").Cells.Item(newRow).Specific).Value =
+                                    sizeCode;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_STYLECODE").Cells.Item(newRow).Specific).Value =
+                                    styleCode;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(newRow).Specific).Value =
+                                    cellValue.ToString();
                             }
-
-                            oMatrix.FlushToDataSource();
-
-                            int dsRow = dsQUT1.Size - 1;
-
-                            dsQUT1.SetValue("ItemCode", dsRow, rs.Fields.Item("ItemCode").Value.ToString());
-                            dsQUT1.SetValue("U_FGCOLOUR", dsRow, rs.Fields.Item("U_COLORCODE").Value.ToString());
-                            dsQUT1.SetValue("U_FGCOLRNM", dsRow, rs.Fields.Item("U_COLORNAME").Value.ToString());
-                            dsQUT1.SetValue("U_FGSIZE", dsRow, rs.Fields.Item("U_SIZECODE").Value.ToString());
-                            dsQUT1.SetValue("U_STYLECODE", dsRow, styleCode);
-                            dsQUT1.SetValue("Quantity", dsRow, cellValue.ToString());
-
-                            oMatrix.LoadFromDataSource();
-
-                            TotalQty += cellValue;
                         }
 
                         rs.MoveNext();
                     }
                 }
 
+                // Recalculate total qty from matrix
+                for (int i = 1; i <= oMatrix.RowCount; i++)
+                {
+                    string itemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).Value.Trim();
+                    if (!string.IsNullOrWhiteSpace(itemCode))
+                    {
+                        double rowQty = 0;
+                        double.TryParse(((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(i).Specific).Value, out rowQty);
+                        TotalQty += rowQty;
+                    }
+                }
+
                 ((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value = TotalQty.ToString();
+
+                Global.oColumn = oMatrix.Columns.Item("U_STYLECODE");
+                Global.oColumn.Editable = false;
+
+                Global.oColumn = oMatrix.Columns.Item("U_FGCOLOUR");
+                Global.oColumn.Editable = false;
+
+                Global.oColumn = oMatrix.Columns.Item("U_FGSIZE");
+                Global.oColumn.Editable = false;
             }
             catch (Exception ex)
             {
@@ -1227,117 +1284,201 @@ namespace Apparel_Dynamic_1._0.Modules
         }
         private void InsertSizeDetails(SAPbouiCOM.Form pForm, string ObjType, string ObjEntry, int SizeEntry)
         {
-            SAPbobsCOM.Recordset rSet = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-            string qStr = string.Empty;
+            SAPbobsCOM.Recordset rSet =
+                (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
 
-            // --- 1. Get next SizeEntry if 0 ---
+            SAPbouiCOM.DataTable oDataTable = pForm.DataSources.DataTables.Item("DT_0");
+
+            string styleEntry = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLENTRY", 0).Trim();
+            string styleCode = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLECODE", 0).Trim();
+
+            if (string.IsNullOrWhiteSpace(styleEntry) || string.IsNullOrWhiteSpace(styleCode))
+                throw new Exception("Style Entry / Style Code is missing.");
+
+            if (oDataTable == null || oDataTable.Rows.Count == 0)
+                throw new Exception("Size and Colour grid has no data.");
+
+            string qStr = string.Empty;
+            string qStr1 = string.Empty;
+            int lineId = 1;
+
+            // 1. Get new SizeEntry if blank
             if (SizeEntry == 0)
             {
-                qStr = "SELECT IFNULL(MAX(\"DocEntry\"),0)+1 \"SizeEntry\" FROM \"@FIL_DR_OQUT\"";
+                qStr = @"SELECT IFNULL(MAX(""DocEntry""), 0) + 1 AS ""SizeEntry""
+                 FROM ""@FIL_DR_OQUT""";
                 rSet.DoQuery(qStr);
                 SizeEntry = Convert.ToInt32(rSet.Fields.Item("SizeEntry").Value);
             }
-            else
-            {
-                if (ObjType != "112")
-                {
-                    qStr = $"SELECT * FROM \"OQUT\" WHERE \"U_CRSZNTRY\"='{SizeEntry.ToString().TrimEnd()}'";
-                    rSet.DoQuery(qStr);
 
-                    if (rSet.RecordCount > 0)
-                    {
-                        qStr = "SELECT IFNULL(MAX(\"DocEntry\"),0)+1 \"SizeEntry\" FROM \"@FIL_DR_OQUT\"";
-                        rSet.DoQuery(qStr);
-                        SizeEntry = Convert.ToInt32(rSet.Fields.Item("SizeEntry").Value);
-                    }
-                }
-            }
+            // 2. Always clear old rows for this entry first
+            qStr = $@"DELETE FROM ""@FIL_DR_OQUT""
+              WHERE ""DocEntry"" = '{SizeEntry}'";
+            rSet.DoQuery(qStr);
 
-            // --- 2. Loop through DataTable rows ---
-            Global.oEdit = (SAPbouiCOM.EditText)pForm.Items.Item("ETStyleNo").Specific;
-            SAPbouiCOM.DataTable oDataTable = pForm.DataSources.DataTables.Item("DT_0");
-            double TotalQty = 0;
-            string qStr1 = string.Empty;
-            int i = 1;
-
+            // 3. Build insert rows from grid + style master mapping
             for (int j = 0; j < oDataTable.Rows.Count; j++)
             {
-                qStr =
-                        "Select  A.\"ItemCode\", A.\"U_ColourCode\",B.\"U_ColourName\", A.\"U_SizeCode\" " + Environment.NewLine +
-                        " From   \"OITM\" A   " + Environment.NewLine +
-                        "    Inner Join \"@FIL_MR_PSMCO\" B On A.\"U_StyleNo\"=B.\"Code\" And A.\"U_ColourCode\"=B.\"U_ColourCode\"  " + Environment.NewLine +
-                        "    Inner Join \"@FIL_MR_PSMST\" C On A.\"U_StyleNo\"=C.\"Code\" And A.\"U_SizeCode\"=C.\"U_SizeCode\"  " + Environment.NewLine +
-                        $" Where   A.\"U_StyleNo\"='{Global.oEdit.Value}' And B.\"U_ColourAppl\"='Y' And C.\"U_SizeAppl\"='Y'  " + Environment.NewLine +
-                        $"   AND A.\"U_ColourCode\"='{oDataTable.Columns.Item("Colour Code").Cells.Item(j).Value}' " + Environment.NewLine +
-                        " Order by B.\"LineId\", C.\"LineId\" ";
+                string colourCode = oDataTable.Columns.Item("Colour Code").Cells.Item(j).Value.ToString().Trim();
+                string colourName = oDataTable.Columns.Item("Colour Name").Cells.Item(j).Value.ToString().Trim();
+                string totalQty = oDataTable.Columns.Item("Total").Cells.Item(j).Value == null
+                    ? "0"
+                    : oDataTable.Columns.Item("Total").Cells.Item(j).Value.ToString().Trim();
 
+                qStr = @"
+                        SELECT A.""ItemCode"",
+                               A.""U_COLORCODE"",
+                               B.""U_COLORNAME"",
+                               A.""U_SIZECODE"",
+                               C.""U_SIZENAME""
+                        FROM ""OITM"" A
+                        INNER JOIN ""@FIL_DR_PSMCO"" B
+                            ON B.""DocEntry"" = '" + styleEntry + @"'
+                           AND B.""U_COLORCODE"" = A.""U_COLORCODE""
+                        INNER JOIN ""@FIL_DR_PSMST"" C
+                            ON C.""DocEntry"" = '" + styleEntry + @"'
+                           AND C.""U_SIZECODE"" = A.""U_SIZECODE""
+                        WHERE A.""U_STYLECODE"" = '" + styleCode + @"'
+                          AND A.""U_COLORCODE"" = '" + colourCode + @"'
+                        ORDER BY B.""LineId"", C.""LineId""";
 
+                SAPbobsCOM.Recordset colourSizeSet =
+                    (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                colourSizeSet.DoQuery(qStr);
 
-                SAPbobsCOM.Recordset ColourSizerSet = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                ColourSizerSet.DoQuery(qStr);
-
-                while (!ColourSizerSet.EoF)
+                while (!colourSizeSet.EoF)
                 {
-                    string colourCode = ColourSizerSet.Fields.Item("U_ColourCode").Value.ToString();
-                    string colourName = ColourSizerSet.Fields.Item("U_ColourName").Value.ToString();
-                    string sizeCode = ColourSizerSet.Fields.Item("U_SizeCode").Value.ToString();
-                    //string colourName = oDataTable.Columns.Item("Colour Name").Cells.Item(j).Value?.ToString() ?? "";
-                    string qty = oDataTable.Columns.Item(sizeCode).Cells.Item(j).Value?.ToString() ?? "0";
-                    string totalQty = oDataTable.Columns.Item("Total").Cells.Item(j).Value?.ToString() ?? "0";
+                    string sizeCode = colourSizeSet.Fields.Item("U_SIZECODE").Value.ToString().Trim();
 
-
-                    qStr1 += Environment.NewLine +
-                                 $" INSERT INTO \"@FIL_DR_OQUT\"(\"DocEntry\", \"LineId\", \"Object\", \"U_ColourCode\", \"U_ColourName\", \"U_SizeCode\", \"U_Qty\", \"U_TotalQty\") " +
-                                 $" SELECT '{SizeEntry}', '{i}', '23', '{colourCode}', '{colourName}', '{sizeCode}', '{qty}', '{totalQty}' FROM DUMMY; ";
-
-                    i++;
-                    ColourSizerSet.MoveNext();
-                }
-            }
-
-            // --- 3. Update or cleanup records ---
-            if (!string.IsNullOrEmpty(qStr1))
-            {
-                if (ObjType == "112")
-                {
-                    qStr1 += Environment.NewLine +
-                             $"UPDATE {(ObjType == "112" ? "\"ODRF\"" : "\"OQUT\"")} SET \"U_CRSZNTRY\"='{SizeEntry}' WHERE \"DocEntry\"='{ObjEntry}'";
-                }
-            }
-
-            if (ObjType != "112")
-            {
-                rSet.DoQuery($"SELECT * FROM \"OQUT\" WHERE \"U_CRSZNTRY\"='{SizeEntry.ToString().TrimEnd()}'");
-                if (rSet.RecordCount == 0)
-                {
-                    rSet.DoQuery($"DELETE FROM \"@FIL_DR_OQUT\" WHERE \"DocEntry\"='{SizeEntry.ToString().TrimEnd()}'");
-                }
-            }
-
-            if (ObjType == "112")
-            {
-                rSet.DoQuery($"SELECT * FROM \"ODRF\" WHERE \"DocEntry\"='{ObjEntry.ToString().TrimEnd()}'");
-                if (rSet.RecordCount > 0)
-                {
-                    rSet.DoQuery($"SELECT * FROM \"OQUT\" WHERE \"U_CRSZNTRY\"='{SizeEntry.ToString().TrimEnd()}'");
-                    if (rSet.RecordCount == 0)
+                    string qty = "0";
+                    try
                     {
-                        rSet.DoQuery($"DELETE FROM \"@FIL_DR_OQUT\" WHERE \"DocEntry\"='{SizeEntry.ToString().TrimEnd()}'");
+                        object qtyObj = oDataTable.Columns.Item(sizeCode).Cells.Item(j).Value;
+                        qty = qtyObj == null || string.IsNullOrWhiteSpace(qtyObj.ToString())
+                            ? "0"
+                            : qtyObj.ToString().Trim();
+                    }
+                    catch
+                    {
+                        qty = "0";
+                    }
+
+                    // Only save rows where qty > 0
+                    double dQty = 0;
+                    double.TryParse(qty, out dQty);
+
+                    if (dQty > 0)
+                    {
+                        string safeColourCode = colourCode.Replace("'", "''");
+                        string safeColourName = colourName.Replace("'", "''");
+                        string safeSizeCode = sizeCode.Replace("'", "''");
+                        string safeQty = qty.Replace("'", "''");
+                        string safeTotalQty = totalQty.Replace("'", "''");
+
+                        qStr1 += Environment.NewLine +
+                            $@"INSERT INTO ""@FIL_DR_OQUT""
+                       (""DocEntry"", ""LineId"", ""Object"", ""U_COLORCODE"", ""U_COLORNAME"", ""U_SIZECODE"", ""U_QTY"", ""U_TOTALQTY"")
+                       VALUES
+                       ('{SizeEntry}', '{lineId}', '23', '{safeColourCode}', '{safeColourName}', '{safeSizeCode}', '{safeQty}', '{safeTotalQty}');";
+
+                        lineId++;
+                    }
+
+                    colourSizeSet.MoveNext();
+                }
+            }
+
+            // 4. Execute insert block
+            if (!string.IsNullOrWhiteSpace(qStr1))
+            {
+                SAPbobsCOM.Recordset execSet =
+                    (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                string finalSql = "DO " + Environment.NewLine +
+                                  "BEGIN " + Environment.NewLine +
+                                  qStr1 + Environment.NewLine +
+                                  "END;";
+
+                execSet.DoQuery(finalSql);
+            }
+
+             // 5. Push entry back to hidden bound field
+             ((SAPbouiCOM.EditText)pForm.Items.Item("ETCRSZNTRY").Specific).Value = SizeEntry.ToString();
+        }
+
+        private void ClearQuotationMatrix(ref SAPbouiCOM.Form pForm)
+        {
+            try
+            {
+                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)pForm.Items.Item("38").Specific;
+
+                if (oMatrix.VisualRowCount <= 1)
+                    return;
+
+                for (int i = oMatrix.VisualRowCount; i >= 2; i--)
+                {
+                    try
+                    {
+                        oMatrix.DeleteRow(i);
+                    }
+                    catch
+                    {
                     }
                 }
+
+                // clear first/default row only
+                try
+                {
+                    oMatrix.ClearRowData(1);
+                }
+                catch
+                {
+                }
             }
-
-            // --- 4. Execute accumulated inserts ---
-            if (!string.IsNullOrEmpty(qStr1))
+            catch (Exception ex)
             {
-                SAPbobsCOM.Recordset execSet = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error in ClearQuotationMatrix: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
 
-                string qStr2 = "DO " + Environment.NewLine + "BEGIN ";
-                qStr1 = qStr2 + qStr1 + Environment.NewLine + "END;";
-                execSet.DoQuery(qStr1);
+        private int FindMatrixRowByItemCode(SAPbouiCOM.Matrix oMatrix, string itemCode)
+        {
+            try
+            {
+                for (int i = 1; i <= oMatrix.RowCount; i++)
+                {
+                    string existingItemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).Value.Trim();
 
+                    if (existingItemCode == itemCode.Trim())
+                        return i;
+                }
+            }
+            catch { }
 
-                ((SAPbouiCOM.EditText)pForm.Items.Item("ETCRSZNTRY").Specific).Value = SizeEntry.ToString();
+            return -1;
+        }
+
+        private void AddMatrixRowIfNeeded(SAPbouiCOM.Matrix oMatrix)
+        {
+            try
+            {
+                if (oMatrix.RowCount == 0)
+                {
+                    oMatrix.AddRow();
+                    return;
+                }
+
+                string lastItemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(oMatrix.RowCount).Specific).Value.Trim();
+
+                if (!string.IsNullOrWhiteSpace(lastItemCode))
+                    oMatrix.AddRow();
+            }
+            catch
+            {
+                oMatrix.AddRow();
             }
         }
     }
