@@ -51,8 +51,9 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETOTTNO").Width = (Global.G_Form.Items.Item("14").Width / 2) - 5;
                             Global.G_Form.Items.Item("ETOTTNO").FromPane = 0;
                             Global.G_Form.Items.Item("ETOTTNO").ToPane = 0;
-                            Global.G_Form.Items.Item("ETOTTNO").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
+
+                            //Global.G_Form.Items.Item("ETOTTNO").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
 
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETOTTNO").Specific;
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_OTTNO");
@@ -76,8 +77,9 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETOTNTRY").FromPane = 0;
                             Global.G_Form.Items.Item("ETOTNTRY").ToPane = 0;
                             Global.G_Form.Items.Item("ETOTNTRY").Enabled = false;
-                            Global.G_Form.Items.Item("ETOTNTRY").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable, -1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
+
+                            //Global.G_Form.Items.Item("ETOTNTRY").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable, -1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
 
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETOTNTRY").Specific;
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_OTTENTRY");
@@ -118,8 +120,9 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETSCNO").Width = (Global.G_Form.Items.Item("254000015").Width / 2) - 5;
                             Global.G_Form.Items.Item("ETSCNO").FromPane = 0;
                             Global.G_Form.Items.Item("ETSCNO").ToPane = 0;
-                            Global.G_Form.Items.Item("ETSCNO").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
+
+                            //Global.G_Form.Items.Item("ETSCNO").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
 
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSCNO").Specific;
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_SCNO");
@@ -143,8 +146,9 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETSCNTRY").FromPane = 0;
                             Global.G_Form.Items.Item("ETSCNTRY").ToPane = 0;
                             Global.G_Form.Items.Item("ETSCNTRY").Enabled = false;
-                            Global.G_Form.Items.Item("ETSCNTRY").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable, -1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
+
+                            //Global.G_Form.Items.Item("ETSCNTRY").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable, -1, SAPbouiCOM.BoModeVisualBehavior.mvb_False);
 
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSCNTRY").Specific;
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_SCNTRY");
@@ -189,9 +193,10 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETSTYLNO").Height = Global.G_Form.Items.Item("2003").Height;
                             Global.G_Form.Items.Item("ETSTYLNO").FromPane = 0;
                             Global.G_Form.Items.Item("ETSTYLNO").ToPane = 0;
-                            Global.G_Form.Items.Item("ETSTYLNO").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1,
-                                SAPbouiCOM.BoModeVisualBehavior.mvb_False);
+
+                            //Global.G_Form.Items.Item("ETSTYLNO").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1,
+                            //    SAPbouiCOM.BoModeVisualBehavior.mvb_False);
 
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSTYLNO").Specific;
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_STYLECODE");
@@ -232,9 +237,9 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.oButton = (SAPbouiCOM.Button)Global.G_Form.Items.Item("BTNSTYLD").Specific;
                             Global.oButton.Caption = "Load Info";
 
-                            Global.G_Form.Items.Item("BTNSTYLD").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1,
-                                SAPbouiCOM.BoModeVisualBehavior.mvb_False);
+                            //Global.G_Form.Items.Item("BTNSTYLD").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable, 1,
+                            //    SAPbouiCOM.BoModeVisualBehavior.mvb_False);
 
                             //// ************ STYLE DESC ************
                             ///
@@ -258,11 +263,12 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETSTYLDS").FromPane = 0;
                             Global.G_Form.Items.Item("ETSTYLDS").ToPane = 0;
                             Global.G_Form.Items.Item("ETSTYLDS").Enabled = false;
-                            Global.G_Form.Items.Item("ETSTYLDS").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
-                                1,
-                                SAPbouiCOM.BoModeVisualBehavior.mvb_False
-                            );
+
+                            //Global.G_Form.Items.Item("ETSTYLDS").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
+                            //    1,
+                            //    SAPbouiCOM.BoModeVisualBehavior.mvb_False
+                            //);
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSTYLDS").Specific;
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_STYLENM");
                             Global.G_Form.Items.Item("STSTYLDS").LinkTo = "ETSTYLDS";
@@ -276,11 +282,11 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETSLNTRY").FromPane = 0;
                             Global.G_Form.Items.Item("ETSLNTRY").ToPane = 0;
                             Global.G_Form.Items.Item("ETSLNTRY").Enabled = false;
-                            Global.G_Form.Items.Item("ETSLNTRY").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
-                                1,
-                                SAPbouiCOM.BoModeVisualBehavior.mvb_False
-                            );
+                            //Global.G_Form.Items.Item("ETSLNTRY").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
+                            //    1,
+                            //    SAPbouiCOM.BoModeVisualBehavior.mvb_False
+                            //);
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSLNTRY").Specific;
                             Global.oEdit.DataBind.SetBound(true, "OQUT", "U_STYLENTRY");
                             Global.G_Form.Items.Item("ETSTYLDS").LinkTo = "ETSLNTRY";
@@ -381,9 +387,10 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Items.Item("ETQty").FromPane = 1;
                             Global.G_Form.Items.Item("ETQty").ToPane = 1;
                             Global.G_Form.Items.Item("ETQty").Enabled = false;
+
                             Global.G_Form.Items.Item("ETQty").SetAutoManagedAttribute(
                                 SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
-                                1,
+                                -1,
                                 SAPbouiCOM.BoModeVisualBehavior.mvb_False
                             );
                             SAPbouiCOM.EditText oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETQty").Specific;
@@ -402,11 +409,12 @@ namespace Apparel_Dynamic_1._0.Modules
 
                             SAPbouiCOM.Button oButton = (SAPbouiCOM.Button)Global.G_Form.Items.Item("BTQty").Specific;
                             oButton.Caption = "Get Item";
-                            Global.G_Form.Items.Item("BTQty").SetAutoManagedAttribute(
-                                SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
-                                1,
-                                SAPbouiCOM.BoModeVisualBehavior.mvb_False
-                            );
+
+                            //Global.G_Form.Items.Item("BTQty").SetAutoManagedAttribute(
+                            //    SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
+                            //    1,
+                            //    SAPbouiCOM.BoModeVisualBehavior.mvb_False
+                            //);
 
                             // ********** Size Colour ENTRY Hidden EditText **********
                             Global.G_Form.Items.Add("ETCRSZNTRY", SAPbouiCOM.BoFormItemTypes.it_EDIT);
@@ -839,6 +847,7 @@ namespace Apparel_Dynamic_1._0.Modules
                                     Global.G_Form.Items.Item("ETSTYLNO").Enabled = true;
                                     Global.G_Form.Items.Item("ETOTTNO").Enabled = true;
                                     Global.G_Form.Items.Item("ETSCNO").Enabled = true;
+                                    Global.G_Form.Items.Item("ETQty").Enabled = false;
 
                                     Global.G_Form.Freeze(false);
                                 }
@@ -1147,7 +1156,7 @@ namespace Apparel_Dynamic_1._0.Modules
                 SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)pForm.Items.Item("38").Specific;
                 SAPbouiCOM.DataTable oDataTable = pForm.DataSources.DataTables.Item("DT_0");
 
-                double TotalQty = 0; // always recalculate fresh
+                double TotalQty = 0;
 
                 string styleEntry = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLENTRY", 0).Trim();
                 string styleCode = pForm.DataSources.DBDataSources.Item("OQUT").GetValue("U_STYLECODE", 0).Trim();
@@ -1165,6 +1174,9 @@ namespace Apparel_Dynamic_1._0.Modules
                 Global.oColumn.Editable = true;
 
                 Global.oColumn = oMatrix.Columns.Item("U_FGSIZE");
+                Global.oColumn.Editable = true;
+
+                Global.oColumn = oMatrix.Columns.Item("U_STYLECODE");
                 Global.oColumn.Editable = true;
 
                 for (int j = 0; j <= oDataTable.Rows.Count - 1; j++)
@@ -1210,19 +1222,29 @@ namespace Apparel_Dynamic_1._0.Modules
                         if (cellObj != null && cellObj.ToString().Trim() != "")
                             double.TryParse(cellObj.ToString(), out cellValue);
 
+                        int existingRow = FindMatrixRowByItemCode(oMatrix, itemCode);
+
                         if (cellValue > 0)
                         {
-                            int existingRow = FindMatrixRowByItemCode(oMatrix, itemCode);
-
                             if (existingRow > 0)
                             {
-                                // Item already exists -> update qty only, no duplicate
                                 ((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(existingRow).Specific).Value =
                                     cellValue.ToString();
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGCOLOUR").Cells.Item(existingRow).Specific).Value =
+                                    colorCode;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGCOLRNM").Cells.Item(existingRow).Specific).Value =
+                                    colorName;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_FGSIZE").Cells.Item(existingRow).Specific).Value =
+                                    sizeCode;
+
+                                ((SAPbouiCOM.EditText)oMatrix.Columns.Item("U_STYLECODE").Cells.Item(existingRow).Specific).Value =
+                                    styleCode;
                             }
                             else
                             {
-                                // Add new row
                                 AddMatrixRowIfNeeded(oMatrix);
 
                                 int newRow = oMatrix.RowCount;
@@ -1246,12 +1268,33 @@ namespace Apparel_Dynamic_1._0.Modules
                                     cellValue.ToString();
                             }
                         }
+                        else
+                        {
+                            // Qty 0 hole existing row delete
+                            if (existingRow > 0)
+                            {
+                                try
+                                {
+                                    oMatrix.DeleteRow(existingRow);
+                                }
+                                catch
+                                {
+                                }
+                            }
+                        }
 
                         rs.MoveNext();
                     }
                 }
 
+                // Remove duplicate ItemCode rows if any
+                RemoveDuplicateMatrixRows(oMatrix);
+
+                // Remove rows where qty = 0 or itemcode blank
+                RemoveZeroQtyAndBlankRows(oMatrix);
+
                 // Recalculate total qty from matrix
+                TotalQty = 0;
                 for (int i = 1; i <= oMatrix.RowCount; i++)
                 {
                     string itemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).Value.Trim();
@@ -1265,14 +1308,14 @@ namespace Apparel_Dynamic_1._0.Modules
 
                 ((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value = TotalQty.ToString();
 
-                Global.oColumn = oMatrix.Columns.Item("U_STYLECODE");
-                Global.oColumn.Editable = false;
+                //Global.oColumn = oMatrix.Columns.Item("U_STYLECODE");
+                //Global.oColumn.Editable = false;
 
-                Global.oColumn = oMatrix.Columns.Item("U_FGCOLOUR");
-                Global.oColumn.Editable = false;
+                //Global.oColumn = oMatrix.Columns.Item("U_FGCOLOUR");
+                //Global.oColumn.Editable = false;
 
-                Global.oColumn = oMatrix.Columns.Item("U_FGSIZE");
-                Global.oColumn.Editable = false;
+                //Global.oColumn = oMatrix.Columns.Item("U_FGSIZE");
+                //Global.oColumn.Editable = false;
             }
             catch (Exception ex)
             {
@@ -1412,9 +1455,6 @@ namespace Apparel_Dynamic_1._0.Modules
             {
                 SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)pForm.Items.Item("38").Specific;
 
-                if (oMatrix.VisualRowCount <= 1)
-                    return;
-
                 for (int i = oMatrix.VisualRowCount; i >= 2; i--)
                 {
                     try
@@ -1426,10 +1466,19 @@ namespace Apparel_Dynamic_1._0.Modules
                     }
                 }
 
-                // clear first/default row only
                 try
                 {
-                    oMatrix.ClearRowData(1);
+                    if (oMatrix.VisualRowCount >= 1)
+                        oMatrix.ClearRowData(1);
+                }
+                catch
+                {
+                }
+
+                // Clear Total Qty edittext also
+                try
+                {
+                    ((SAPbouiCOM.EditText)pForm.Items.Item("ETQty").Specific).Value = "";
                 }
                 catch
                 {
@@ -1479,6 +1528,105 @@ namespace Apparel_Dynamic_1._0.Modules
             catch
             {
                 oMatrix.AddRow();
+            }
+        }
+
+        private void RemoveDuplicateMatrixRows(SAPbouiCOM.Matrix oMatrix)
+        {
+            try
+            {
+                HashSet<string> itemCodes = new HashSet<string>();
+
+                for (int i = oMatrix.RowCount; i >= 1; i--)
+                {
+                    string itemCode = "";
+                    try
+                    {
+                        itemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).Value.Trim();
+                    }
+                    catch
+                    {
+                        itemCode = "";
+                    }
+
+                    if (string.IsNullOrWhiteSpace(itemCode))
+                        continue;
+
+                    if (itemCodes.Contains(itemCode))
+                    {
+                        try
+                        {
+                            oMatrix.DeleteRow(i);
+                        }
+                        catch
+                        {
+                        }
+                    }
+                    else
+                    {
+                        itemCodes.Add(itemCode);
+                    }
+                }
+            }
+            catch
+            {
+            }
+        }
+
+        private void RemoveZeroQtyAndBlankRows(SAPbouiCOM.Matrix oMatrix)
+        {
+            try
+            {
+                for (int i = oMatrix.RowCount; i >= 1; i--)
+                {
+                    string itemCode = "";
+                    double qty = 0;
+
+                    try
+                    {
+                        itemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).Value.Trim();
+                    }
+                    catch
+                    {
+                        itemCode = "";
+                    }
+
+                    try
+                    {
+                        double.TryParse(((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(i).Specific).Value.Trim(), out qty);
+                    }
+                    catch
+                    {
+                        qty = 0;
+                    }
+
+                    if (string.IsNullOrWhiteSpace(itemCode) || qty <= 0)
+                    {
+                        if (oMatrix.RowCount > 1)
+                        {
+                            try
+                            {
+                                oMatrix.DeleteRow(i);
+                            }
+                            catch
+                            {
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                oMatrix.ClearRowData(i);
+                            }
+                            catch
+                            {
+                            }
+                        }
+                    }
+                }
+            }
+            catch
+            {
             }
         }
     }
