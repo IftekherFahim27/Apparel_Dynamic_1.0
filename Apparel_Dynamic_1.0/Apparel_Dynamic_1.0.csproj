@@ -106,6 +106,9 @@
     <Compile Include="Resources\Setup\SubDivision.b1f.cs">
       <DependentUpon>SubDivision.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Transaction\OTT.b1f.cs">
+      <DependentUpon>OTT.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Transaction\SamplePreCosting.b1f.cs">
       <DependentUpon>SamplePreCosting.b1f</DependentUpon>
     </Compile>
@@ -169,6 +172,9 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\SubDivision.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Transaction\OTT.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Transaction\SamplePreCosting.b1f">
