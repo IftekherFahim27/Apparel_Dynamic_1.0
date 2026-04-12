@@ -515,6 +515,50 @@ namespace Apparel_Dynamic_1._0
                         Application.SBO_Application.MessageBox("Error Found : " + e.Message);
                     }
                 }
+
+                //OTT
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_OTT")
+                {
+                    string formUID = "FIL_FRM_OTT";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    OTT activeForm = new OTT();
+                    activeForm.Show();
+                    SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_OTT");
+                    try
+                    {
+                        SAPbouiCOM.Matrix MTXOTT = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXOTDTL").Specific;                       
+                        MTXOTT.AutoResizeColumns();
+
+                        //New Line
+                        EnsureLine(oForm, "MTXOTDTL", "@FIL_DR_TT1");
+
+                        //Series Initialization
+                        SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_OTT");   //DEFINE  DATASOURCES.
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                            Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_OTT");  //Object Type
+                            string ocmbvalue = ocmb.Selected.Value;
+                            long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_OTT");
+
+                            oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+
+                            //Date
+                            ((SAPbouiCOM.EditText)oForm.Items.Item("ETOTDATE").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+
+                        }
+                    }
+                    catch (Exception e)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found OTT : " + e.Message);
+                    }
+                }
                 //___________________________________________________________Standard______________________________________________
                 //ADD
                 else if (!pVal.BeforeAction && pVal.MenuUID == "1282")
