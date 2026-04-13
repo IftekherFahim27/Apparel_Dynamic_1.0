@@ -98,7 +98,7 @@ namespace Apparel_Dynamic_1._0.Modules
 
                             Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETOTTNO").Specific;
                             Global.oEdit.ChooseFromListUID = "CFL_OTT";
-                            Global.oEdit.ChooseFromListAlias = "DocEntry";
+                            Global.oEdit.ChooseFromListAlias = "DocNum";
 
                                                                             //***** Sales Contract***** 
                             //Static Text
@@ -437,6 +437,7 @@ namespace Apparel_Dynamic_1._0.Modules
                     }
                     else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_FORM_LOAD && pVal.BeforeAction == false)
                     {
+                        SetCustomItemState(Global.G_Form);
                         if (!string.IsNullOrWhiteSpace(Global.G_Form.DataSources.DBDataSources.Item("OQUT").GetValue("U_CRSZNTRY", 0).ToString().Trim()))
                         {
                             LoadGrid(ref Global.G_Form, true);
@@ -572,50 +573,37 @@ namespace Apparel_Dynamic_1._0.Modules
                         }
                     }
 
-                    
-                    //else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST && pVal.ItemUID == "ETOTTNTRY" && pVal.BeforeAction == true)
-                    //{
-                    //    SAPbouiCOM.IChooseFromListEvent oCFLEvento = (SAPbouiCOM.IChooseFromListEvent)pVal;
-                    //    SAPbouiCOM.DataTable oDataTable;
-                    //    oDataTable = oCFLEvento.SelectedObjects;
-                    //    SAPbouiCOM.ChooseFromList oCfl = Global.G_Form.ChooseFromLists.Item(oCFLEvento.ChooseFromListUID);
-                    //    SAPbouiCOM.Conditions oCons = null;
-                    //    SAPbouiCOM.Condition oCon = null;
 
-                    //    oCons = new SAPbouiCOM.Conditions();
+                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST && pVal.ItemUID == "ETOTTNO" && pVal.BeforeAction)
+                    {
+                        try
+                        {
+                            SAPbouiCOM.IChooseFromListEvent cflEvent = (SAPbouiCOM.IChooseFromListEvent)pVal;
+                            if (cflEvent.ChooseFromListUID == "CFL_OTT")
+                            {
+                                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                                SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item("CFL_OTT");
 
-                    //    string qStr = @"SELECT DISTINCT A.""DocEntry"" 
-                    //FROM ""@FIL_DR_PLANOTT"" A 
-                    //WHERE  A.""U_STYLENO"" = '" + Global.G_Form.DataSources.DBDataSources.Item("OQUT").GetValue("U_StyleNo", 0).ToString().TrimEnd() + @"' 
-                    //  AND A.""U_BUYRSTCD"" = '" + Global.G_Form.DataSources.DBDataSources.Item("OQUT").GetValue("U_BSTYLENO", 0).ToString().TrimEnd() + @"'";
+                                SAPbouiCOM.Conditions oCons = (SAPbouiCOM.Conditions)
+                                    Application.SBO_Application.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_Conditions);
 
-                    //    SAPbobsCOM.Recordset POSSet = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
-                    //    POSSet.DoQuery(qStr);
+                                SAPbouiCOM.Condition oCon1 = oCons.Add();
+                                oCon1.Alias = "U_OTTSTTS";
+                                oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                                oCon1.CondVal = "C";
 
-                    //    if (POSSet.RecordCount > 0)
-                    //    {
-                    //        while (!POSSet.EoF)
-                    //        {
-                    //            oCon = oCons.Add();
-                    //            oCon.Alias = "DocEntry";
-                    //            oCon.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                    //            oCon.CondVal = POSSet.Fields.Item("DocEntry").Value.ToString();
-
-                    //            POSSet.MoveNext();
-                    //            if (!POSSet.EoF)
-                    //                oCon.Relationship = SAPbouiCOM.BoConditionRelationship.cr_OR;
-                    //        }
-                    //    }
-                    //    else
-                    //    {
-                    //        oCon = oCons.Add();
-                    //        oCon.Alias = "DocEntry";
-                    //        oCon.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                    //        oCon.CondVal = "-1";
-                    //    }
-
-                    //    oCfl.SetConditions(oCons);
-                    //}
+                                oCFL.SetConditions(oCons);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Application.SBO_Application.StatusBar.SetText(
+                                "Error filtering OTT CFL: " + ex.Message,
+                                SAPbouiCOM.BoMessageTime.bmt_Short,
+                                SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                            BubbleEvent = false;
+                        }
+                    }
                     else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST && pVal.ItemUID == "ETOTTNO" && pVal.BeforeAction == false)
                     {
                         try
@@ -626,13 +614,13 @@ namespace Apparel_Dynamic_1._0.Modules
 
                             if (oDataTable != null)
                             {
-                                Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item(pVal.ItemUID).Specific;
-                                Global.oEdit.Value = oDataTable.GetValue(Global.oEdit.ChooseFromListAlias, 0).ToString().Trim();
+                                //Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item(pVal.ItemUID).Specific;
+                                //Global.oEdit.Value = oDataTable.GetValue(Global.oEdit.ChooseFromListAlias, 0).ToString().Trim();
 
                                 try
                                 {
-                                    //Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETOTTNO").Specific;
-                                    //Global.oEdit.Value = oDataTable.GetValue("DocNum", 0).ToString().Trim();
+                                    Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETOTTNO").Specific;
+                                    Global.oEdit.Value = oDataTable.GetValue("DocNum", 0).ToString().Trim();
 
                                     Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETOTNTRY").Specific;
                                     Global.oEdit.Value = oDataTable.GetValue("DocEntry", 0).ToString().Trim();
@@ -812,6 +800,15 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Freeze(false);
                         }
                     }
+                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_MENU_CLICK && pVal.BeforeAction == false)
+                    {
+                        SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                        if (oForm.TypeEx == "149")
+                        {
+                            SetCustomItemState(oForm);
+                        }
+                    }
                 }
 
             }catch(Exception ex)
@@ -840,14 +837,7 @@ namespace Apparel_Dynamic_1._0.Modules
 
                                     LoadGrid(ref Global.G_Form, true);
 
-                                    // Re-enable custom controls after loading previous/existing data
-                                   
-                                    Global.G_Form.Items.Item("BTNSTYLD").Enabled = true;
-                                    Global.G_Form.Items.Item("BTQty").Enabled = true;
-                                    Global.G_Form.Items.Item("ETSTYLNO").Enabled = true;
-                                    Global.G_Form.Items.Item("ETOTTNO").Enabled = true;
-                                    Global.G_Form.Items.Item("ETSCNO").Enabled = true;
-                                    Global.G_Form.Items.Item("ETQty").Enabled = false;
+                                    SetCustomItemState(Global.G_Form);
 
                                     Global.G_Form.Freeze(false);
                                 }
@@ -942,6 +932,35 @@ namespace Apparel_Dynamic_1._0.Modules
             }
         }
 
+        private void SetCustomItemState(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                bool isFindMode = (oForm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE);
+
+                oForm.Items.Item("ETSTYLNO").Enabled = true;
+                oForm.Items.Item("ETOTTNO").Enabled = true;
+                oForm.Items.Item("ETSCNO").Enabled = true;
+
+                oForm.Items.Item("BTNSTYLD").Enabled = true;
+                oForm.Items.Item("BTQty").Enabled = true;
+
+                // always disabled
+                oForm.Items.Item("ETQty").Enabled = false;
+                oForm.Items.Item("ETOTNTRY").Enabled = isFindMode;
+                oForm.Items.Item("ETSCNTRY").Enabled = isFindMode;
+                oForm.Items.Item("ETSTYLDS").Enabled = isFindMode;
+                oForm.Items.Item("ETSLNTRY").Enabled = isFindMode;
+                oForm.Items.Item("ETCRSZNTRY").Enabled = isFindMode;
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "SetCustomItemState Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
 
         public void openStyleMaster(string styleCode)
         {

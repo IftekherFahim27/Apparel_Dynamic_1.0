@@ -743,6 +743,11 @@ namespace Apparel_Dynamic_1._0
 
                                 break;
                             }
+                        case "FIL_FRM_OTT":
+                            {
+                                SetItemsEnabled(oForm, false, "ETDOCNUM", "ETMERCNM");
+                                break;
+                            }
                     }
                 }
                 //Find Mode
@@ -866,7 +871,11 @@ namespace Apparel_Dynamic_1._0
                                 "ETDOCNUM", "ETSMPLNM", "ETSMTPNM", "ETRTSGNM", "ETMERDNM", "ETBUYRNM","ETSMTPCD");
                                 break;
                             }
-                       
+                        case "FIL_FRM_OTT":
+                            {
+                                SetItemsEnabled(oForm, true, "ETDOCNUM", "ETMERCNM");
+                                break;
+                            }
                     }
                 }
                 //First
