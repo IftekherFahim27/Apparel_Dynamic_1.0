@@ -1673,30 +1673,51 @@ namespace Apparel_Dynamic_1._0.Resources.Master
 
         private void ETSMPLCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+            try
             {
-                return;
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE)
+                {
+                    return;
+                }
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+                SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+                if (dt == null || dt.Rows.Count == 0)
+                    return;
+
+                string Code = dt.GetValue("DocNum", 0).ToString().Trim();
+                string Name = dt.GetValue("DocEntry", 0).ToString().Trim();
+                string smplType = dt.GetValue("U_SMPLTYPC", 0).ToString().Trim();
+                string smplTpName = dt.GetValue("U_SMPLTYPN", 0).ToString().Trim();
+                string MercCode = dt.GetValue("U_MARCHEN", 0).ToString().Trim();
+                string MercName = dt.GetValue("U_MARCHENM", 0).ToString().Trim();
+                string BuyerCode = dt.GetValue("U_CARDCODE", 0).ToString().Trim();
+                string BuyerName = dt.GetValue("U_CARDNAME", 0).ToString().Trim();
+
+                SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLCD").Specific;
+                ETCD.Value = Code;
+                SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLNM").Specific;
+                ETNM.Value = Name;
+                SAPbouiCOM.EditText ETTPCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPCD").Specific;
+                ETTPCD.Value = smplType;
+                SAPbouiCOM.EditText ETTPNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPNM").Specific;
+                ETTPNM.Value = smplTpName;
+
+                SAPbouiCOM.EditText ETMRCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERDCD").Specific;
+                ETMRCD.Value = MercCode;
+                SAPbouiCOM.EditText ETMRNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERDNM").Specific;
+                ETMRNM.Value = MercName;
+
+                SAPbouiCOM.EditText ETBYCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETBUYRCD").Specific;
+                ETBYCD.Value = BuyerCode;
+                SAPbouiCOM.EditText ETBYNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETBUYRNM").Specific;
+                ETBYNM.Value = BuyerName;
             }
-            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
-            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
-            if (dt == null || dt.Rows.Count == 0)
-                return;
+            catch (Exception ex)
+            {
 
-            string Code = dt.GetValue("DocNum", 0).ToString().Trim();
-            string Name = dt.GetValue("DocEntry", 0).ToString().Trim();
-            string smplType = dt.GetValue("U_SMPLTYPC", 0).ToString().Trim();
-            string smplTpName = dt.GetValue("U_SMPLTYPN", 0).ToString().Trim();
-
-            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLCD").Specific;
-            ETCD.Value = Code;
-            SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMPLNM").Specific;
-            ETNM.Value = Name;
-            SAPbouiCOM.EditText ETTPCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPCD").Specific;
-            ETTPCD.Value = smplType;
-            SAPbouiCOM.EditText ETTPNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETSMTPNM").Specific;
-            ETTPNM.Value = smplTpName;
-
+            }
+          
         }
 
         private void ETRTSGCD_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
