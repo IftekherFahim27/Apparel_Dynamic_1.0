@@ -74,8 +74,52 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
         {
-            //throw new System.NotImplementedException();
+            SAPbouiCOM.Form oForm = null;
 
+            try
+            {
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm.Freeze(true);
+
+                string docEntry = ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(docEntry))
+                    return;
+
+                SAPbouiCOM.DataTable oDT = oForm.DataSources.DataTables.Item("DTDRFTOR");
+
+                string qStr = @"SELECT 
+                        ""DocNum"",
+                        ""CardCode"",
+                        ""CardName"",
+                        ""U_STYLECODE"",
+                        ""U_STYLENM"",
+                        ""DocDueDate"",
+                        ""U_TOTALQTY""
+                    FROM ""OQUT""
+                    WHERE ""U_OTTENTRY"" = '" + docEntry + "'";
+
+                oDT.ExecuteQuery(qStr);
+
+                SAPbouiCOM.Grid oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("GRDDODTL").Specific;
+                oGrid.DataTable = oDT;
+
+                oGrid.AutoResizeColumns();
+
+                AddLineIfLastRowHasValue(oForm, "MTXOTDTL", "@FIL_DR_TT1", "U_STYLECODE");
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Data Load Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oForm != null)
+                    oForm.Freeze(false);
+            }
         }
 
         private void ETMERCHN_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)

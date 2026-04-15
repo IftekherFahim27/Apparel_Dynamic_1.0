@@ -15,6 +15,7 @@ namespace Apparel_Dynamic_1._0.Modules
         {
             Application.SBO_Application.ItemEvent += new SAPbouiCOM._IApplicationEvents_ItemEventEventHandler(SBO_Application_ItemEvent);
             Application.SBO_Application.FormDataEvent += new SAPbouiCOM._IApplicationEvents_FormDataEventEventHandler(SBO_Application_FormDataEvent);
+            Application.SBO_Application.MenuEvent += new SAPbouiCOM._IApplicationEvents_MenuEventEventHandler(SBO_Application_MenuEvent);
         }
 
         private void SBO_Application_ItemEvent(string FormUID, ref SAPbouiCOM.ItemEvent pVal, out bool BubbleEvent)
@@ -572,8 +573,6 @@ namespace Apparel_Dynamic_1._0.Modules
                                 SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                         }
                     }
-
-
                     else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST && pVal.ItemUID == "ETOTTNO" && pVal.BeforeAction)
                     {
                         try
@@ -800,15 +799,7 @@ namespace Apparel_Dynamic_1._0.Modules
                             Global.G_Form.Freeze(false);
                         }
                     }
-                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_MENU_CLICK && pVal.BeforeAction == false)
-                    {
-                        SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-
-                        if (oForm.TypeEx == "149")
-                        {
-                            SetCustomItemState(oForm);
-                        }
-                    }
+                   
                 }
 
             }catch(Exception ex)
@@ -927,6 +918,39 @@ namespace Apparel_Dynamic_1._0.Modules
 
                 Application.SBO_Application.StatusBar.SetText(
                     "Error in SBO_Application_FormDataEvent: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+        private void SBO_Application_MenuEvent(ref SAPbouiCOM.MenuEvent pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+
+            try
+            {
+                if (pVal.BeforeAction == false)
+                {
+                    if (pVal.MenuUID == "1281" ||   // Find
+                        pVal.MenuUID == "1282" ||   // Add
+                        pVal.MenuUID == "1288" ||   // First
+                        pVal.MenuUID == "1289" ||   // Previous
+                        pVal.MenuUID == "1290" ||   // Next
+                        pVal.MenuUID == "1291")     // Last
+                    {
+                        SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.ActiveForm;
+
+                        if (oForm != null && oForm.TypeEx == "149")
+                        {
+                            SetCustomItemState(oForm);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "MenuEvent Error: " + ex.Message,
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
