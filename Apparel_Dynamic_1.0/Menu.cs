@@ -73,7 +73,7 @@ namespace Apparel_Dynamic_1._0
 
                 //Apparel -> Transaction -> Merchandising->Sales Contract
                 CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC", "Sales Contract", 1, 1, false);
-                CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC_AMD", "Sales Contract Ammendment", 2, 1, false);
+                //CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC_AMD", "Sales Contract Ammendment", 2, 1, false);
 
                 //Apparel -> Transaction -> Merchandising -> OTT
                 CreateMainMenu("APP_TRN_MRD", "APP_TRN_MRD_OTT", "OTT", 3, 1, false);
@@ -558,6 +558,21 @@ namespace Apparel_Dynamic_1._0
                     {
                         Application.SBO_Application.MessageBox("Error Found OTT : " + e.Message);
                     }
+                }
+
+                // Sales Contract
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_SCON_SC")
+                {
+                    string formUID = "FIL_FRM_SLCNTRCT";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    SalesContract activeForm = new SalesContract();
+                    activeForm.Show();
                 }
                 //___________________________________________________________Standard______________________________________________
                 //ADD
