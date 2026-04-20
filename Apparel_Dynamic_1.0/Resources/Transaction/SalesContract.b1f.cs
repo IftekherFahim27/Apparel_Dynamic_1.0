@@ -30,7 +30,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         // -------- Edit Text --------
         private SAPbouiCOM.EditText ETCUSTMR, ETCUSTNM, ETBRNDCD, ETBRNDNM, ETSCNO,
                                     ETSCDESC, ETREFNCE, ETSCVAL, ETDOVAL, ETB2BPER,
-                                    ETB2BVAL, ETDSNBNK, ETDOCNUM, ETDOCDAT, ETCBNKAC,
+                                    ETB2BVAL, ETDOCNUM, ETDOCDAT, ETCBNKAC,
                                     ETCUSBNK, ETOBNKAC, ETOWNBNK, ETCURR, ETISUDAT,
                                     ETSHPDAT, ETEXPDAT, ETTOLPER, ETAMNDNO, ETOPNAMT,
                                     ETPORTLD, ETCNDEST, ETPRTDIS, ETINSNCE, ETSHPTOL,
@@ -49,7 +49,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Grid GRDAMEND;
         public override void OnInitializeComponent()
         {
-            // -------- Static Text --------
+            //  -------- Static Text --------
             this.STBRANCH = ((SAPbouiCOM.StaticText)(this.GetItem("STBRANCH").Specific));
             this.STMRSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STMRSTAT").Specific));
             this.STCMSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STCMSTAT").Specific));
@@ -89,23 +89,20 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STRMSCON = ((SAPbouiCOM.StaticText)(this.GetItem("STRMSCON").Specific));
             this.STSHPADD = ((SAPbouiCOM.StaticText)(this.GetItem("STSHPADD").Specific));
             this.STPRTSHP = ((SAPbouiCOM.StaticText)(this.GetItem("STPRTSHP").Specific));
-
-            // -------- Folder --------
+            //  -------- Folder --------
             this.FOLORDTL = ((SAPbouiCOM.Folder)(this.GetItem("FOLORDTL").Specific));
             this.FOLAMEND = ((SAPbouiCOM.Folder)(this.GetItem("FOLAMEND").Specific));
             this.FOLB2BDL = ((SAPbouiCOM.Folder)(this.GetItem("FOLB2BDL").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.FOLCDTLS = ((SAPbouiCOM.Folder)(this.GetItem("FOLCDTLS").Specific));
-
-            // -------- Button --------
+            //  -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNAMEND = ((SAPbouiCOM.Button)(this.GetItem("BTNAMEND").Specific));
             this.BRWSBTN = ((SAPbouiCOM.Button)(this.GetItem("BRWSBTN").Specific));
             this.DISPBTN = ((SAPbouiCOM.Button)(this.GetItem("DISPBTN").Specific));
             this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
-
-            // -------- ComboBox --------
+            //  -------- ComboBox --------
             this.CBBRANCH = ((SAPbouiCOM.ComboBox)(this.GetItem("CBBRANCH").Specific));
             this.CBMRSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMRSTAT").Specific));
             this.CBCMSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBCMSTAT").Specific));
@@ -114,27 +111,25 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.CBMDSHIP = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMDSHIP").Specific));
             this.CBPRTSHP = ((SAPbouiCOM.ComboBox)(this.GetItem("CBPRTSHP").Specific));
             this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
-
-            // -------- Edit Text --------
+            //  -------- Edit Text --------
             this.ETCUSTMR = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTMR").Specific));
             this.ETCUSTNM = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTNM").Specific));
             this.ETBRNDCD = ((SAPbouiCOM.EditText)(this.GetItem("ETBRNDCD").Specific));
             this.ETBRNDNM = ((SAPbouiCOM.EditText)(this.GetItem("ETBRNDNM").Specific));
-            this.ETSCNO   = ((SAPbouiCOM.EditText)(this.GetItem("ETSCNO").Specific));
+            this.ETSCNO = ((SAPbouiCOM.EditText)(this.GetItem("ETSCNO").Specific));
             this.ETSCDESC = ((SAPbouiCOM.EditText)(this.GetItem("ETSCDESC").Specific));
             this.ETREFNCE = ((SAPbouiCOM.EditText)(this.GetItem("ETREFNCE").Specific));
-            this.ETSCVAL  = ((SAPbouiCOM.EditText)(this.GetItem("ETSCVAL").Specific));
-            this.ETDOVAL  = ((SAPbouiCOM.EditText)(this.GetItem("ETDOVAL").Specific));
+            this.ETSCVAL = ((SAPbouiCOM.EditText)(this.GetItem("ETSCVAL").Specific));
+            this.ETDOVAL = ((SAPbouiCOM.EditText)(this.GetItem("ETDOVAL").Specific));
             this.ETB2BPER = ((SAPbouiCOM.EditText)(this.GetItem("ETB2BPER").Specific));
             this.ETB2BVAL = ((SAPbouiCOM.EditText)(this.GetItem("ETB2BVAL").Specific));
-            this.ETDSNBNK = ((SAPbouiCOM.EditText)(this.GetItem("ETDSNBNK").Specific));
             this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
             this.ETDOCDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCDAT").Specific));
             this.ETCBNKAC = ((SAPbouiCOM.EditText)(this.GetItem("ETCBNKAC").Specific));
             this.ETCUSBNK = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSBNK").Specific));
             this.ETOBNKAC = ((SAPbouiCOM.EditText)(this.GetItem("ETOBNKAC").Specific));
             this.ETOWNBNK = ((SAPbouiCOM.EditText)(this.GetItem("ETOWNBNK").Specific));
-            this.ETCURR   = ((SAPbouiCOM.EditText)(this.GetItem("ETCURR").Specific));
+            this.ETCURR = ((SAPbouiCOM.EditText)(this.GetItem("ETCURR").Specific));
             this.ETISUDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETISUDAT").Specific));
             this.ETSHPDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETSHPDAT").Specific));
             this.ETEXPDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETEXPDAT").Specific));
@@ -151,16 +146,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETRMSCON = ((SAPbouiCOM.EditText)(this.GetItem("ETRMSCON").Specific));
             this.ETSHPADD = ((SAPbouiCOM.EditText)(this.GetItem("ETSHPADD").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-
-            // -------- Matrix --------
+            //  -------- Matrix --------
             this.MTXORDTL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXORDTL").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
             this.MTXB2BDL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXB2BDL").Specific));
-
-            // -------- Grid --------
+            //  -------- Grid --------
             this.GRDAMEND = ((SAPbouiCOM.Grid)(this.GetItem("GRDAMEND").Specific));
-
-           
+            this.ComboBox0 = ((SAPbouiCOM.ComboBox)(this.GetItem("CBDSNBNK").Specific));
             this.OnCustomInitialize();
 
         }
@@ -169,12 +161,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         {
         }
 
-        private SAPbouiCOM.StaticText StaticText0;
+       
 
         private void OnCustomInitialize()
         {
 
         }
 
+        private SAPbouiCOM.ComboBox ComboBox0;
     }
 }
