@@ -434,7 +434,7 @@ namespace Apparel_Dynamic_1._0
                         Application.SBO_Application.MessageBox("Error Found : " + e.Message);
                     }
                 }
-                //Draft Order
+               
                 //Sales Quotation
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_DRO")
                 {
@@ -601,9 +601,16 @@ namespace Apparel_Dynamic_1._0
 
                             oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
                         }
-
                         //Date
                         ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+
+                        // Branch combo
+                        string sqlQuerybpl = @"SELECT ""BPLId"", ""BPLName"" FROM ""OBPL""";
+                        SAPbouiCOM.ComboBox CBCMPANY = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBBRANCH").Specific;
+                        Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
+                        CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
+
+
 
                     }
                     catch (Exception ex)
