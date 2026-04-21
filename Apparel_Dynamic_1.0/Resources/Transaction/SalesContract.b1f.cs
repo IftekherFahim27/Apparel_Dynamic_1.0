@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Apparel_Dynamic_1._0.Helper;
 
 namespace Apparel_Dynamic_1._0.Resources.Transaction
 {
@@ -23,14 +24,21 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                      STCNDEST, STPRTDIS, STINSNCE, STSHPTOL, STHSCODE,
                                      STDOCREQ, STRMSCON, STSHPADD, STPRTSHP;
 
+       
+
+
+
+
+
+
         // -------- ComboBox --------
-        private SAPbouiCOM.ComboBox CBBRANCH, CBMRSTAT, CBCMSTAT, CBINTRMS,
+        private SAPbouiCOM.ComboBox CBBRANCH, CBMRSTAT, CBCMSTAT, CBINTRMS, CBDSNBNK,
                                     CBPYTRMS, CBMDSHIP, CBPRTSHP, CBSERIES;
 
         // -------- Edit Text --------
         private SAPbouiCOM.EditText ETCUSTMR, ETCUSTNM, ETBRNDCD, ETBRNDNM, ETSCNO,
                                     ETSCDESC, ETREFNCE, ETSCVAL, ETDOVAL, ETB2BPER,
-                                    ETB2BVAL, ETDSNBNK, ETDOCNUM, ETDOCDAT, ETCBNKAC,
+                                    ETB2BVAL, ETDOCNUM, ETDOCDAT, ETCBNKAC,
                                     ETCUSBNK, ETOBNKAC, ETOWNBNK, ETCURR, ETISUDAT,
                                     ETSHPDAT, ETEXPDAT, ETTOLPER, ETAMNDNO, ETOPNAMT,
                                     ETPORTLD, ETCNDEST, ETPRTDIS, ETINSNCE, ETSHPTOL,
@@ -49,7 +57,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Grid GRDAMEND;
         public override void OnInitializeComponent()
         {
-            // -------- Static Text --------
+            //       -------- Static Text --------
             this.STBRANCH = ((SAPbouiCOM.StaticText)(this.GetItem("STBRANCH").Specific));
             this.STMRSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STMRSTAT").Specific));
             this.STCMSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STCMSTAT").Specific));
@@ -89,23 +97,20 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STRMSCON = ((SAPbouiCOM.StaticText)(this.GetItem("STRMSCON").Specific));
             this.STSHPADD = ((SAPbouiCOM.StaticText)(this.GetItem("STSHPADD").Specific));
             this.STPRTSHP = ((SAPbouiCOM.StaticText)(this.GetItem("STPRTSHP").Specific));
-
-            // -------- Folder --------
+            //       -------- Folder --------
             this.FOLORDTL = ((SAPbouiCOM.Folder)(this.GetItem("FOLORDTL").Specific));
             this.FOLAMEND = ((SAPbouiCOM.Folder)(this.GetItem("FOLAMEND").Specific));
             this.FOLB2BDL = ((SAPbouiCOM.Folder)(this.GetItem("FOLB2BDL").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.FOLCDTLS = ((SAPbouiCOM.Folder)(this.GetItem("FOLCDTLS").Specific));
-
-            // -------- Button --------
+            //       -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNAMEND = ((SAPbouiCOM.Button)(this.GetItem("BTNAMEND").Specific));
             this.BRWSBTN = ((SAPbouiCOM.Button)(this.GetItem("BRWSBTN").Specific));
             this.DISPBTN = ((SAPbouiCOM.Button)(this.GetItem("DISPBTN").Specific));
             this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
-
-            // -------- ComboBox --------
+            //       -------- ComboBox --------
             this.CBBRANCH = ((SAPbouiCOM.ComboBox)(this.GetItem("CBBRANCH").Specific));
             this.CBMRSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMRSTAT").Specific));
             this.CBCMSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBCMSTAT").Specific));
@@ -114,27 +119,35 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.CBMDSHIP = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMDSHIP").Specific));
             this.CBPRTSHP = ((SAPbouiCOM.ComboBox)(this.GetItem("CBPRTSHP").Specific));
             this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
-
-            // -------- Edit Text --------
+            this.CBDSNBNK = ((SAPbouiCOM.ComboBox)(this.GetItem("CBDSNBNK").Specific));
+            this.CBDSNBNK.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBDSNBNK_ComboSelectAfter);
+            //       -------- Edit Text --------
             this.ETCUSTMR = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTMR").Specific));
+            this.ETCUSTMR.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCUSTMR_ChooseFromListAfter);
             this.ETCUSTNM = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTNM").Specific));
             this.ETBRNDCD = ((SAPbouiCOM.EditText)(this.GetItem("ETBRNDCD").Specific));
+            this.ETBRNDCD.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETBRNDCD_ChooseFromListBefore);
+            this.ETBRNDCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETBRNDCD_ChooseFromListAfter);
             this.ETBRNDNM = ((SAPbouiCOM.EditText)(this.GetItem("ETBRNDNM").Specific));
-            this.ETSCNO   = ((SAPbouiCOM.EditText)(this.GetItem("ETSCNO").Specific));
+            this.ETSCNO = ((SAPbouiCOM.EditText)(this.GetItem("ETSCNO").Specific));
+            this.ETSCNO.LostFocusAfter += new SAPbouiCOM._IEditTextEvents_LostFocusAfterEventHandler(this.ETSCNO_LostFocusAfter);
             this.ETSCDESC = ((SAPbouiCOM.EditText)(this.GetItem("ETSCDESC").Specific));
             this.ETREFNCE = ((SAPbouiCOM.EditText)(this.GetItem("ETREFNCE").Specific));
-            this.ETSCVAL  = ((SAPbouiCOM.EditText)(this.GetItem("ETSCVAL").Specific));
-            this.ETDOVAL  = ((SAPbouiCOM.EditText)(this.GetItem("ETDOVAL").Specific));
+            this.ETSCVAL = ((SAPbouiCOM.EditText)(this.GetItem("ETSCVAL").Specific));
+            this.ETDOVAL = ((SAPbouiCOM.EditText)(this.GetItem("ETDOVAL").Specific));
             this.ETB2BPER = ((SAPbouiCOM.EditText)(this.GetItem("ETB2BPER").Specific));
             this.ETB2BVAL = ((SAPbouiCOM.EditText)(this.GetItem("ETB2BVAL").Specific));
-            this.ETDSNBNK = ((SAPbouiCOM.EditText)(this.GetItem("ETDSNBNK").Specific));
             this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
             this.ETDOCDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCDAT").Specific));
             this.ETCBNKAC = ((SAPbouiCOM.EditText)(this.GetItem("ETCBNKAC").Specific));
+            this.ETCBNKAC.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCBNKAC_ChooseFromListAfter);
+            this.ETCBNKAC.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETCBNKAC_ChooseFromListBefore);
             this.ETCUSBNK = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSBNK").Specific));
             this.ETOBNKAC = ((SAPbouiCOM.EditText)(this.GetItem("ETOBNKAC").Specific));
+            this.ETOBNKAC.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETOBNKAC_ChooseFromListAfter);
             this.ETOWNBNK = ((SAPbouiCOM.EditText)(this.GetItem("ETOWNBNK").Specific));
-            this.ETCURR   = ((SAPbouiCOM.EditText)(this.GetItem("ETCURR").Specific));
+            this.ETCURR = ((SAPbouiCOM.EditText)(this.GetItem("ETCURR").Specific));
+            this.ETCURR.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCURR_ChooseFromListAfter);
             this.ETISUDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETISUDAT").Specific));
             this.ETSHPDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETSHPDAT").Specific));
             this.ETEXPDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETEXPDAT").Specific));
@@ -151,16 +164,12 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETRMSCON = ((SAPbouiCOM.EditText)(this.GetItem("ETRMSCON").Specific));
             this.ETSHPADD = ((SAPbouiCOM.EditText)(this.GetItem("ETSHPADD").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-
-            // -------- Matrix --------
+            //       -------- Matrix --------
             this.MTXORDTL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXORDTL").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
             this.MTXB2BDL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXB2BDL").Specific));
-
-            // -------- Grid --------
+            //       -------- Grid --------
             this.GRDAMEND = ((SAPbouiCOM.Grid)(this.GetItem("GRDAMEND").Specific));
-
-           
             this.OnCustomInitialize();
 
         }
@@ -169,11 +178,247 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         {
         }
 
-        private SAPbouiCOM.StaticText StaticText0;
+       
 
         private void OnCustomInitialize()
         {
 
+        }
+
+        private void CBDSNBNK_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.ComboBox oCmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBDSNBNK").Specific;
+
+                string selectedValue = "";
+                if (oCmb.Selected != null)
+                    selectedValue = oCmb.Selected.Value.Trim();
+
+                if (selectedValue == "Y")
+                {
+                    int result = Application.SBO_Application.MessageBox(
+                        "Are you sure want to change?",
+                        1,
+                        "Yes",
+                        "No"
+                    );
+
+                    if (result == 1)
+                    {
+                        oForm.Items.Item("CBDSNBNK").Enabled = false;
+                    }
+                    else
+                    {
+                        oCmb.Select("N", SAPbouiCOM.BoSearchKey.psk_ByValue);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error in Doc Send to Bank selection: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+        }
+
+        private void ETSCNO_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                {
+                    string code = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSCNO").Specific).Value.Trim();
+                    string UCode = Global.GFunc.ToUpperCase(code);
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETSCNO").Specific).Value = UCode;
+                    if (!string.IsNullOrEmpty(UCode))
+                    {
+                        SAPbobsCOM.Recordset oRS = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                        string query = $@"SELECT 1 FROM ""@FIL_DH_OSCM"" WHERE ""U_SCNO"" = '{UCode.Replace("'", "''")}'";
+                        oRS.DoQuery(query);
+                        if (!oRS.EoF)
+                        {
+                            Application.SBO_Application.StatusBar.SetText("Code already exists!", SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                            ((SAPbouiCOM.EditText)oForm.Items.Item("ETSCNO").Specific).Value = "";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText("Error: Sales Contract Code  " + ex.Message, SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+
+
+        }
+
+        private void ETCURR_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string Code = dt.GetValue("CurrCode", 0).ToString().Trim();
+            SAPbouiCOM.EditText ETBCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETCURR").Specific;
+            ETBCD.Value = Code;
+
+        }
+
+        private void ETOBNKAC_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string Account = dt.GetValue("Account", 0).ToString().Trim();
+            string Bank = dt.GetValue("BankCode", 0).ToString().Trim();
+
+            SAPbouiCOM.EditText ETBAC = (SAPbouiCOM.EditText)oForm.Items.Item("ETOBNKAC").Specific;
+            ETBAC.Value = Account;
+            SAPbouiCOM.EditText ETBCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETOWNBNK").Specific;
+            ETBCD.Value = Bank;
+
+        }
+
+        private void ETCBNKAC_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string Account = dt.GetValue("Account", 0).ToString().Trim();
+            string Bank = dt.GetValue("BankCode", 0).ToString().Trim();
+
+            SAPbouiCOM.EditText ETBAC = (SAPbouiCOM.EditText)oForm.Items.Item("ETCBNKAC").Specific;
+            ETBAC.Value = Account;
+            SAPbouiCOM.EditText ETBCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETCUSBNK").Specific;
+            ETBCD.Value = Bank;
+
+        }
+
+        private void ETCBNKAC_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+
+            try
+            {
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                string customerCode = ((SAPbouiCOM.EditText)oForm.Items.Item("ETCUSTMR").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(customerCode))
+                {
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Please select Customer first.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                    );
+                    BubbleEvent = false;
+                    return;
+                }
+
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+                string cflUID = cflArg.ChooseFromListUID;
+
+                if (cflUID == "CFL_OCRB")
+                {
+                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
+
+                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
+                    SAPbouiCOM.Condition oCon = oCons.Add();
+
+                    oCon.Alias = "CardCode";
+                    oCon.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon.CondVal = customerCode;
+
+                    oCFL.SetConditions(oCons);
+                }
+            }
+            catch (Exception ex)
+            {   
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error filtering Bank Account CFL: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+                BubbleEvent = false;
+            }
+        }
+
+        private void ETBRNDCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string Code = dt.GetValue("Code", 0).ToString().Trim();
+            string Name = dt.GetValue("Name", 0).ToString().Trim();
+
+            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETBRNDCD").Specific;
+            ETCD.Value = Code;
+            SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETBRNDNM").Specific;
+            ETNM.Value = Name;
+
+        }
+        private void ETBRNDCD_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+            try
+            {
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+                string cflUID = cflArg.ChooseFromListUID;
+
+                if (cflUID == "CFL_BRND")
+                {
+                    SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
+                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
+                    SAPbouiCOM.Condition oCon1 = oCons.Add();
+                    oCon1.Alias = "U_ACTIVE";
+                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon1.CondVal = "Y";
+                    oCFL.SetConditions(oCons);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error filtering Brand CFL: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+                BubbleEvent = false;
+            }
+
+        }
+        private void ETCUSTMR_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string Code = dt.GetValue("CardCode", 0).ToString().Trim();
+            string Name = dt.GetValue("CardName", 0).ToString().Trim();
+
+            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETCUSTMR").Specific;
+            ETCD.Value = Code;
+
+            SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETCUSTNM").Specific;
+            ETNM.Value = Name;
         }
 
     }

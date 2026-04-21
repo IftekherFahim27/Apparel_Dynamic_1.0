@@ -434,7 +434,7 @@ namespace Apparel_Dynamic_1._0
                         Application.SBO_Application.MessageBox("Error Found : " + e.Message);
                     }
                 }
-                //Draft Order
+               
                 //Sales Quotation
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_DRO")
                 {
@@ -560,7 +560,6 @@ namespace Apparel_Dynamic_1._0
                     }
                 }
 
-                // Sales Contract
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_SCON_SC")
                 {
                     string formUID = "FIL_FRM_SLCNTRCT";
@@ -568,11 +567,67 @@ namespace Apparel_Dynamic_1._0
                     {
                         Global.G_UI_Application.Forms.Item(formUID).Select();
                         Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
-                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                            SAPbouiCOM.BoMessageTime.bmt_Short,
+                            SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
                         return;
                     }
+
                     SalesContract activeForm = new SalesContract();
                     activeForm.Show();
+
+                    SAPbouiCOM.Form oForm = null;
+
+                    try
+                    {
+                        oForm = Application.SBO_Application.Forms.Item("FIL_FRM_SLCNTRCT");
+                        oForm.Freeze(true);
+
+                        SAPbouiCOM.Matrix MTXORDTL = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDTL").Specific;
+                        SAPbouiCOM.Matrix MTXB2BDL = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXB2BDL").Specific;
+                        SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+                        MTXORDTL.AutoResizeColumns();
+                        MTXB2BDL.AutoResizeColumns();
+                        MTXATTCH.AutoResizeColumns();
+
+                        //Series Initialization
+                        SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM");   //DEFINE  DATASOURCES.
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                            Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_OSCM");  //Object Type
+                            string ocmbvalue = ocmb.Selected.Value;
+                            long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_OSCM");
+
+                            oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+                        }
+                        //Date
+                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+
+                        // Branch combo
+                        string sqlQuerybpl = @"SELECT ""BPLId"", ""BPLName"" FROM ""OBPL""";
+                        SAPbouiCOM.ComboBox CBCMPANY = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBBRANCH").Specific;
+                        Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
+                        CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
+
+
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
+                    }
+                    finally
+                    {
+                        if (oForm != null)
+                        {
+                            try
+                            {
+                                oForm.Freeze(false);
+                            }
+                            catch { }
+                        }
+                    }
                 }
                 //___________________________________________________________Standard______________________________________________
                 //ADD
