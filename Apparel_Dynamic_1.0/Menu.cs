@@ -610,7 +610,18 @@ namespace Apparel_Dynamic_1._0
                         Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
                         CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
 
+                        //Amendment No
+                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value = "1";
 
+                        //Payment Terms
+                        string payTerms = @"SELECT ""GroupNum"", ""PymntGroup"" FROM ""OCTG""";
+                        SAPbouiCOM.ComboBox CBPYTRMS = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBPYTRMS").Specific;
+                        Global.GFunc.setComboBoxValue(CBPYTRMS, payTerms);
+
+                        //Shipping Type
+                        string shipType = @"SELECT ""TrnspCode"", ""TrnspName"" FROM ""OSHP""";
+                        SAPbouiCOM.ComboBox CBMDSHIP = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBMDSHIP").Specific;
+                        Global.GFunc.setComboBoxValue(CBMDSHIP, shipType);
 
                     }
                     catch (Exception ex)

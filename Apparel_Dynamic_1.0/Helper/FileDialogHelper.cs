@@ -1,25 +1,33 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
 
 namespace Apparel_Dynamic_1._0.Helper
 {
     class FileDialogHelper
     {
+        [DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+
         public static string ShowFileDialog()
         {
             string filePath = null;
 
+            // Get SAP B1 window handle
+            IntPtr sapHandle = GetForegroundWindow();
+
             Thread t = new Thread(() =>
             {
-                using (var ofd = new System.Windows.Forms.OpenFileDialog())
+                using (OpenFileDialog ofd = new OpenFileDialog())
                 {
                     ofd.Title = "Select a file";
                     ofd.Filter = "All files (*.*)|*.*";
-                    if (ofd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+                    ofd.Multiselect = false;
+
+                    WindowWrapper wrapper = new WindowWrapper(sapHandle);
+
+                    if (ofd.ShowDialog(wrapper) == DialogResult.OK)
                     {
                         filePath = ofd.FileName;
                     }
@@ -31,6 +39,21 @@ namespace Apparel_Dynamic_1._0.Helper
             t.Join();
 
             return filePath;
+        }
+    }
+
+    public class WindowWrapper : IWin32Window
+    {
+        private readonly IntPtr _handle;
+
+        public WindowWrapper(IntPtr handle)
+        {
+            _handle = handle;
+        }
+
+        public IntPtr Handle
+        {
+            get { return _handle; }
         }
     }
 }

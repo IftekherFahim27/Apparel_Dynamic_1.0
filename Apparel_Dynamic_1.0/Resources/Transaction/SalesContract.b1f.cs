@@ -28,12 +28,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
 
 
-
-
-
         // -------- ComboBox --------
         private SAPbouiCOM.ComboBox CBBRANCH, CBMRSTAT, CBCMSTAT, CBINTRMS, CBDSNBNK,
-                                    CBPYTRMS, CBMDSHIP, CBPRTSHP, CBSERIES;
+                                    CBPYTRMS, CBMDSHIP, CBPRTSHP, CBSERIES, CBSHPADD;
 
         // -------- Edit Text --------
         private SAPbouiCOM.EditText ETCUSTMR, ETCUSTNM, ETBRNDCD, ETBRNDNM, ETSCNO,
@@ -42,7 +39,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                     ETCUSBNK, ETOBNKAC, ETOWNBNK, ETCURR, ETISUDAT,
                                     ETSHPDAT, ETEXPDAT, ETTOLPER, ETAMNDNO, ETOPNAMT,
                                     ETPORTLD, ETCNDEST, ETPRTDIS, ETINSNCE, ETSHPTOL,
-                                    ETHSCODE, ETDOCREQ, ETRMSCON, ETSHPADD, ETDOCTRY;
+                                    ETHSCODE, ETDOCREQ, ETRMSCON, ETDOCTRY;
 
         // -------- Folder --------
         private SAPbouiCOM.Folder FOLORDTL, FOLAMEND, FOLB2BDL, FOLATTCH, FOLCDTLS;
@@ -57,7 +54,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Grid GRDAMEND;
         public override void OnInitializeComponent()
         {
-            //       -------- Static Text --------
+            //          -------- Static Text --------
             this.STBRANCH = ((SAPbouiCOM.StaticText)(this.GetItem("STBRANCH").Specific));
             this.STMRSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STMRSTAT").Specific));
             this.STCMSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STCMSTAT").Specific));
@@ -97,31 +94,37 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STRMSCON = ((SAPbouiCOM.StaticText)(this.GetItem("STRMSCON").Specific));
             this.STSHPADD = ((SAPbouiCOM.StaticText)(this.GetItem("STSHPADD").Specific));
             this.STPRTSHP = ((SAPbouiCOM.StaticText)(this.GetItem("STPRTSHP").Specific));
-            //       -------- Folder --------
+            //          -------- Folder --------
             this.FOLORDTL = ((SAPbouiCOM.Folder)(this.GetItem("FOLORDTL").Specific));
             this.FOLAMEND = ((SAPbouiCOM.Folder)(this.GetItem("FOLAMEND").Specific));
             this.FOLB2BDL = ((SAPbouiCOM.Folder)(this.GetItem("FOLB2BDL").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.FOLCDTLS = ((SAPbouiCOM.Folder)(this.GetItem("FOLCDTLS").Specific));
-            //       -------- Button --------
+            //          -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNAMEND = ((SAPbouiCOM.Button)(this.GetItem("BTNAMEND").Specific));
             this.BRWSBTN = ((SAPbouiCOM.Button)(this.GetItem("BRWSBTN").Specific));
+            this.BRWSBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.BRWSBTN_ClickAfter);
             this.DISPBTN = ((SAPbouiCOM.Button)(this.GetItem("DISPBTN").Specific));
+            this.DISPBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DISPBTN_ClickAfter);
             this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
-            //       -------- ComboBox --------
+            this.DELBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DELBTN_ClickAfter);
+            //          -------- ComboBox --------
             this.CBBRANCH = ((SAPbouiCOM.ComboBox)(this.GetItem("CBBRANCH").Specific));
             this.CBMRSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMRSTAT").Specific));
+            this.CBMRSTAT.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBMRSTAT_ComboSelectAfter);
             this.CBCMSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBCMSTAT").Specific));
+            this.CBCMSTAT.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBCMSTAT_ComboSelectAfter);
             this.CBINTRMS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBINTRMS").Specific));
             this.CBPYTRMS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBPYTRMS").Specific));
             this.CBMDSHIP = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMDSHIP").Specific));
             this.CBPRTSHP = ((SAPbouiCOM.ComboBox)(this.GetItem("CBPRTSHP").Specific));
             this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.CBDSNBNK = ((SAPbouiCOM.ComboBox)(this.GetItem("CBDSNBNK").Specific));
+            this.CBSHPADD = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSHPADD").Specific));
             this.CBDSNBNK.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBDSNBNK_ComboSelectAfter);
-            //       -------- Edit Text --------
+            //          -------- Edit Text --------
             this.ETCUSTMR = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTMR").Specific));
             this.ETCUSTMR.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCUSTMR_ChooseFromListAfter);
             this.ETCUSTNM = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTNM").Specific));
@@ -162,13 +165,12 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETHSCODE = ((SAPbouiCOM.EditText)(this.GetItem("ETHSCODE").Specific));
             this.ETDOCREQ = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCREQ").Specific));
             this.ETRMSCON = ((SAPbouiCOM.EditText)(this.GetItem("ETRMSCON").Specific));
-            this.ETSHPADD = ((SAPbouiCOM.EditText)(this.GetItem("ETSHPADD").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //       -------- Matrix --------
+            //          -------- Matrix --------
             this.MTXORDTL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXORDTL").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
             this.MTXB2BDL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXB2BDL").Specific));
-            //       -------- Grid --------
+            //          -------- Grid --------
             this.GRDAMEND = ((SAPbouiCOM.Grid)(this.GetItem("GRDAMEND").Specific));
             this.OnCustomInitialize();
 
@@ -182,6 +184,166 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         private void OnCustomInitialize()
         {
+
+        }
+
+
+        private void DELBTN_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+            for (int i = 1; i <= MTXATTCH.RowCount; i++)
+            {
+                if (MTXATTCH.IsRowSelected(i))
+                {
+                    string filePath = ((SAPbouiCOM.EditText)MTXATTCH.Columns.Item("CLATTACH").Cells.Item(i).Specific).Value;
+                    if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
+                    {
+                        System.Diagnostics.Process.Start(filePath);
+                    }
+                    else
+                    {
+                        Application.SBO_Application.MessageBox("File does not exist or path is empty.");
+                    }
+                    break;
+                }
+            }
+
+        }
+
+        private void DISPBTN_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+            for (int i = 1; i <= MTXATTCH.RowCount; i++)
+            {
+                if (MTXATTCH.IsRowSelected(i))
+                {
+                    string filePath = ((SAPbouiCOM.EditText)MTXATTCH.Columns.Item("CLATTACH").Cells.Item(i).Specific).Value;
+                    if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
+                    {
+                        System.Diagnostics.Process.Start(filePath);
+                    }
+                    else
+                    {
+                        Application.SBO_Application.MessageBox("File does not exist or path is empty.");
+                    }
+                    break;
+                }
+            };
+
+        }
+
+        private void BRWSBTN_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.DBDataSource DBDataSourceLine = oForm.DataSources.DBDataSources.Item("@FIL_DR_SCM3");
+            SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+            string filePath = FileDialogHelper.ShowFileDialog();
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                int lastRow = MTXATTCH.VisualRowCount;
+                bool needNewRow = (lastRow == 0) ||
+                                  !string.IsNullOrEmpty(((SAPbouiCOM.EditText)MTXATTCH.Columns.Item("CLATTACH").Cells.Item(lastRow).Specific).Value);
+                if (needNewRow)
+                {
+                    Global.GFunc.SetNewLine(MTXATTCH, DBDataSourceLine, 1, "");
+                    lastRow = MTXATTCH.VisualRowCount;
+                }
+
+                ((SAPbouiCOM.EditText)MTXATTCH.Columns.Item("CLATTACH").Cells.Item(lastRow).Specific).Value = filePath;
+                MTXATTCH.FlushToDataSource();
+
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                {
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                }
+            }
+
+        }
+
+        private void CBCMSTAT_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.ComboBox oCmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBCMSTAT").Specific;
+
+                string selectedValue = "";
+                if (oCmb.Selected != null)
+                    selectedValue = oCmb.Selected.Value.Trim();
+
+                if (selectedValue == "C")
+                {
+                    int result = Application.SBO_Application.MessageBox(
+                        "Are you sure want to change?",
+                        1,
+                        "Yes",
+                        "No"
+                    );
+
+                    if (result == 1)
+                    {
+                        oForm.Items.Item("CBCMSTAT").Enabled = false;
+                    }
+                    else
+                    {
+                        oCmb.Select("D", SAPbouiCOM.BoSearchKey.psk_ByValue);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error in CM Status selection: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+
+        }
+
+        private void CBMRSTAT_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.ComboBox oCmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBMRSTAT").Specific;
+
+                string selectedValue = "";
+                if (oCmb.Selected != null)
+                    selectedValue = oCmb.Selected.Value.Trim();
+
+                if (selectedValue == "C")
+                {
+                    int result = Application.SBO_Application.MessageBox(
+                        "Are you sure want to change?",
+                        1,
+                        "Yes",
+                        "No"
+                    );
+
+                    if (result == 1)
+                    {
+                        oForm.Items.Item("CBMRSTAT").Enabled = false;
+                    }
+                    else
+                    {
+                        oCmb.Select("D", SAPbouiCOM.BoSearchKey.psk_ByValue);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error in MR Status selection: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
 
         }
 
@@ -419,7 +581,17 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
             SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETCUSTNM").Specific;
             ETNM.Value = Name;
+
+
+            SAPbouiCOM.Item CBSHPADD = oForm.Items.Item("CBSHPADD");
+            CBSHPADD.Enabled = true;
+
+            //Shipping Type
+            string address = $@"SELECT ""Address"", ""Street"" FROM ""CRD1"" where ""CardCode""='{Code}'";
+            SAPbouiCOM.ComboBox CBADD= (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSHPADD").Specific;
+            Global.GFunc.setComboBoxValue(CBADD, address);
         }
 
+        
     }
 }
