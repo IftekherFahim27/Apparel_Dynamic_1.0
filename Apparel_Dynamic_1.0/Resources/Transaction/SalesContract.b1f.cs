@@ -24,7 +24,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                      STCNDEST, STPRTDIS, STINSNCE, STSHPTOL, STHSCODE,
                                      STDOCREQ, STRMSCON, STSHPADD, STPRTSHP;
 
-       
+
+
+
 
 
 
@@ -54,7 +56,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Grid GRDAMEND;
         public override void OnInitializeComponent()
         {
-            //          -------- Static Text --------
+            //           -------- Static Text --------
             this.STBRANCH = ((SAPbouiCOM.StaticText)(this.GetItem("STBRANCH").Specific));
             this.STMRSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STMRSTAT").Specific));
             this.STCMSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STCMSTAT").Specific));
@@ -94,14 +96,16 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STRMSCON = ((SAPbouiCOM.StaticText)(this.GetItem("STRMSCON").Specific));
             this.STSHPADD = ((SAPbouiCOM.StaticText)(this.GetItem("STSHPADD").Specific));
             this.STPRTSHP = ((SAPbouiCOM.StaticText)(this.GetItem("STPRTSHP").Specific));
-            //          -------- Folder --------
+            //           -------- Folder --------
             this.FOLORDTL = ((SAPbouiCOM.Folder)(this.GetItem("FOLORDTL").Specific));
             this.FOLAMEND = ((SAPbouiCOM.Folder)(this.GetItem("FOLAMEND").Specific));
             this.FOLB2BDL = ((SAPbouiCOM.Folder)(this.GetItem("FOLB2BDL").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.FOLCDTLS = ((SAPbouiCOM.Folder)(this.GetItem("FOLCDTLS").Specific));
-            //          -------- Button --------
+            //           -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
+            this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNAMEND = ((SAPbouiCOM.Button)(this.GetItem("BTNAMEND").Specific));
             this.BRWSBTN = ((SAPbouiCOM.Button)(this.GetItem("BRWSBTN").Specific));
@@ -110,7 +114,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.DISPBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DISPBTN_ClickAfter);
             this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
             this.DELBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DELBTN_ClickAfter);
-            //          -------- ComboBox --------
+            //           -------- ComboBox --------
             this.CBBRANCH = ((SAPbouiCOM.ComboBox)(this.GetItem("CBBRANCH").Specific));
             this.CBMRSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMRSTAT").Specific));
             this.CBMRSTAT.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBMRSTAT_ComboSelectAfter);
@@ -124,7 +128,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.CBDSNBNK = ((SAPbouiCOM.ComboBox)(this.GetItem("CBDSNBNK").Specific));
             this.CBSHPADD = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSHPADD").Specific));
             this.CBDSNBNK.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBDSNBNK_ComboSelectAfter);
-            //          -------- Edit Text --------
+            //           -------- Edit Text --------
             this.ETCUSTMR = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTMR").Specific));
             this.ETCUSTMR.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCUSTMR_ChooseFromListAfter);
             this.ETCUSTNM = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTNM").Specific));
@@ -166,11 +170,11 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETDOCREQ = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCREQ").Specific));
             this.ETRMSCON = ((SAPbouiCOM.EditText)(this.GetItem("ETRMSCON").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //          -------- Matrix --------
+            //           -------- Matrix --------
             this.MTXORDTL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXORDTL").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
             this.MTXB2BDL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXB2BDL").Specific));
-            //          -------- Grid --------
+            //           -------- Grid --------
             this.GRDAMEND = ((SAPbouiCOM.Grid)(this.GetItem("GRDAMEND").Specific));
             this.OnCustomInitialize();
 
@@ -187,6 +191,123 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         }
 
+        private void ADDButton_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM");
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+            {
+                SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_OSCM");  //Object Type
+                string ocmbvalue = ocmb.Selected.Value;
+                long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_OSCM");
+
+                oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+
+                //Date
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+                //Amendment No
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value = "1";
+
+                // Branch combo
+                string sqlQuerybpl = @"SELECT ""BPLId"", ""BPLName"" FROM ""OBPL""";
+                SAPbouiCOM.ComboBox CBCMPANY = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBBRANCH").Specific;
+                Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
+                CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
+
+                //Payment Terms
+                string payTerms = @"SELECT ""GroupNum"", ""PymntGroup"" FROM ""OCTG""";
+                SAPbouiCOM.ComboBox CBPYTRMS = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBPYTRMS").Specific;
+                Global.GFunc.setComboBoxValue(CBPYTRMS, payTerms);
+
+                //Shipping Type
+                string shipType = @"SELECT ""TrnspCode"", ""TrnspName"" FROM ""OSHP""";
+                SAPbouiCOM.ComboBox CBMDSHIP = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBMDSHIP").Specific;
+                Global.GFunc.setComboBoxValue(CBMDSHIP, shipType);
+            }
+                       
+        }
+
+        private void ADDButton_PressedBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
+            {
+                ValidateForm(ref oForm, ref BubbleEvent);
+            }
+
+        }
+
+        private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
+        {
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
+            {
+                string branch = oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM").GetValue("U_BRANCH", 0).Trim();
+                string customer = oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM").GetValue("U_CARDCODE", 0).Trim();
+                string brand = oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM").GetValue("U_BRAND", 0).Trim();
+                string scNo = oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM").GetValue("U_SCNO", 0).Trim();
+                string issueDate = oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM").GetValue("U_ISSUEDATE", 0).Trim();
+                
+
+                if (branch == "")
+                {
+                    Global.GFunc.ShowError("Select Branch");
+                    oForm.ActiveItem = "CBBRANCH";
+                    return BubbleEvent = false;
+                }
+                if (customer == "")
+                {
+                    Global.GFunc.ShowError("Enter Customer Code");
+                    oForm.ActiveItem = "ETCUSTMR";
+                    return BubbleEvent = false;
+                }
+                else if (brand == "")
+                {
+                    Global.GFunc.ShowError("Enter Brand Code");
+                    oForm.ActiveItem = "ETBRNDCD";
+                    return BubbleEvent = false;
+                }
+                else if (scNo == "")
+                {
+                    Global.GFunc.ShowError("Enter Sales Contract No ");
+                    oForm.ActiveItem = "ETSCNO";
+                    return BubbleEvent = false;
+                }
+                else if (issueDate == "")
+                {
+                    Global.GFunc.ShowError("Enter Issue Date");
+                    oForm.ActiveItem = "ETISUDAT";
+                    return BubbleEvent = false;
+                }
+
+                //Prevent New Empty Free Line
+                PreventEmptyLastRow(oForm, "@FIL_DR_SCM1", MTXORDTL, "U_DRFTORDN");
+                PreventEmptyLastRow(oForm, "@FIL_DR_SCM2", MTXB2BDL, "U_BTBLCDNO");
+                PreventEmptyLastRow(oForm, "@FIL_DR_SCM3", MTXATTCH, "U_ATCHMENT");
+                
+            }
+
+            return BubbleEvent;
+        }
+
+        private void PreventEmptyLastRow(SAPbouiCOM.Form oForm, string dbDatasourceUID, SAPbouiCOM.Matrix matrix, string columnName)
+        {
+            SAPbouiCOM.DBDataSource oDB = oForm.DataSources.DBDataSources.Item(dbDatasourceUID);
+            int rowCount = matrix.VisualRowCount;
+
+            if (rowCount > 0)
+            {
+                string lastValue = oDB.GetValue(columnName, rowCount - 1).Trim();
+
+                if (string.IsNullOrEmpty(lastValue) || lastValue.Equals("0.0"))
+                {
+                    matrix.DeleteRow(rowCount);
+                    oDB.RemoveRecord(rowCount - 1);
+                }
+            }
+        }
 
         private void DELBTN_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {

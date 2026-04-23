@@ -629,6 +629,52 @@ namespace Apparel_Dynamic_1._0.Modules
                         }
                         catch { }
                     }
+                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST && pVal.ItemUID == "ETSCNO" && pVal.BeforeAction)
+                    {
+                        try
+                        {
+                            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                            string customerCode = ((SAPbouiCOM.EditText)oForm.Items.Item("4").Specific).Value.Trim();
+
+                            if (string.IsNullOrEmpty(customerCode))
+                            {
+                                Application.SBO_Application.StatusBar.SetText(
+                                    "Please select Customer first.",
+                                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                                );
+                                BubbleEvent = false;
+                                return;
+                            }
+
+
+                            SAPbouiCOM.IChooseFromListEvent cflEvent = (SAPbouiCOM.IChooseFromListEvent)pVal;
+                            if (cflEvent.ChooseFromListUID == "CFL_SLCN")
+                            {
+                               
+                                SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item("CFL_SLCN");
+
+                                SAPbouiCOM.Conditions oCons = (SAPbouiCOM.Conditions)
+                                    Application.SBO_Application.CreateObject(SAPbouiCOM.BoCreatableObjectType.cot_Conditions);
+
+                                SAPbouiCOM.Condition oCon1 = oCons.Add();
+                                oCon1.Alias = "U_CARDCODE";
+                                oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                                oCon1.CondVal = customerCode;
+
+                                oCFL.SetConditions(oCons);
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            Application.SBO_Application.StatusBar.SetText(
+                                "Error filtering OTT CFL: " + ex.Message,
+                                SAPbouiCOM.BoMessageTime.bmt_Short,
+                                SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                            BubbleEvent = false;
+                        }
+                    }
                     else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_CHOOSE_FROM_LIST && pVal.ItemUID == "ETSCNO" && pVal.BeforeAction == false)
                     {
                         try
@@ -644,8 +690,8 @@ namespace Apparel_Dynamic_1._0.Modules
 
                                 try
                                 {
-                                    //Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETOTTNO").Specific;
-                                    //Global.oEdit.Value = oDataTable.GetValue("DocNum", 0).ToString().Trim();
+                                    Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSCNO").Specific;
+                                    Global.oEdit.Value = oDataTable.GetValue("U_SCNO", 0).ToString().Trim();
 
                                     Global.oEdit = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSCNTRY").Specific;
                                     Global.oEdit.Value = oDataTable.GetValue("DocEntry", 0).ToString().Trim();
