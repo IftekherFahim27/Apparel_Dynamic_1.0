@@ -1006,22 +1006,24 @@ namespace Apparel_Dynamic_1._0.Modules
         {
             try
             {
-                bool isFindMode = (oForm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE);
+                bool isFindMode = oForm.Mode == SAPbouiCOM.BoFormMode.fm_FIND_MODE;
 
+                // Editable fields
                 oForm.Items.Item("ETSTYLNO").Enabled = true;
                 oForm.Items.Item("ETOTTNO").Enabled = true;
                 oForm.Items.Item("ETSCNO").Enabled = true;
-
                 oForm.Items.Item("BTNSTYLD").Enabled = true;
                 oForm.Items.Item("BTQty").Enabled = true;
 
-                // always disabled
-                oForm.Items.Item("ETQty").Enabled = false;
-                oForm.Items.Item("ETOTNTRY").Enabled = isFindMode;
-                oForm.Items.Item("ETSCNTRY").Enabled = isFindMode;
-                oForm.Items.Item("ETSTYLDS").Enabled = isFindMode;
-                oForm.Items.Item("ETSLNTRY").Enabled = isFindMode;
-                oForm.Items.Item("ETCRSZNTRY").Enabled = isFindMode;
+                // Always disabled except FIND mode
+                SetEditable(oForm, "ETOTNTRY", isFindMode);
+                SetEditable(oForm, "ETSCNTRY", isFindMode);
+                SetEditable(oForm, "ETSTYLDS", isFindMode);
+                SetEditable(oForm, "ETSLNTRY", isFindMode);
+                SetEditable(oForm, "ETCRSZNTRY", isFindMode);
+
+                // Always disabled
+                SetEditable(oForm, "ETQty", false);
             }
             catch (Exception ex)
             {
@@ -1030,6 +1032,19 @@ namespace Apparel_Dynamic_1._0.Modules
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error);
             }
+        }
+
+        private void SetEditable(SAPbouiCOM.Form oForm, string itemId, bool editable)
+        {
+            oForm.Items.Item(itemId).SetAutoManagedAttribute(
+                SAPbouiCOM.BoAutoManagedAttr.ama_Editable,
+                -1,
+                editable
+                    ? SAPbouiCOM.BoModeVisualBehavior.mvb_True
+                    : SAPbouiCOM.BoModeVisualBehavior.mvb_False
+            );
+
+            oForm.Items.Item(itemId).Enabled = editable;
         }
 
         public void openStyleMaster(string styleCode)
