@@ -352,8 +352,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     T0.""U_PRTSHP"",
 
                     CASE T0.""U_PRTSHP""
-                        WHEN 'Y' THEN 'Yes'
-                        WHEN 'N' THEN 'No'
+                        WHEN 'A' THEN 'Allowed'
+                        WHEN 'NA' THEN 'Not Allowed'
                         ELSE IFNULL(T0.""U_PRTSHP"", '')
                     END AS ""PartialShipment""
 
