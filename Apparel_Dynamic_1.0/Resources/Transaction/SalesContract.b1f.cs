@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Apparel_Dynamic_1._0.Helper;
+using Apparel_Dynamic_1._0.Resources.Version;
 
 namespace Apparel_Dynamic_1._0.Resources.Transaction
 {
@@ -32,6 +33,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.ComboBox CBBRANCH, CBMRSTAT, CBCMSTAT, CBINTRMS, CBDSNBNK,
                                     CBPYTRMS, CBMDSHIP, CBPRTSHP, CBSERIES, CBSHPADD;
 
+
+
         // -------- Edit Text --------
         private SAPbouiCOM.EditText ETCUSTMR, ETCUSTNM, ETBRNDCD, ETBRNDNM, ETSCNO,
                                     ETSCDESC, ETREFNCE, ETSCVAL, ETDOVAL, ETB2BPER,
@@ -54,7 +57,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Grid GRDAMEND;
         public override void OnInitializeComponent()
         {
-            //              -------- Static Text --------
+            //               -------- Static Text --------
             this.STBRANCH = ((SAPbouiCOM.StaticText)(this.GetItem("STBRANCH").Specific));
             this.STMRSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STMRSTAT").Specific));
             this.STCMSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STCMSTAT").Specific));
@@ -94,13 +97,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STRMSCON = ((SAPbouiCOM.StaticText)(this.GetItem("STRMSCON").Specific));
             this.STSHPADD = ((SAPbouiCOM.StaticText)(this.GetItem("STSHPADD").Specific));
             this.STPRTSHP = ((SAPbouiCOM.StaticText)(this.GetItem("STPRTSHP").Specific));
-            //              -------- Folder --------
+            //               -------- Folder --------
             this.FOLORDTL = ((SAPbouiCOM.Folder)(this.GetItem("FOLORDTL").Specific));
             this.FOLAMEND = ((SAPbouiCOM.Folder)(this.GetItem("FOLAMEND").Specific));
             this.FOLB2BDL = ((SAPbouiCOM.Folder)(this.GetItem("FOLB2BDL").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.FOLCDTLS = ((SAPbouiCOM.Folder)(this.GetItem("FOLCDTLS").Specific));
-            //              -------- Button --------
+            //               -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
             this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
@@ -113,7 +116,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.DISPBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DISPBTN_ClickAfter);
             this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
             this.DELBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DELBTN_ClickAfter);
-            //              -------- ComboBox --------
+            //               -------- ComboBox --------
             this.CBBRANCH = ((SAPbouiCOM.ComboBox)(this.GetItem("CBBRANCH").Specific));
             this.CBMRSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMRSTAT").Specific));
             this.CBMRSTAT.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBMRSTAT_ComboSelectAfter);
@@ -127,7 +130,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.CBDSNBNK = ((SAPbouiCOM.ComboBox)(this.GetItem("CBDSNBNK").Specific));
             this.CBSHPADD = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSHPADD").Specific));
             this.CBDSNBNK.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBDSNBNK_ComboSelectAfter);
-            //              -------- Edit Text --------
+            //               -------- Edit Text --------
             this.ETCUSTMR = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTMR").Specific));
             this.ETCUSTMR.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETCUSTMR_ChooseFromListBefore);
             this.ETCUSTMR.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCUSTMR_ChooseFromListAfter);
@@ -171,12 +174,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETDOCREQ = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCREQ").Specific));
             this.ETRMSCON = ((SAPbouiCOM.EditText)(this.GetItem("ETRMSCON").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //              -------- Matrix --------
+            //               -------- Matrix --------
             this.MTXORDTL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXORDTL").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
             this.MTXB2BDL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXB2BDL").Specific));
-            //              -------- Grid --------
+            //               -------- Grid --------
             this.GRDAMEND = ((SAPbouiCOM.Grid)(this.GetItem("GRDAMEND").Specific));
+            this.GRDAMEND.DoubleClickAfter += new SAPbouiCOM._IGridEvents_DoubleClickAfterEventHandler(this.GRDAMEND_DoubleClickAfter);
             this.OnCustomInitialize();
 
         }
@@ -194,11 +198,570 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         {
 
         }
+        private void GRDAMEND_DoubleClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+            try
+            {
+                if (pVal.Row < 0)
+                    return;
+
+                int ret = Application.SBO_Application.MessageBox(
+                    "Are you sure you want to see the Amendment Details?",
+                    1, "OK", "Cancel");
+
+                if (ret != 1)
+                    return;
+
+                SAPbouiCOM.Grid oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("GRDAMEND").Specific;
+                SAPbouiCOM.DataTable oDT = oGrid.DataTable;
+
+                string docEntry = oDT.GetValue("DocEntry", pVal.Row).ToString().Trim();
+                string docNum = oDT.GetValue("DocNum", pVal.Row).ToString().Trim();
+                string amendNo = oDT.GetValue("U_AMNDMNT", pVal.Row).ToString().Trim();
+                string logInst = oDT.GetValue("LogInst", pVal.Row).ToString().Trim();
+
+                OpenAmendmentInNewForm(docEntry, docNum, amendNo, logInst);
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "GRDAMEND_DoubleClickAfter Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Long,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+        private void OpenAmendmentInNewForm(string docEntry, string docNum, string amendNo, string logInst)
+        {
+            SAPbouiCOM.Form newForm = null;
+
+            try
+            {
+                SalesContractAmendLog frm = new SalesContractAmendLog();
+                frm.Show();
+
+                newForm = (SAPbouiCOM.Form)frm.UIAPIRawForm;
+
+                if (newForm == null)
+                    throw new Exception("Amendment log form could not be opened.");
+
+                newForm.Freeze(true);
+
+                newForm.Title = "Sales Contract - Amendment " + amendNo;
+
+                ClearAmendmentForm(newForm);
+
+                newForm.PaneLevel = 1;
+
+                LoadAmendmentHeader(newForm, docEntry, docNum, amendNo, logInst);
+                LoadAmendmentOrderMatrix(newForm, docEntry, logInst);
+                LoadAmendmentB2BMatrix(newForm, docEntry, logInst);
+                LoadAmendmentAttachmentMatrix(newForm, docEntry, logInst);
+
+                newForm.Mode = SAPbouiCOM.BoFormMode.fm_VIEW_MODE;
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "OpenAmendmentInNewForm Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Long,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (newForm != null)
+                    newForm.Freeze(false);
+            }
+        }
+
+        private void LoadAmendmentHeader(SAPbouiCOM.Form oForm, string docEntry, string docNum, string amendNo, string logInst)
+        {
+             string sql = $@"
+                SELECT
+                    T0.""DocEntry"",
+                    T0.""DocNum"",
+                    T0.""Series"",
+                    S.""SeriesName"",
+
+                    T0.""U_BRANCH"",
+                    B.""BPLName"" AS ""BranchName"",
+
+                    T0.""U_MSCSTTS"",
+                    CASE T0.""U_MSCSTTS""
+                        WHEN 'D' THEN 'Draft'
+                        WHEN 'C' THEN 'Complete'
+                        ELSE IFNULL(T0.""U_MSCSTTS"", '')
+                    END AS ""MarketingStatus"",
+
+                    T0.""U_CSCSTTS"",
+                    CASE T0.""U_CSCSTTS""
+                        WHEN 'D' THEN 'Draft'
+                        WHEN 'C' THEN 'Complete'
+                        ELSE IFNULL(T0.""U_CSCSTTS"", '')
+                    END AS ""CommercialStatus"",
+
+                    T0.""U_CARDCODE"",
+                    T0.""U_CARDNAME"",
+                    T0.""U_BRAND"",
+                    T0.""U_BRANDN"",
+                    T0.""U_SCNO"",
+                    T0.""U_SCDESC"",
+                    T0.""U_REFERANCE"",
+                    T0.""U_SCVALUE"",
+                    T0.""U_DRFTVALUE"",
+                    T0.""U_BTOBLCPER"",
+                    T0.""U_BTOBLCVALUE"",
+
+                    T0.""U_DOCSNDBK"",
+                    CASE T0.""U_DOCSNDBK""
+                        WHEN 'Y' THEN 'Yes'
+                        WHEN 'N' THEN 'No'
+                        ELSE IFNULL(T0.""U_DOCSNDBK"", '')
+                    END AS ""DocSendToBank"",
+
+                    T0.""U_DOCDATE"",
+                    T0.""U_CUSBKACT"",
+                    T0.""U_CUSBANK"",
+                    T0.""U_OWNBKACT"",
+                    T0.""U_OWNBNAME"",
+                    T0.""U_CURRENCY"",
+                    T0.""U_ISSUEDATE"",
+                    T0.""U_SHIPDATE"",
+                    T0.""U_EXPDATE"",
+                    T0.""U_TOLRPERC"",
+                    T0.""U_AMNDMNT"",
+                    T0.""U_OPBTBAMT"",
+
+                    T0.""U_INCOTRMS"",
+                    T0.""U_TRMSOFPM"",
+                    P.""PymntGroup"" AS ""PaymentTermsName"",
+                    T0.""U_SHIPTRMS"",
+                    SH.""TrnspName"" AS ""ShipmentName"",
+
+                    T0.""U_PRTOFLDG"",
+                    T0.""U_CNTROFDT"",
+                    T0.""U_PORTOFDS"",
+                    T0.""U_INSRNCE"",
+                    T0.""U_SHIPTLRN"",
+                    T0.""U_HSCODE"",
+                    T0.""U_DOCRQRD"",
+                    T0.""U_TRMSCOND"",
+                    T0.""U_SHPADDRS"",
+                    T0.""U_PRTSHP"",
+
+                    CASE T0.""U_PRTSHP""
+                        WHEN 'Y' THEN 'Yes'
+                        WHEN 'N' THEN 'No'
+                        ELSE IFNULL(T0.""U_PRTSHP"", '')
+                    END AS ""PartialShipment""
+
+                FROM ""@AFIL_DH_OSCM"" T0
+                LEFT JOIN ""NNM1"" S 
+                    ON T0.""Series"" = S.""Series""
+                LEFT JOIN ""OBPL"" B 
+                    ON TO_NVARCHAR(T0.""U_BRANCH"") = TO_NVARCHAR(B.""BPLId"")
+                LEFT JOIN ""OCTG"" P 
+                    ON TO_NVARCHAR(T0.""U_TRMSOFPM"") = TO_NVARCHAR(P.""GroupNum"")
+                LEFT JOIN ""OSHP"" SH 
+                    ON TO_NVARCHAR(T0.""U_SHIPTRMS"") = TO_NVARCHAR(SH.""TrnspCode"")
+                WHERE T0.""DocEntry"" = '{docEntry}'
+                  AND T0.""DocNum"" = '{docNum}'
+                  AND T0.""U_AMNDMNT"" = '{amendNo}'
+                  AND T0.""LogInst"" = '{logInst}'";
+
+            SAPbobsCOM.Recordset rs =
+                (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            rs.DoQuery(sql);
+
+            if (!rs.EoF)
+            {
+                SetEdit(oForm, "ETDOCTRY", rs.Fields.Item("DocEntry").Value);
+                SetEdit(oForm, "ETDOCNUM", rs.Fields.Item("DocNum").Value);
+                SetEdit(oForm, "ETSERIES", rs.Fields.Item("SeriesName").Value);
+
+                SetEdit(oForm, "ETBRANCH", rs.Fields.Item("BranchName").Value);
+                SetEdit(oForm, "ETMRSTAT", rs.Fields.Item("MarketingStatus").Value);
+                SetEdit(oForm, "ETCMSTAT", rs.Fields.Item("CommercialStatus").Value);
+
+                SetEdit(oForm, "ETCUSTMR", rs.Fields.Item("U_CARDCODE").Value);
+                SetEdit(oForm, "ETCUSTNM", rs.Fields.Item("U_CARDNAME").Value);
+                SetEdit(oForm, "ETBRNDCD", rs.Fields.Item("U_BRAND").Value);
+                SetEdit(oForm, "ETBRNDNM", rs.Fields.Item("U_BRANDN").Value);
+                SetEdit(oForm, "ETSCNO", rs.Fields.Item("U_SCNO").Value);
+                SetEdit(oForm, "ETSCDESC", rs.Fields.Item("U_SCDESC").Value);
+                SetEdit(oForm, "ETREFNCE", rs.Fields.Item("U_REFERANCE").Value);
+                SetEdit(oForm, "ETSCVAL", rs.Fields.Item("U_SCVALUE").Value);
+                SetEdit(oForm, "ETDOVAL", rs.Fields.Item("U_DRFTVALUE").Value);
+                SetEdit(oForm, "ETB2BPER", rs.Fields.Item("U_BTOBLCPER").Value);
+                SetEdit(oForm, "ETB2BVAL", rs.Fields.Item("U_BTOBLCVALUE").Value);
+                SetEdit(oForm, "ETDSNBNK", rs.Fields.Item("DocSendToBank").Value);
+
+                SetEditDate(oForm, "ETDOCDAT", rs.Fields.Item("U_DOCDATE").Value);
+                SetEdit(oForm, "ETCBNKAC", rs.Fields.Item("U_CUSBKACT").Value);
+                SetEdit(oForm, "ETCUSBNK", rs.Fields.Item("U_CUSBANK").Value);
+                SetEdit(oForm, "ETOBNKAC", rs.Fields.Item("U_OWNBKACT").Value);
+                SetEdit(oForm, "ETOWNBNK", rs.Fields.Item("U_OWNBNAME").Value);
+                SetEdit(oForm, "ETCURR", rs.Fields.Item("U_CURRENCY").Value);
+                SetEditDate(oForm, "ETISUDAT", rs.Fields.Item("U_ISSUEDATE").Value);
+                SetEditDate(oForm, "ETSHPDAT", rs.Fields.Item("U_SHIPDATE").Value);
+                SetEditDate(oForm, "ETEXPDAT", rs.Fields.Item("U_EXPDATE").Value);
+                SetEdit(oForm, "ETTOLPER", rs.Fields.Item("U_TOLRPERC").Value);
+                SetEdit(oForm, "ETAMNDNO", rs.Fields.Item("U_AMNDMNT").Value);
+                SetEdit(oForm, "ETOPNAMT", rs.Fields.Item("U_OPBTBAMT").Value);
+
+                SetEdit(oForm, "ETINTRMS", rs.Fields.Item("U_INCOTRMS").Value);
+                SetEdit(oForm, "ETPYTRMS", rs.Fields.Item("PaymentTermsName").Value);
+                SetEdit(oForm, "ETMDSHIP", rs.Fields.Item("ShipmentName").Value);
+                SetEdit(oForm, "ETPORTLD", rs.Fields.Item("U_PRTOFLDG").Value);
+                SetEdit(oForm, "ETCNDEST", rs.Fields.Item("U_CNTROFDT").Value);
+                SetEdit(oForm, "ETPRTDIS", rs.Fields.Item("U_PORTOFDS").Value);
+                SetEdit(oForm, "ETINSNCE", rs.Fields.Item("U_INSRNCE").Value);
+                SetEdit(oForm, "ETSHPTOL", rs.Fields.Item("U_SHIPTLRN").Value);
+                SetEdit(oForm, "ETHSCODE", rs.Fields.Item("U_HSCODE").Value);
+                SetEdit(oForm, "ETDOCREQ", rs.Fields.Item("U_DOCRQRD").Value);
+                SetEdit(oForm, "ETRMSCON", rs.Fields.Item("U_TRMSCOND").Value);
+                SetEdit(oForm, "ETSHPADD", rs.Fields.Item("U_SHPADDRS").Value);
+                SetEdit(oForm, "ETPRTSHP", rs.Fields.Item("PartialShipment").Value);
+            }
+        }
+
+        private void LoadAmendmentOrderMatrix(SAPbouiCOM.Form oForm, string docEntry, string logInst)
+        {
+            SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDTL").Specific;
+            mtx.Clear();
+
+            string sql = $@"
+                            SELECT
+                                ""LineId"",
+                                ""U_DRFTORDN"",
+                                ""U_DRFTNRY"",
+                                ""U_STYLECODE"",
+                                ""U_STYLENTRY"",
+                                ""U_DOCDATE"",
+                                ""U_DUEDATE"",
+                                ""U_TOTALQTY"",
+                                ""U_TOTALVALUE""
+                            FROM ""@AFIL_DR_SCM1""
+                            WHERE ""DocEntry"" = '{docEntry}'
+                              AND ""LogInst"" = '{logInst}'
+                            ORDER BY ""LineId""";
+
+            SAPbobsCOM.Recordset rs =
+                (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            rs.DoQuery(sql);
+
+            int row = 1;
+
+            while (!rs.EoF)
+            {
+                mtx.AddRow();
+
+                SetMatrixValue(mtx, "#", row, rs.Fields.Item("LineId").Value);
+                SetMatrixValue(mtx, "CLDONO", row, rs.Fields.Item("U_DRFTORDN").Value);
+                SetMatrixValue(mtx, "CLDONTRY", row, rs.Fields.Item("U_DRFTNRY").Value);
+                SetMatrixValue(mtx, "CLSTYLNO", row, rs.Fields.Item("U_STYLECODE").Value);
+                SetMatrixValue(mtx, "CLSLNTRY", row, rs.Fields.Item("U_STYLENTRY").Value);
+                SetMatrixDate(mtx, "CLDOPSTD", row, rs.Fields.Item("U_DOCDATE").Value);
+                SetMatrixDate(mtx, "CLDODLVD", row, rs.Fields.Item("U_DUEDATE").Value);
+                SetMatrixValue(mtx, "CLTTLQTY", row, rs.Fields.Item("U_TOTALQTY").Value);
+                SetMatrixValue(mtx, "CLTTLVAL", row, rs.Fields.Item("U_TOTALVALUE").Value);
+
+                row++;
+                rs.MoveNext();
+            }
+
+            mtx.AutoResizeColumns();
+        }
+
+        private void LoadAmendmentB2BMatrix(SAPbouiCOM.Form oForm, string docEntry, string logInst)
+        {
+            SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXB2BDL").Specific;
+            mtx.Clear();
+
+            string sql = $@"
+                            SELECT
+                                ""LineId"",
+                                ""U_BTBLCDNO"",
+                                ""U_LCNO"",
+                                ""U_BTBLCNTRY"",
+                                ""U_ISSUEDATE"",
+                                ""U_LCVALUE""
+                            FROM ""@AFIL_DR_SCM2""
+                            WHERE ""DocEntry"" = '{docEntry}'
+                              AND ""LogInst"" = '{logInst}'
+                            ORDER BY ""LineId""";
+
+            SAPbobsCOM.Recordset rs =
+                (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            rs.DoQuery(sql);
+
+            int row = 1;
+
+            while (!rs.EoF)
+            {
+                mtx.AddRow();
+
+                SetMatrixValue(mtx, "#", row, rs.Fields.Item("LineId").Value);
+                SetMatrixValue(mtx, "CLB2BDNO", row, rs.Fields.Item("U_BTBLCDNO").Value);
+                SetMatrixValue(mtx, "CLBLCNO", row, rs.Fields.Item("U_LCNO").Value);
+                SetMatrixValue(mtx, "CLBCNTRY", row, rs.Fields.Item("U_BTBLCNTRY").Value);
+                SetMatrixDate(mtx, "CLISUDAT", row, rs.Fields.Item("U_ISSUEDATE").Value);
+                SetMatrixValue(mtx, "CLVALUE", row, rs.Fields.Item("U_LCVALUE").Value);
+
+                row++;
+                rs.MoveNext();
+            }
+
+            mtx.AutoResizeColumns();
+        }
+
+        private void LoadAmendmentAttachmentMatrix(SAPbouiCOM.Form oForm, string docEntry, string logInst)
+        {
+            SAPbouiCOM.Matrix mtx = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+            mtx.Clear();
+
+            string sql = $@"
+                            SELECT
+                                ""LineId"",
+                                ""U_ATCHMENT"",
+                                ""U_REMARKS""
+                            FROM ""@AFIL_DR_SCM3""
+                            WHERE ""DocEntry"" = '{docEntry}'
+                              AND ""LogInst"" = '{logInst}'
+                            ORDER BY ""LineId""";
+
+            SAPbobsCOM.Recordset rs =
+                (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            rs.DoQuery(sql);
+
+            int row = 1;
+
+            while (!rs.EoF)
+            {
+                mtx.AddRow();
+
+                SetMatrixValue(mtx, "#", row, rs.Fields.Item("LineId").Value);
+                SetMatrixValue(mtx, "CLATTACH", row, rs.Fields.Item("U_ATCHMENT").Value);
+                SetMatrixValue(mtx, "CLREMARK", row, rs.Fields.Item("U_REMARKS").Value);
+
+                row++;
+                rs.MoveNext();
+            }
+
+            mtx.AutoResizeColumns();
+        }
+
+        private void ClearAmendmentForm(SAPbouiCOM.Form oForm)
+        {
+            string[] editIds =
+            {
+        "ETDOCTRY","ETDOCNUM","ETSERIES","ETBRANCH","ETMRSTAT","ETCMSTAT",
+        "ETCUSTMR","ETCUSTNM","ETBRNDCD","ETBRNDNM","ETSCNO","ETSCDESC",
+        "ETREFNCE","ETSCVAL","ETDOVAL","ETB2BPER","ETB2BVAL","ETDSNBNK",
+        "ETDOCDAT","ETCBNKAC","ETCUSBNK","ETOBNKAC","ETOWNBNK","ETCURR",
+        "ETISUDAT","ETSHPDAT","ETEXPDAT","ETTOLPER","ETAMNDNO","ETOPNAMT",
+        "ETINTRMS","ETPYTRMS","ETMDSHIP","ETPORTLD","ETCNDEST","ETPRTDIS",
+        "ETINSNCE","ETSHPTOL","ETHSCODE","ETDOCREQ","ETRMSCON","ETSHPADD",
+        "ETPRTSHP"
+    };
+
+            foreach (string id in editIds)
+            {
+                try
+                {
+                    ((SAPbouiCOM.EditText)oForm.Items.Item(id).Specific).Value = "";
+                }
+                catch { }
+            }
+
+            try { ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDTL").Specific).Clear(); } catch { }
+            try { ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXB2BDL").Specific).Clear(); } catch { }
+            try { ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific).Clear(); } catch { }
+        }
+
+        private void SetEdit(SAPbouiCOM.Form oForm, string itemId, object value)
+        {
+            try
+            {
+                ((SAPbouiCOM.EditText)oForm.Items.Item(itemId).Specific).Value =
+                    value == null ? "" : value.ToString();
+            }
+            catch { }
+        }
+
+        private void SetEditDate(SAPbouiCOM.Form oForm, string itemId, object value)
+        {
+            try
+            {
+                if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
+                {
+                    SetEdit(oForm, itemId, "");
+                    return;
+                }
+
+                DateTime dt = Convert.ToDateTime(value);
+                SetEdit(oForm, itemId, dt.ToString("yyyyMMdd"));
+            }
+            catch
+            {
+                SetEdit(oForm, itemId, value);
+            }
+        }
+
+        private void SetMatrixValue(SAPbouiCOM.Matrix mtx, string colId, int row, object value)
+        {
+            try
+            {
+                ((SAPbouiCOM.EditText)mtx.Columns.Item(colId).Cells.Item(row).Specific).Value =
+                    value == null ? "" : value.ToString();
+            }
+            catch { }
+        }
+
+        private void SetMatrixDate(SAPbouiCOM.Matrix mtx, string colId, int row, object value)
+        {
+            try
+            {
+                if (value == null || string.IsNullOrWhiteSpace(value.ToString()))
+                {
+                    SetMatrixValue(mtx, colId, row, "");
+                    return;
+                }
+
+                DateTime dt = Convert.ToDateTime(value);
+                SetMatrixValue(mtx, colId, row, dt.ToString("yyyyMMdd"));
+            }
+            catch
+            {
+                SetMatrixValue(mtx, colId, row, value);
+            }
+        }
+
 
         private void Form_DataUpdateAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
         {
+            if (!pVal.ActionSuccess)
+                return;
 
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            CheckAndLoadAmendmentGrid(oForm);
+        }
 
+        private void CheckAndLoadAmendmentGrid(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                string amendNoStr = ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value.Trim();
+
+                int amendNo = 0;
+                int.TryParse(amendNoStr, out amendNo);
+
+                if (amendNo > 1)
+                {
+                    LoadAmendmentGrid(oForm);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Amendment check error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+        private void LoadAmendmentGrid(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                oForm.Freeze(true);
+
+                string docEntry = ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value.Trim();
+                string docNum = ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCNUM").Specific).Value.Trim();
+
+                if (string.IsNullOrWhiteSpace(docEntry) || string.IsNullOrWhiteSpace(docNum))
+                {
+                    return;
+                }
+
+                SAPbouiCOM.Grid oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("GRDAMEND").Specific;
+
+                SAPbouiCOM.DataTable oDT;
+                try
+                {
+                    oDT = oForm.DataSources.DataTables.Item("DT_AMEN");
+                }
+                catch
+                {
+                    oDT = oForm.DataSources.DataTables.Add("DT_AMEN");
+                }
+
+                // Clear grid/data table first
+                oGrid.DataTable = null;
+                oDT.Clear();
+
+                string query = $@"
+                                SELECT 
+                                    ROW_NUMBER() OVER (ORDER BY ""DocEntry"") AS ""#"",
+                                    ""DocEntry"",
+                                    ""DocNum"",
+                                    ""Creator"",
+                                    ""CreateDate"",
+                                    ""UpdateDate"",
+                                    ""LogInst"",
+                                    ""U_AMNDMNT""
+                                FROM
+                                (
+                                    SELECT 
+                                        ""DocEntry"",
+                                        ""DocNum"",
+                                        ""Creator"",
+                                        ""CreateDate"",
+                                        ""UpdateDate"",
+                                        MAX(""LogInst"") AS ""LogInst"",
+                                        ""U_AMNDMNT""
+                                    FROM ""@AFIL_DH_OSCM""
+                                    WHERE ""DocEntry"" = {docEntry}
+                                      AND ""DocNum"" = {docNum}
+                                    GROUP BY 
+                                        ""DocEntry"",
+                                        ""DocNum"",
+                                        ""Creator"",
+                                        ""CreateDate"",
+                                        ""UpdateDate"",
+                                        ""U_AMNDMNT""
+                                ) T
+                                ORDER BY ""DocEntry"";
+        ";
+
+                oDT.ExecuteQuery(query);
+
+                oGrid.DataTable = oDT;
+
+                for (int i = 0; i < oGrid.Columns.Count; i++)
+                {
+                    oGrid.Columns.Item(i).Editable = false;
+                }
+
+                oGrid.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error loading amendment grid: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                oForm.Freeze(false);
+            }
         }
 
         private void BTNAMEND_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -239,6 +802,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     amendNo++;
 
                     etAmndNo.Value = amendNo.ToString();
+
                 }
             }
             catch (Exception ex)
@@ -390,6 +954,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 SetDraftOrderTotalValue(oForm);
                 oMatrix.AutoResizeColumns();
                 ControlSendToBank(oForm);
+                CheckAndLoadAmendmentGrid(oForm);
             }
             catch (Exception ex)
             {
