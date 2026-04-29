@@ -561,15 +561,15 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         {
             string[] editIds =
             {
-        "ETDOCTRY","ETDOCNUM","ETSERIES","ETBRANCH","ETMRSTAT","ETCMSTAT",
-        "ETCUSTMR","ETCUSTNM","ETBRNDCD","ETBRNDNM","ETSCNO","ETSCDESC",
-        "ETREFNCE","ETSCVAL","ETDOVAL","ETB2BPER","ETB2BVAL","ETDSNBNK",
-        "ETDOCDAT","ETCBNKAC","ETCUSBNK","ETOBNKAC","ETOWNBNK","ETCURR",
-        "ETISUDAT","ETSHPDAT","ETEXPDAT","ETTOLPER","ETAMNDNO","ETOPNAMT",
-        "ETINTRMS","ETPYTRMS","ETMDSHIP","ETPORTLD","ETCNDEST","ETPRTDIS",
-        "ETINSNCE","ETSHPTOL","ETHSCODE","ETDOCREQ","ETRMSCON","ETSHPADD",
-        "ETPRTSHP"
-    };
+                "ETDOCTRY","ETDOCNUM","ETSERIES","ETBRANCH","ETMRSTAT","ETCMSTAT",
+                "ETCUSTMR","ETCUSTNM","ETBRNDCD","ETBRNDNM","ETSCNO","ETSCDESC",
+                "ETREFNCE","ETSCVAL","ETDOVAL","ETB2BPER","ETB2BVAL","ETDSNBNK",
+                "ETDOCDAT","ETCBNKAC","ETCUSBNK","ETOBNKAC","ETOWNBNK","ETCURR",
+                "ETISUDAT","ETSHPDAT","ETEXPDAT","ETTOLPER","ETAMNDNO","ETOPNAMT",
+                "ETINTRMS","ETPYTRMS","ETMDSHIP","ETPORTLD","ETCNDEST","ETPRTDIS",
+                "ETINSNCE","ETSHPTOL","ETHSCODE","ETDOCREQ","ETRMSCON","ETSHPADD",
+                "ETPRTSHP"
+                };
 
             foreach (string id in editIds)
             {
@@ -715,7 +715,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                     ""CreateDate"",
                                     ""UpdateDate"",
                                     ""LogInst"",
-                                    ""U_AMNDMNT""
+                                    ""U_AMNDMNT"" AS ""Amendment No""
                                 FROM
                                 (
                                     SELECT 
@@ -775,21 +775,39 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 SAPbouiCOM.ComboBox cbCMSTAT = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBCMSTAT").Specific;
                 SAPbouiCOM.EditText etAmndNo = (SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific;
 
-                string sendToBank = "";
-
+                string comboValue = "";
                 if (cbDSNBNK.Selected != null)
-                    sendToBank = cbDSNBNK.Selected.Value.Trim();
+                    comboValue = cbDSNBNK.Selected.Value.Trim();
 
-                // If not sent to bank
-                if (sendToBank == "N")
+                string dbValue = GetSentToBankFromDB(oForm);
+
+                // Case 1 : DB = N and Combo = N
+                if (dbValue == "N" && comboValue == "N")
                 {
-                    Application.SBO_Application.MessageBox("This Document is not sent to Bank Yet.");
+                    Application.SBO_Application.MessageBox("This document is not sent to Bank yet.");
                     return;
                 }
 
-                // If sent to bank
-                if (sendToBank == "Y")
+                // Case 2 : Combo = Y but DB = N
+                if (dbValue == "N" && comboValue == "Y")
                 {
+                    Application.SBO_Application.MessageBox("Please Update the Sales Contract before creating Amendment.");
+                    return;
+                }
+
+                // Case 3 : Allowed
+                if (dbValue == "Y")
+                {
+                    int confirm = Application.SBO_Application.MessageBox(
+                        "Are you sure you want to create Amendment?",
+                        1,
+                        "Yes",
+                        "No"
+                    );
+
+                    if (confirm != 1)
+                        return;
+
                     cbMRSTAT.Select("D", SAPbouiCOM.BoSearchKey.psk_ByValue);
                     cbCMSTAT.Select("D", SAPbouiCOM.BoSearchKey.psk_ByValue);
                     cbDSNBNK.Select("N", SAPbouiCOM.BoSearchKey.psk_ByValue);
@@ -803,6 +821,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
                     etAmndNo.Value = amendNo.ToString();
 
+                    Application.SBO_Application.MessageBox("Amendment Done successfully.");
                 }
             }
             catch (Exception ex)
@@ -813,6 +832,40 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
             }
+        }
+
+        private string GetSentToBankFromDB(SAPbouiCOM.Form oForm)
+        {
+            string docEntryStr = ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value.Trim();
+            string amendNoStr = ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value.Trim();
+
+            // If document is not saved yet, DB has no DocEntry
+            if (string.IsNullOrWhiteSpace(docEntryStr))
+                return "N";
+
+            int docEntry;
+            if (!int.TryParse(docEntryStr, out docEntry))
+                return "N";
+
+            int amendNo;
+            if (!int.TryParse(amendNoStr, out amendNo))
+                amendNo = 1;
+
+            string qStr = $@"
+                            SELECT IFNULL(""U_DOCSNDBK"", 'N') AS ""U_DOCSNDBK""
+                            FROM ""@FIL_DH_OSCM""
+                            WHERE ""DocEntry"" = {docEntry}
+                            AND IFNULL(""U_AMNDMNT"", 1) = {amendNo}";
+
+            SAPbobsCOM.Recordset rs =
+                (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+            rs.DoQuery(qStr);
+
+            if (rs.RecordCount == 0)
+                return "N";
+
+            return rs.Fields.Item("U_DOCSNDBK").Value.ToString().Trim();
         }
 
         private void ControlSendToBank(SAPbouiCOM.Form oForm)
@@ -848,19 +901,21 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             {
                 oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
 
+                LoadCustomerShippingAddress(oForm);
+
                 string scNo = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSCNO").Specific).Value.Trim();
 
                 if (string.IsNullOrWhiteSpace(scNo))
                 {
                     Application.SBO_Application.StatusBar.SetText(
-                        "Sales Contract No is empty.",
+                        "Sales Contract No. is empty.",
                         SAPbouiCOM.BoMessageTime.bmt_Short,
                         SAPbouiCOM.BoStatusBarMessageType.smt_Warning
                     );
                     return;
                 }
 
-                // SC saved or not check
+                // SC saved or not check and based on Disable fields
                 bool scExists = IsSCNoExistsInOSCM(scNo);
                 DisableFieldsIfSCExists(oForm, scExists);
 
@@ -1043,7 +1098,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         private void DisableFieldsIfSCExists(SAPbouiCOM.Form oForm, bool exists)
         {
-            string[] itemIds = {"ETSCNO","ETCUSTMR","ETBRNDCD","ETISUDAT"};
+            string[] itemIds = {"ETSCNO","ETCUSTMR","ETBRNDCD","ETISUDAT","CBSERIES"};
 
             foreach (string itemId in itemIds)
             {
@@ -1176,21 +1231,37 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private void DELBTN_ClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.DBDataSource DBDataSourceLine = oForm.DataSources.DBDataSources.Item("@FIL_DR_SCM3");
             SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
 
+
+            MTXATTCH.FlushToDataSource();
             for (int i = 1; i <= MTXATTCH.RowCount; i++)
             {
                 if (MTXATTCH.IsRowSelected(i))
                 {
-                    string filePath = ((SAPbouiCOM.EditText)MTXATTCH.Columns.Item("CLATTACH").Cells.Item(i).Specific).Value;
-                    if (!string.IsNullOrEmpty(filePath) && System.IO.File.Exists(filePath))
+                    int rowIndex = i - 1;
+
+                    if (rowIndex >= 0 && rowIndex < DBDataSourceLine.Size)
                     {
-                        System.Diagnostics.Process.Start(filePath);
+                        DBDataSourceLine.RemoveRecord(rowIndex);
+                        for (int j = 0; j < DBDataSourceLine.Size; j++)
+                        {
+                            DBDataSourceLine.Offset = j;
+                            DBDataSourceLine.SetValue("LineId", j, (j + 1).ToString());
+                        }
+                        MTXATTCH.LoadFromDataSource();
+                        Application.SBO_Application.MessageBox("Selected row deleted.");
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                        {
+                            oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                        }
                     }
                     else
                     {
-                        Application.SBO_Application.MessageBox("File does not exist or path is empty.");
+                        Application.SBO_Application.MessageBox("Invalid row index.");
                     }
+
                     break;
                 }
             }
@@ -1617,6 +1688,41 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             Global.GFunc.setComboBoxValue(CBADD, address);
         }
 
-        
+
+
+        private void LoadCustomerShippingAddress(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                string Code = ((SAPbouiCOM.EditText)oForm.Items.Item("ETCUSTMR").Specific).Value.Trim();
+
+                if (string.IsNullOrWhiteSpace(Code))
+                    return;
+
+                SAPbouiCOM.Item CBSHPADD = oForm.Items.Item("CBSHPADD");
+                CBSHPADD.Enabled = true;
+
+                string safeCode = Code.Replace("'", "''");
+
+                string address = $@"
+                                 SELECT ""Address"", ""Street"" 
+                                 FROM ""CRD1"" 
+                                 WHERE ""CardCode"" = '{safeCode}'";
+
+                SAPbouiCOM.ComboBox CBADD =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSHPADD").Specific;
+
+                Global.GFunc.setComboBoxValue(CBADD, address);
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "LoadCustomerShippingAddress Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+
     }
 }
