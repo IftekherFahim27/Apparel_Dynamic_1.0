@@ -829,6 +829,75 @@ namespace Apparel_Dynamic_1._0
                                 SetItemsEnabled(oForm, false, "ETDOCNUM", "ETMERCNM");
                                 break;
                             }
+                        case "FIL_FRM_SLCNTRCT":
+                            {
+                                try
+                                {
+                                    oForm.Freeze(true);
+
+                                    //Disable Field
+                                    SetItemsEnabled(oForm, false, "ETDOCNUM", "ETCUSTNM", "ETBRNDNM", "ETDOVAL",
+                                                    "CBDSNBNK", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO");
+
+                                    SAPbouiCOM.Matrix MTXORDTL = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDTL").Specific;
+                                    SAPbouiCOM.Matrix MTXB2BDL = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXB2BDL").Specific;
+                                    SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
+
+                                    MTXORDTL.AutoResizeColumns();
+                                    MTXB2BDL.AutoResizeColumns();
+                                    MTXATTCH.AutoResizeColumns();
+
+                                    //Series Initialization
+                                    SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM");
+
+                                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                                    {
+                                        SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                                        Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_OSCM");
+
+                                        string ocmbvalue = ocmb.Selected.Value;
+                                        long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_OSCM");
+
+                                        oDBH.SetValue("DocNum", 0, docno.ToString());
+                                    }
+
+                                    //Date
+                                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value =
+                                        DateTime.Now.ToString("yyyyMMdd");
+
+                                    //Branch combo
+                                    string sqlQuerybpl = @"SELECT ""BPLId"", ""BPLName"" FROM ""OBPL""";
+                                    SAPbouiCOM.ComboBox CBCMPANY = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBBRANCH").Specific;
+                                    Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
+                                    CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
+
+                                    //Amendment No
+                                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value = "1";
+
+                                    //Payment Terms
+                                    string payTerms = @"SELECT ""GroupNum"", ""PymntGroup"" FROM ""OCTG""";
+                                    SAPbouiCOM.ComboBox CBPYTRMS = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBPYTRMS").Specific;
+                                    Global.GFunc.setComboBoxValue(CBPYTRMS, payTerms);
+
+                                    //Shipping Type
+                                    string shipType = @"SELECT ""TrnspCode"", ""TrnspName"" FROM ""OSHP""";
+                                    SAPbouiCOM.ComboBox CBMDSHIP = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBMDSHIP").Specific;
+                                    Global.GFunc.setComboBoxValue(CBMDSHIP, shipType);
+                                }
+                                catch (Exception ex)
+                                {
+                                    Application.SBO_Application.StatusBar.SetText(
+                                        "Error: " + ex.Message,
+                                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                                        SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+                                }
+                                finally
+                                {
+                                    oForm.Freeze(false);
+                                }
+
+                                break;
+                            }
                     }
                 }
                 //Find Mode
@@ -955,6 +1024,11 @@ namespace Apparel_Dynamic_1._0
                         case "FIL_FRM_OTT":
                             {
                                 SetItemsEnabled(oForm, true, "ETDOCNUM", "ETMERCNM");
+                                break;
+                            }
+                        case "FIL_FRM_SLCNTRCT":
+                            {
+                                SetItemsEnabled(oForm, true, "ETDOCNUM", "ETCUSTNM", "ETBRNDNM", "ETDOVAL", "CBDSNBNK", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO");
                                 break;
                             }
                     }
