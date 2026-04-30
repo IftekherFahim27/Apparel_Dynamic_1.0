@@ -2192,7 +2192,6 @@ namespace Apparel_Dynamic_1._0.Resources.Master
                 if (cflUID == "CFL_PGRP")
                 {
                     SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
-
                     SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
 
                     // Condition 1 
@@ -2275,7 +2274,66 @@ namespace Apparel_Dynamic_1._0.Resources.Master
         {
             SAPbouiCOM.Form oForm = null;
 
-                
+            try
+            {
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm.Freeze(true);
+
+                SAPbouiCOM.Item tabBox = oForm.Items.Item("Item_56");
+
+                SAPbouiCOM.Item mtxColorItem = oForm.Items.Item("MTXCOLOR");
+                SAPbouiCOM.Item mtxSubColorItem = oForm.Items.Item("MTXSBCLR");
+                SAPbouiCOM.Item stSubClr = oForm.Items.Item("STSUBCLR");
+
+                int leftMargin = 12;
+                int rightMargin = 12;
+                int gap = 12;
+
+                int matrixTop = tabBox.Top + 37;
+                int matrixHeight = tabBox.Height - 55;
+
+                int availableWidth = tabBox.Width - leftMargin - rightMargin - gap;
+
+                int colorWidth = 320;
+                int subColorWidth = availableWidth - colorWidth;
+
+                if (subColorWidth < 300)
+                {
+                    colorWidth = availableWidth / 2;
+                    subColorWidth = availableWidth - colorWidth;
+                }
+
+                mtxColorItem.Left = tabBox.Left + leftMargin;
+                mtxColorItem.Top = matrixTop;
+                mtxColorItem.Width = colorWidth;
+                mtxColorItem.Height = matrixHeight;
+
+                mtxSubColorItem.Left = mtxColorItem.Left + mtxColorItem.Width + gap;
+                mtxSubColorItem.Top = matrixTop;
+                mtxSubColorItem.Width = subColorWidth;
+                mtxSubColorItem.Height = matrixHeight;
+
+                stSubClr.Left = mtxSubColorItem.Left;
+                stSubClr.Top = matrixTop - 20;
+
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXCOLOR").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXSBCLR").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXITEM").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXSIZE").Specific).AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Resize error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (oForm != null)
+                    oForm.Freeze(false);
+            }
         }
 
         private SAPbouiCOM.EditText EditText0;
