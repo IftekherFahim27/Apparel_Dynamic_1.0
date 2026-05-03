@@ -39,6 +39,7 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_BRAND", "Brand", 11, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_SBDVSN", "Sub Division", 12, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_DEPT", "Department", 13, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_USETYPE", "Use Type", 14, 1, false);
 
 
                 //Apparel ->  Master
@@ -72,7 +73,7 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_TRN_MRD", "APP_TRN_MRD_SCON", "Sales Contract ", 2, 2, false);
 
                 //Apparel -> Transaction -> Merchandising->Sales Contract
-                CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC", "Sales Contract", 1, 1, false);
+                CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC", "Sales Contract", 0, 1, false);
                 //CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC_AMD", "Sales Contract Ammendment", 2, 1, false);
 
                 //Apparel -> Transaction -> Merchandising -> OTT
@@ -285,6 +286,21 @@ namespace Apparel_Dynamic_1._0
                     Department activeForm = new Department();
                     activeForm.Show();
                 }
+                // Use Type 
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_USETYPE")
+                {
+                    string formUID = "FIL_FRM_USETYPE";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    UseType activeForm = new UseType();
+                    activeForm.Show();
+                }
+
                 //___________________________________________________________Master________________________________________________
                 //Sample Master
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_SAM_SM")
@@ -559,7 +575,7 @@ namespace Apparel_Dynamic_1._0
                         Application.SBO_Application.MessageBox("Error Found OTT : " + e.Message);
                     }
                 }
-
+                //Sales Contract
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_SCON_SC")
                 {
                     string formUID = "FIL_FRM_SLCNTRCT";
@@ -622,6 +638,48 @@ namespace Apparel_Dynamic_1._0
                         string shipType = @"SELECT ""TrnspCode"", ""TrnspName"" FROM ""OSHP""";
                         SAPbouiCOM.ComboBox CBMDSHIP = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBMDSHIP").Specific;
                         Global.GFunc.setComboBoxValue(CBMDSHIP, shipType);
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
+                    }
+                    finally
+                    {
+                        if (oForm != null)
+                        {
+                            try
+                            {
+                                oForm.Freeze(false);
+                            }
+                            catch { }
+                        }
+                    }
+                }
+                //CAD
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_MRD_CAD")
+                {
+                    string formUID = "FIL_FRM_CAD";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short,
+                            SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+
+                    CAD activeForm = new CAD();
+                    activeForm.Show();
+
+                    SAPbouiCOM.Form oForm = null;
+
+                    try
+                    {
+                        oForm = Application.SBO_Application.Forms.Item("FIL_FRM_CAD");
+                        oForm.Freeze(true);
+
+                       
 
                     }
                     catch (Exception ex)
@@ -740,6 +798,12 @@ namespace Apparel_Dynamic_1._0
                                 break;
                             }
                         case "FIL_FRM_SIZE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
+                                break;
+                            }
+                        case "FIL_FRM_USETYPE":
                             {
                                 SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
                                 oUomItem.Enabled = true;
@@ -1029,6 +1093,12 @@ namespace Apparel_Dynamic_1._0
                         case "FIL_FRM_SLCNTRCT":
                             {
                                 SetItemsEnabled(oForm, true, "ETDOCNUM", "ETCUSTNM", "ETBRNDNM", "ETDOVAL", "CBDSNBNK", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO");
+                                break;
+                            }
+                        case "FIL_FRM_USETYPE":
+                            {
+                                SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
+                                oUomItem.Enabled = true;
                                 break;
                             }
                     }

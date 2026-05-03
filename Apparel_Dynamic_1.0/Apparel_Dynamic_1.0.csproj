@@ -106,6 +106,12 @@
     <Compile Include="Resources\Setup\SubDivision.b1f.cs">
       <DependentUpon>SubDivision.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Setup\UseType.b1f.cs">
+      <DependentUpon>UseType.b1f</DependentUpon>
+    </Compile>
+    <Compile Include="Resources\Transaction\CAD.b1f.cs">
+      <DependentUpon>CAD.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Transaction\OTT.b1f.cs">
       <DependentUpon>OTT.b1f</DependentUpon>
     </Compile>
@@ -178,6 +184,12 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\SubDivision.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\UseType.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Transaction\CAD.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Transaction\OTT.b1f">
