@@ -679,7 +679,36 @@ namespace Apparel_Dynamic_1._0
                         oForm = Application.SBO_Application.Forms.Item("FIL_FRM_CAD");
                         oForm.Freeze(true);
 
-                       
+                        SAPbouiCOM.Matrix MTXCDCLR = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCDCLR").Specific;
+                        SAPbouiCOM.Matrix MTXMRCON = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXMRCON").Specific;
+                        SAPbouiCOM.Grid GRDSCLR = (SAPbouiCOM.Grid)oForm.Items.Item("GRDSCLR").Specific;
+                        SAPbouiCOM.Grid GRDSIZE = (SAPbouiCOM.Grid)oForm.Items.Item("GRDSIZE").Specific;
+                        SAPbouiCOM.Grid GRDCDCON = (SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+
+
+                        MTXCDCLR.AutoResizeColumns();
+                        MTXMRCON.AutoResizeColumns();
+                        GRDSCLR.AutoResizeColumns();
+                        GRDSIZE.AutoResizeColumns();
+                        GRDCDCON.AutoResizeColumns();
+                        
+                        
+
+
+                        //Series Initialization
+                        SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_CADFABCN");   //DEFINE  DATASOURCES.
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                            Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_CADFABCN");  //Object Type
+                            string ocmbvalue = ocmb.Selected.Value;
+                            long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_CADFABCN");
+
+                            oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+                        }
+                        //Date
+                        ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+
 
                     }
                     catch (Exception ex)
