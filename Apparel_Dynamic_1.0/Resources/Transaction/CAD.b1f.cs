@@ -15,6 +15,14 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         private SAPbouiCOM.StaticText STSTATUS, STSTYLCD, STSTYLDS, STMERCHN, STDOCNUM, STDOCDAT, STDRFTNO, STSLCLR, STCDCLR;
         private SAPbouiCOM.EditText ETSLCLR, ETSTYLCD, ETSTYLDS, ETMERCHN, ETDOCNUM, ETMERCNM, ETDONTRY, ETDOCDAT, ETDRFTNO, ETCDCLR, ETDOCTRY, ETSTNTRY;
+
+        private void BTNFETCH_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+           //
+
+
+        }
+
         private SAPbouiCOM.ComboBox CBDOCNUM, CBSTATUS;
         private SAPbouiCOM.Folder FOLMERCON, FOLCANCON, FOLTEMP;
         private SAPbouiCOM.Matrix MTXMRCON, MTXCDCLR, MTXCDCON;
@@ -24,7 +32,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         public override void OnInitializeComponent()
         {
-            //   Static text
+            //     Static text
             this.STSTATUS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTATUS").Specific));
             this.STSTYLCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLCD").Specific));
             this.STSTYLDS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLDS").Specific));
@@ -34,34 +42,39 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STDRFTNO = ((SAPbouiCOM.StaticText)(this.GetItem("STDRFTNO").Specific));
             this.STSLCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STSLCLR").Specific));
             this.STCDCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STCDCLR").Specific));
-            //   Edittext
+            //     Edittext
             this.ETSLCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETSLCLR").Specific));
             this.ETSTYLCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSTYLCD").Specific));
+            this.ETSTYLCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETSTYLCD_ChooseFromListAfter);
             this.ETSTYLDS = ((SAPbouiCOM.EditText)(this.GetItem("ETSTYLDS").Specific));
             this.ETMERCHN = ((SAPbouiCOM.EditText)(this.GetItem("ETMERCHN").Specific));
+            this.ETMERCHN.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETMERCHN_ChooseFromListAfter);
             this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
             this.ETDOCDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCDAT").Specific));
             this.ETDRFTNO = ((SAPbouiCOM.EditText)(this.GetItem("ETDRFTNO").Specific));
+            this.ETDRFTNO.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETDRFTNO_ChooseFromListAfter);
+            this.ETDRFTNO.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETDRFTNO_ChooseFromListBefore);
             this.ETCDCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETCDCLR").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //   Combo box
+            //     Combo box
             this.CBDOCNUM = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.CBSTATUS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSTATUS").Specific));
-            //   Folder
+            //     Folder
             this.FOLMERCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLMERCON").Specific));
             this.FOLCANCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLCANCN").Specific));
             this.FOLTEMP = ((SAPbouiCOM.Folder)(this.GetItem("FOLTEMP").Specific));
-            //   Matrix
+            //     Matrix
             this.MTXMRCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXMRCON").Specific));
             this.MTXCDCLR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCLR").Specific));
             this.MTXCDCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCON").Specific));
-            //   Grid
+            //     Grid
             this.GRDCDCON = ((SAPbouiCOM.Grid)(this.GetItem("GRDCDCON").Specific));
             this.GRDSIZE = ((SAPbouiCOM.Grid)(this.GetItem("GRDSIZE").Specific));
-            //   Button
+            //     Button
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNFETCH = ((SAPbouiCOM.Button)(this.GetItem("BTNFETCH").Specific));
+            this.BTNFETCH.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.BTNFETCH_PressedAfter);
             this.BTNLDCAD = ((SAPbouiCOM.Button)(this.GetItem("BTNLDCAD").Specific));
             this.BTNSAVE = ((SAPbouiCOM.Button)(this.GetItem("BTNSAVE").Specific));
             this.GRDSCLR = ((SAPbouiCOM.Grid)(this.GetItem("GRDSCLR").Specific));
@@ -84,6 +97,111 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         }
 
+        private void ETDRFTNO_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string docNum = dt.GetValue("DocNum", 0).ToString().Trim();
+            string docEntry = dt.GetValue("DocEntry", 0).ToString().Trim();
+            //ETDONTRY
+            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETDONTRY").Specific;
+            ETCD.Value = docNum;
+            SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETDRFTNO").Specific;
+            ETNM.Value = docEntry;
+
+        }
+
+        private void ETDRFTNO_ChooseFromListBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+
+            try
+            {
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                string styleCode = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSTYLCD").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(styleCode))
+                {
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Please Select Style first.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                    );
+                    BubbleEvent = false;
+                    return;
+                }
+
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+                string cflUID = cflArg.ChooseFromListUID;
+
+                if (cflUID == "CFL_DO")
+                {
+                    SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
+
+                    SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
+                    SAPbouiCOM.Condition oCon = oCons.Add();
+
+                    oCon.Alias = "U_STYLECODE";
+                    oCon.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon.CondVal = styleCode;
+
+                    oCFL.SetConditions(oCons);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Error filtering Style Code: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+                BubbleEvent = false;
+            }
+        }
+
+        private void ETMERCHN_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string Code = dt.GetValue("empID", 0).ToString().Trim();
+            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERDCD").Specific;
+            ETCD.Value = Code;
+           
+
+        }
+
+        private void ETSTYLCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string styleCode = dt.GetValue("U_STYLECODE", 0).ToString().Trim();
+            string styleDesc = dt.GetValue("U_STYLENM", 0).ToString().Trim();
+            string styleEntry = dt.GetValue("DocEntry", 0).ToString().Trim();
+
+            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSTYLCD").Specific;
+            ETCD.Value = styleCode;
+
+            SAPbouiCOM.EditText ETDS = (SAPbouiCOM.EditText)oForm.Items.Item("ETSTYLDS").Specific;
+            ETDS.Value = styleDesc;
+
+            SAPbouiCOM.EditText ETENTRY = (SAPbouiCOM.EditText)oForm.Items.Item("ETSTNTRY").Specific;
+            ETENTRY.Value = styleEntry;
+
+
+        }
 
         private void Form_ResizeAfter(SAPbouiCOM.SBOItemEventArg pVal)
         {
