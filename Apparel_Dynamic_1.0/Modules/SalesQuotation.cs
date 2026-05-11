@@ -176,7 +176,7 @@ namespace Apparel_Dynamic_1._0.Modules
 
                             Global.G_Form.Items.Add("STSTYLNO", SAPbouiCOM.BoFormItemTypes.it_STATIC);
                             Global.oStatic = (SAPbouiCOM.StaticText)Global.G_Form.Items.Item("STSTYLNO").Specific;
-                            Global.oStatic.Caption = "Style No.";
+                            Global.oStatic.Caption = "Style No.*";
 
                             Global.G_Form.Items.Item("STSTYLNO").Top = Global.G_Form.Items.Item("2002").Top + 18;
                             Global.G_Form.Items.Item("STSTYLNO").Left = Global.G_Form.Items.Item("2002").Left;
@@ -832,59 +832,98 @@ namespace Apparel_Dynamic_1._0.Modules
                                 SAPbouiCOM.BoStatusBarMessageType.smt_Error);
                         }
                     }
-                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED && pVal.ItemUID == "1" && pVal.BeforeAction == true && Global.G_Form.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                    else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED
+       && pVal.ItemUID == "1"
+       && pVal.BeforeAction == true
+       &&
+       (
+           Global.G_Form.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE ||
+           Global.G_Form.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE
+       ))
                     {
                         try
                         {
+                            // =========================
+                            // 1. Style Code Validation
+                            // =========================
+                            SAPbouiCOM.EditText etStyleNo =
+                                (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETSTYLNO").Specific;
+
+                            if (string.IsNullOrWhiteSpace(etStyleNo.Value))
+                            {
+                                Application.SBO_Application.StatusBar.SetText(
+                                    "Please enter the Style Code first.",
+                                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+
+                                BubbleEvent = false;
+                                return;
+                            }
+
+                            // =========================
+                            // 2. Matrix 38 Qty vs SCGrid Qty Validation
+                            // =========================
+                            if (!ValidateMatrixAndGridQty(Global.G_Form))
+                            {
+                                BubbleEvent = false;
+                                return;
+                            }
+
                             Global.G_Form.Freeze(true);
 
-                            // ##### Insert Size
+                            // =========================
+                            // 3. Insert / Update Size Details
+                            // =========================
                             int SizeEntry = 0;
-                            var oItem = (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific;
-                            if (!string.IsNullOrEmpty(oItem.Value))
+
+                            var oItem =
+                                (SAPbouiCOM.EditText)Global.G_Form.Items.Item("ETCRSZNTRY").Specific;
+
+                            if (!string.IsNullOrWhiteSpace(oItem.Value))
                                 SizeEntry = Convert.ToInt32(oItem.Value);
 
                             try
                             {
-                                Global.oComp.StartTransaction();
+                                if (!Global.oComp.InTransaction)
+                                    Global.oComp.StartTransaction();
 
                                 InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
 
-                                Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
+                                if (Global.oComp.InTransaction)
+                                    Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
                             }
                             catch (Exception ex)
                             {
                                 try
                                 {
-                                    Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
+                                    if (Global.oComp.InTransaction)
+                                        Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
                                 }
                                 catch { }
 
-                                try
-                                {
-                                    Global.oComp.StartTransaction();
-                                    InsertSizeDetails(Global.G_Form, "", "", SizeEntry);
-                                    Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_Commit);
-                                }
-                                catch (Exception ex2)
-                                {
-                                    Global.G_UI_Application.StatusBar.SetText(ex2.Message, SAPbouiCOM.BoMessageTime.bmt_Short,
-                                                                        SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-                                    try
-                                    {
-                                        Global.oComp.EndTransaction(SAPbobsCOM.BoWfTransOpt.wf_RollBack);
-                                    }
-                                    catch { }
-                                }
+                                Application.SBO_Application.StatusBar.SetText(
+                                    "Error saving Size-Colour details: " + ex.Message,
+                                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+
+                                BubbleEvent = false;
+                                return;
                             }
 
                             Global.G_Form.Freeze(false);
                         }
                         catch (Exception ex)
                         {
-                            Global.G_Form.Freeze(false);
-                        }
+                            try { Global.G_Form.Freeze(false); } catch { }
 
+                            Application.SBO_Application.StatusBar.SetText(
+                                "Error before saving document: " + ex.Message,
+                                SAPbouiCOM.BoMessageTime.bmt_Short,
+                                SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+
+                            BubbleEvent = false;
+                            return;
+                        }
                     }
                     else if (pVal.EventType == SAPbouiCOM.BoEventTypes.et_ITEM_PRESSED && pVal.ItemUID == "1" && pVal.BeforeAction == false && Global.G_Form.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
                     {
@@ -1665,6 +1704,65 @@ namespace Apparel_Dynamic_1._0.Modules
 
             return -1;
         }
+
+
+        private bool ValidateMatrixAndGridQty(SAPbouiCOM.Form oForm)
+        {
+            SAPbouiCOM.Matrix oMatrix =
+                (SAPbouiCOM.Matrix)oForm.Items.Item("38").Specific;
+
+            SAPbouiCOM.DataTable oDataTable =
+                oForm.DataSources.DataTables.Item("DT_0");
+
+            double matrixQty = 0;
+            double gridQty = 0;
+
+            // Matrix 38 qty column = "11"
+            for (int i = 1; i <= oMatrix.RowCount; i++)
+            {
+                string itemCode = "";
+                string qtyText = "";
+
+                try
+                {
+                    itemCode = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("1").Cells.Item(i).Specific).Value.Trim();
+                    qtyText = ((SAPbouiCOM.EditText)oMatrix.Columns.Item("11").Cells.Item(i).Specific).Value.Trim();
+                }
+                catch { }
+
+                if (!string.IsNullOrWhiteSpace(itemCode))
+                {
+                    double qty = 0;
+                    double.TryParse(qtyText, out qty);
+                    matrixQty += qty;
+                }
+            }
+
+            // SCGrid total column = "Total"
+            for (int i = 0; i < oDataTable.Rows.Count; i++)
+            {
+                double qty = 0;
+                object val = oDataTable.Columns.Item("Total").Cells.Item(i).Value;
+
+                if (val != null && !string.IsNullOrWhiteSpace(val.ToString()))
+                    double.TryParse(val.ToString(), out qty);
+
+                gridQty += qty;
+            }
+
+            if (matrixQty != gridQty)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    $"Item quantity and Size-Colour quantity are not matched. Item Qty: {matrixQty}, Grid Qty: {gridQty}",
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+
+                return false;
+            }
+
+            return true;
+        }
+
 
         private void AddMatrixRowIfNeeded(SAPbouiCOM.Matrix oMatrix)
         {
