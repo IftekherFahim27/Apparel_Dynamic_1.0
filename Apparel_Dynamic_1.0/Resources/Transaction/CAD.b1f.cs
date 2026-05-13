@@ -15,7 +15,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         }
 
         private SAPbouiCOM.StaticText STSTATUS, STSTYLCD, STSTYLDS, STMERCHN, STDOCNUM, STDOCDAT, STDRFTNO, STSLCLR, STCDCLR;
-        private SAPbouiCOM.EditText ETSLCLR, ETSTYLCD, ETSTYLDS, ETMERCHN, ETDOCNUM, ETMERCNM, ETDONTRY, ETDOCDAT, ETDRFTNO, ETCDCLR, ETDOCTRY, ETSTNTRY;
+        private SAPbouiCOM.EditText ETSLCLR, ETSTYLCD, ETMERHN,ETSTYLDS, ETDOCNUM, ETMERCNM, ETDONTRY, ETDOCDAT, ETDRFTNO, ETCDCLR, ETDOCTRY, ETSTNTRY;
+
+
         private SAPbouiCOM.ComboBox CBDOCNUM, CBSTATUS;
         private SAPbouiCOM.Folder FOLMERCON, FOLCANCON, FOLTEMP;
         private SAPbouiCOM.Matrix MTXMRCON, MTXCDCLR, MTXCDCON;
@@ -25,23 +27,21 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         public override void OnInitializeComponent()
         {
-            //      Static text
+            //         Static text
             this.STSTATUS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTATUS").Specific));
             this.STSTYLCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLCD").Specific));
             this.STSTYLDS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLDS").Specific));
-            this.STMERCHN = ((SAPbouiCOM.StaticText)(this.GetItem("STMERCHN").Specific));
+            this.STMERCHN = ((SAPbouiCOM.StaticText)(this.GetItem("STMERHN").Specific));
             this.STDOCNUM = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
             this.STDOCDAT = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCDAT").Specific));
             this.STDRFTNO = ((SAPbouiCOM.StaticText)(this.GetItem("STDRFTNO").Specific));
             this.STSLCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STSLCLR").Specific));
             this.STCDCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STCDCLR").Specific));
-            //      Edittext
+            //         Edittext
             this.ETSLCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETSLCLR").Specific));
             this.ETSTYLCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSTYLCD").Specific));
             this.ETSTYLCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETSTYLCD_ChooseFromListAfter);
             this.ETSTYLDS = ((SAPbouiCOM.EditText)(this.GetItem("ETSTYLDS").Specific));
-            this.ETMERCHN = ((SAPbouiCOM.EditText)(this.GetItem("ETMERCHN").Specific));
-            this.ETMERCHN.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETMERCHN_ChooseFromListAfter);
             this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
             this.ETDOCDAT = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCDAT").Specific));
             this.ETDRFTNO = ((SAPbouiCOM.EditText)(this.GetItem("ETDRFTNO").Specific));
@@ -49,21 +49,21 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETDRFTNO.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETDRFTNO_ChooseFromListBefore);
             this.ETCDCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETCDCLR").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //      Combo box
+            //         Combo box
             this.CBDOCNUM = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.CBSTATUS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSTATUS").Specific));
-            //      Folder
+            //         Folder
             this.FOLMERCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLMERCON").Specific));
             this.FOLCANCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLCANCN").Specific));
             this.FOLTEMP = ((SAPbouiCOM.Folder)(this.GetItem("FOLTEMP").Specific));
-            //      Matrix
+            //         Matrix
             this.MTXMRCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXMRCON").Specific));
             this.MTXCDCLR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCLR").Specific));
             this.MTXCDCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCON").Specific));
-            //      Grid
+            //         Grid
             this.GRDCDCON = ((SAPbouiCOM.Grid)(this.GetItem("GRDCDCON").Specific));
             this.GRDSIZE = ((SAPbouiCOM.Grid)(this.GetItem("GRDSIZE").Specific));
-            //      Button
+            //         Button
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNFETCH = ((SAPbouiCOM.Button)(this.GetItem("BTNFETCH").Specific));
@@ -75,6 +75,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETSTNTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETSTNTRY").Specific));
             this.ETMERCNM = ((SAPbouiCOM.EditText)(this.GetItem("ETMERCNM").Specific));
             this.ETDONTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDONTRY").Specific));
+            this.ETMERHN = ((SAPbouiCOM.EditText)(this.GetItem("ETMERHN").Specific));
+            this.ETMERHN.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETMERHN_ChooseFromListAfter);
             this.OnCustomInitialize();
 
         }
@@ -90,6 +92,27 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         {
 
         }
+
+
+        private void ETMERHN_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+            if (dt == null || dt.Rows.Count == 0)
+                return;
+
+            string Code = dt.GetValue("empID", 0).ToString().Trim();
+            string Name = dt.GetValue("U_FNAME", 0).ToString().Trim();
+
+            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERHN").Specific;
+            ETCD.Value = Code;
+            SAPbouiCOM.EditText ETNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERCNM").Specific;
+            ETNM.Value = Name;
+
+        }
+
+
 
         private void GRDSCLR_DoubleClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
@@ -371,20 +394,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
         }
 
-        private void ETMERCHN_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
-        {
-            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
-            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
-            if (dt == null || dt.Rows.Count == 0)
-                return;
 
-            string Code = dt.GetValue("empID", 0).ToString().Trim();
-            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERCHN").Specific;
-            ETCD.Value = Code;
-           
-
-        }
 
         private void ETSTYLCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
@@ -409,7 +419,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             SAPbouiCOM.EditText ETENTRY = (SAPbouiCOM.EditText)oForm.Items.Item("ETSTNTRY").Specific;
             ETENTRY.Value = styleEntry;
 
-            SAPbouiCOM.EditText merCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERCHN").Specific;
+            SAPbouiCOM.EditText merCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERHN").Specific;
             merCD.Value = merCode;
 
             SAPbouiCOM.EditText merNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERCNM").Specific;
@@ -478,7 +488,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 // Folder header needs free space
                 // =========================
                 int folderHeaderHeight = 55;   // more safe area for folder header
-                int insideMargin =10;         // gap after folder header
+                int insideMargin = 10;         // gap after folder header
 
                 int contentTop = tab.Top + folderHeaderHeight + insideMargin;
                 int contentBottom = tab.Top + tab.Height - 20;
@@ -585,8 +595,5 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 }
             }
         }
-
-
-
     }
 }

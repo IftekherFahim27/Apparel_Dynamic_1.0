@@ -691,8 +691,8 @@ namespace Apparel_Dynamic_1._0
                         GRDSCLR.AutoResizeColumns();
                         GRDSIZE.AutoResizeColumns();
                         GRDCDCON.AutoResizeColumns();
-                        
-                        
+
+                        EnsureLine(oForm, "MTXMRCON", "@FIL_DR_CADMFAB");
 
 
                         //Series Initialization
