@@ -20,7 +20,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
 
         private SAPbouiCOM.ComboBox CBDOCNUM, CBSTATUS;
+
+
+
         private SAPbouiCOM.Folder FOLMERCON, FOLCANCON, FOLTEMP;
+
+
+
         private SAPbouiCOM.Matrix MTXMRCON, MTXCDCLR, MTXCDCON;
         private SAPbouiCOM.Grid GRDCDCON, GRDSIZE, GRDSCLR;
         private SAPbouiCOM.Button ADDButton, CancelButton, BTNFETCH, BTNLDCAD, BTNSAVE;
@@ -28,7 +34,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         public override void OnInitializeComponent()
         {
-            //           Static text
+            //                Static text
             this.STSTATUS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTATUS").Specific));
             this.STSTYLCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLCD").Specific));
             this.STSTYLDS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLDS").Specific));
@@ -38,7 +44,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STDRFTNO = ((SAPbouiCOM.StaticText)(this.GetItem("STDRFTNO").Specific));
             this.STSLCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STSLCLR").Specific));
             this.STCDCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STCDCLR").Specific));
-            //           Edittext
+            //                Edittext
             this.ETSLCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETSLCLR").Specific));
             this.ETSTYLCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSTYLCD").Specific));
             this.ETSTYLCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETSTYLCD_ChooseFromListAfter);
@@ -50,28 +56,33 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETDRFTNO.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETDRFTNO_ChooseFromListBefore);
             this.ETCDCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETCDCLR").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //           Combo box
+            //                Combo box
             this.CBDOCNUM = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.CBSTATUS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSTATUS").Specific));
-            //           Folder
+            //                Folder
             this.FOLMERCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLMERCON").Specific));
             this.FOLCANCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLCANCN").Specific));
             this.FOLTEMP = ((SAPbouiCOM.Folder)(this.GetItem("FOLTEMP").Specific));
-            //           Matrix
+            //                Matrix
             this.MTXMRCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXMRCON").Specific));
+            this.MTXMRCON.LostFocusAfter += new SAPbouiCOM._IMatrixEvents_LostFocusAfterEventHandler(this.MTXMRCON_LostFocusAfter);
             this.MTXMRCON.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXMRCON_ChooseFromListAfter);
             this.MTXMRCON.ChooseFromListBefore += new SAPbouiCOM._IMatrixEvents_ChooseFromListBeforeEventHandler(this.MTXMRCON_ChooseFromListBefore);
             this.MTXCDCLR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCLR").Specific));
+            this.MTXCDCLR.DoubleClickAfter += new SAPbouiCOM._IMatrixEvents_DoubleClickAfterEventHandler(this.MTXCDCLR_DoubleClickAfter);
             this.MTXCDCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCON").Specific));
-            //           Grid
+            //                Grid
             this.GRDCDCON = ((SAPbouiCOM.Grid)(this.GetItem("GRDCDCON").Specific));
             this.GRDSIZE = ((SAPbouiCOM.Grid)(this.GetItem("GRDSIZE").Specific));
-            //           Button
+            //                Button
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
+            this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.BTNFETCH = ((SAPbouiCOM.Button)(this.GetItem("BTNFETCH").Specific));
             this.BTNFETCH.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.BTNFETCH_PressedAfter);
             this.BTNLDCAD = ((SAPbouiCOM.Button)(this.GetItem("BTNLDCAD").Specific));
+            this.BTNLDCAD.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.BTNLDCAD_PressedAfter);
             this.BTNSAVE = ((SAPbouiCOM.Button)(this.GetItem("BTNSAVE").Specific));
             this.GRDSCLR = ((SAPbouiCOM.Grid)(this.GetItem("GRDSCLR").Specific));
             this.GRDSCLR.DoubleClickAfter += new SAPbouiCOM._IGridEvents_DoubleClickAfterEventHandler(this.GRDSCLR_DoubleClickAfter);
@@ -94,6 +105,251 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private void OnCustomInitialize()
         {
 
+        }
+
+        private void BTNLDCAD_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                oForm.Freeze(true);
+
+                SAPbouiCOM.Grid oGrid =
+                    (SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+
+                SAPbouiCOM.DataTable dtCAD =
+                    oForm.DataSources.DataTables.Item("DT_CADCN");
+
+                string docEntry =
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(docEntry))
+                {
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Please save or select document first.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Warning
+                    );
+                    return;
+                }
+
+                string query = $@"
+            SELECT
+                ""U_USETYPE""   AS ""UseType"",
+                ""U_POSITION""  AS ""Position"",
+                ""U_ITEMCODE""  AS ""ItemCode"",
+                ""U_ITEMNAME""  AS ""Item Desc"",
+                ""U_UOM""       AS ""UoM"",
+                0               AS ""Consumption"",
+                ""U_SHRNLPRC""  AS ""Shrinkage"",
+                0               AS ""Wastage"",
+                ""U_CBLWDIN""   AS ""Cut WD Inch"",
+                ""U_CBLWDCM""   AS ""Cut WD CM"",
+                0               AS ""Total Consumption"",
+                ''              AS ""Remarks""
+            FROM ""@FIL_DR_CADMFAB""
+            WHERE ""DocEntry"" = '{docEntry}'
+              AND IFNULL(""U_CLRAPPL"", 'N') = 'Y'
+            ORDER BY ""LineId""
+        ";
+
+                dtCAD.ExecuteQuery(query);
+
+                oGrid.DataTable = dtCAD;
+                oGrid.AutoResizeColumns();
+
+                Application.SBO_Application.StatusBar.SetText(
+                    "CAD data loaded successfully.",
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Success
+                );
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Load CAD Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+            finally
+            {
+                try
+                {
+                    SAPbouiCOM.Form oForm =
+                        Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                    oForm.Freeze(false);
+                }
+                catch { }
+            }
+        }
+
+        private void ADDButton_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            //Series Initialization
+            SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_CADFABCN");   //DEFINE  DATASOURCES.
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+            {
+                SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_CADFABCN");  //Object Type
+                string ocmbvalue = ocmb.Selected.Value;
+                long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_CADFABCN");
+
+                oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+
+                //Date
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
+            }
+
+
+        }
+
+        private void ADDButton_PressedBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+
+            BubbleEvent = true;
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
+            {
+                ValidateForm(ref oForm, ref BubbleEvent);
+            }
+
+        }
+        private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
+        {
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
+            {
+                string styleCode = oForm.DataSources.DBDataSources.Item("@FIL_DH_CADFABCN").GetValue("U_STYLECODE", 0).Trim();
+                string draftOrder = oForm.DataSources.DBDataSources.Item("@FIL_DH_CADFABCN").GetValue("U_SQNO", 0).Trim();
+                string docNum = oForm.DataSources.DBDataSources.Item("@FIL_DH_CADFABCN").GetValue("DocNum", 0).Trim();
+                string merc = oForm.DataSources.DBDataSources.Item("@FIL_DH_CADFABCN").GetValue("U_MRCHDNID", 0).Trim();
+
+
+                if (styleCode == "")
+                {
+                    Global.GFunc.ShowError("Enter Style Code");
+                    oForm.ActiveItem = "ETSTYLCD";
+                    return BubbleEvent = false;
+                }
+                if (draftOrder == "")
+                {
+                    Global.GFunc.ShowError("Enter Draft Order ");
+                    oForm.ActiveItem = "ETDRFTNO";
+                    return BubbleEvent = false;
+                }
+                if (docNum == "")
+                {
+                    Global.GFunc.ShowError("Enter DocNum ");
+                    return BubbleEvent = false;
+                }
+                if (merc == "")
+                {
+                    Global.GFunc.ShowError("Enter Merchandiser ");
+                    oForm.ActiveItem = "ETDRFTNO";
+                    return BubbleEvent = false;
+                }
+
+
+                PreventEmptyLastRow(oForm, "@FIL_DR_CADMFAB", MTXMRCON, "U_ITEMCODE");
+                PreventEmptyLastRow(oForm, "@FIL_DR_CADFABCL", MTXCDCLR, "U_COLORCODE");
+                PreventEmptyLastRow(oForm, "@FIL_DR_CADFABCN", MTXCDCON, "U_ITEMCODE");
+
+            }
+
+            return BubbleEvent;
+        }
+
+
+        private void MTXMRCON_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                if (pVal.Row <= 0)
+                    return;
+
+                if (pVal.ColUID != "CLCTWDIN" && pVal.ColUID != "CLCTWDCM")
+                    return;
+
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                SAPbouiCOM.Matrix oMatrix =
+                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXMRCON").Specific;
+
+                SAPbouiCOM.EditText txtInch =
+                    (SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCTWDIN")
+                    .Cells.Item(pVal.Row).Specific;
+
+                SAPbouiCOM.EditText txtCM =
+                    (SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCTWDCM")
+                    .Cells.Item(pVal.Row).Specific;
+
+                if (pVal.ColUID == "CLCTWDIN")
+                {
+                    double inch;
+
+                    if (double.TryParse(txtInch.Value.Trim(), out inch))
+                        txtCM.Value = (inch * 2.54).ToString("0.##");
+                    else
+                        txtCM.Value = "";
+                }
+
+                else if (pVal.ColUID == "CLCTWDCM")
+                {
+                    double cm;
+
+                    if (double.TryParse(txtCM.Value.Trim(), out cm))
+                        txtInch.Value = (cm / 2.54).ToString("0.##");
+                    else
+                        txtInch.Value = "";
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Width conversion error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+        }
+
+
+        private void MTXCDCLR_DoubleClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                if (pVal.Row <= 0)
+                    return;
+
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                SAPbouiCOM.Matrix oMatrix =
+                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCDCLR").Specific;
+
+                string colourCode =
+                    ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCLRCOD")
+                        .Cells.Item(pVal.Row).Specific).Value.Trim();
+
+                SAPbouiCOM.EditText ETCDCLR =
+                    (SAPbouiCOM.EditText)oForm.Items.Item("ETCDCLR").Specific;
+
+                ETCDCLR.Value = colourCode;
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "MTXCDCLR Double Click Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
         }
 
         private void MTXMRCON_ChooseFromListBefore(
@@ -203,6 +459,22 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
         }
 
+        private void PreventEmptyLastRow(SAPbouiCOM.Form oForm, string dbDatasourceUID, SAPbouiCOM.Matrix matrix, string columnName)
+        {
+            SAPbouiCOM.DBDataSource oDB = oForm.DataSources.DBDataSources.Item(dbDatasourceUID);
+            int rowCount = matrix.VisualRowCount;
+
+            if (rowCount > 0)
+            {
+                string lastValue = oDB.GetValue(columnName, rowCount - 1).Trim();
+
+                if (string.IsNullOrEmpty(lastValue) || lastValue.Equals("0.0"))
+                {
+                    matrix.DeleteRow(rowCount);
+                    oDB.RemoveRecord(rowCount - 1);
+                }
+            }
+        }
 
         public static void AddLineIfLastRowHasValue(
           SAPbouiCOM.Form oForm,
@@ -549,32 +821,49 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         private void ETSTYLCD_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
-            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-            SAPbouiCOM.ISBOChooseFromListEventArg cflArg = (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
-            SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
-            if (dt == null || dt.Rows.Count == 0)
-                return;
+            try
+            {
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
 
-            string styleCode = dt.GetValue("U_STYLECODE", 0).ToString().Trim();
-            string styleDesc = dt.GetValue("U_STYLENM", 0).ToString().Trim();
-            string styleEntry = dt.GetValue("DocEntry", 0).ToString().Trim();
-            string merCode = dt.GetValue("U_MARCHEN", 0).ToString().Trim();
-            string merName = dt.GetValue("U_MARCHENN", 0).ToString().Trim();
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg =
+                    (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
 
-            SAPbouiCOM.EditText ETCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETSTYLCD").Specific;
-            ETCD.Value = styleCode;
+                SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
 
-            SAPbouiCOM.EditText ETDS = (SAPbouiCOM.EditText)oForm.Items.Item("ETSTYLDS").Specific;
-            ETDS.Value = styleDesc;
+                if (dt == null || dt.Rows.Count == 0)
+                    return;
 
-            SAPbouiCOM.EditText ETENTRY = (SAPbouiCOM.EditText)oForm.Items.Item("ETSTNTRY").Specific;
-            ETENTRY.Value = styleEntry;
+                string styleCode = dt.GetValue("U_STYLECODE", 0).ToString().Trim();
+                string styleDesc = dt.GetValue("U_STYLENM", 0).ToString().Trim();
+                string styleEntry = dt.GetValue("DocEntry", 0).ToString().Trim();
+                string merCode = dt.GetValue("U_MARCHEN", 0).ToString().Trim();
+                string merName = dt.GetValue("U_MARCHENN", 0).ToString().Trim();
 
-            SAPbouiCOM.EditText merCD = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERHN").Specific;
-            merCD.Value = merCode;
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETSTYLCD").Specific).Value = styleCode;
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETSTYLDS").Specific).Value = styleDesc;
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETSTNTRY").Specific).Value = styleEntry;
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETMERHN").Specific).Value = merCode;
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETMERCNM").Specific).Value = merName;
+            }
+            catch (System.Runtime.InteropServices.COMException ex)
+            {
+                // Ignore SAP focus issue [66000-153]
+                if (ex.Message.Contains("66000-153"))
+                    return;
 
-            SAPbouiCOM.EditText merNM = (SAPbouiCOM.EditText)oForm.Items.Item("ETMERCNM").Specific;
-            merNM.Value = merName;
+                Application.SBO_Application.StatusBar.SetText(
+                    ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
         }
 
         private void Form_ResizeAfter(SAPbouiCOM.SBOItemEventArg pVal)
