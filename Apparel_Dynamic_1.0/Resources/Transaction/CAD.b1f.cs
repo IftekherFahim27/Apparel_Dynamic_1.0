@@ -109,11 +109,11 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         private void BTNLDCAD_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
+            SAPbouiCOM.Form oForm = null;
+
             try
             {
-                SAPbouiCOM.Form oForm =
-                    Application.SBO_Application.Forms.Item(pVal.FormUID);
-
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
                 oForm.Freeze(true);
 
                 SAPbouiCOM.Grid oGrid =
@@ -125,6 +125,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 string docEntry =
                     ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value.Trim();
 
+                string bsClr =
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETCDCLR").Specific).Value.Trim();
+
                 if (string.IsNullOrEmpty(docEntry))
                 {
                     Application.SBO_Application.StatusBar.SetText(
@@ -135,25 +138,38 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     return;
                 }
 
+                if (string.IsNullOrEmpty(bsClr))
+                {
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Please select CAD colour first.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Warning
+                    );
+                    return;
+                }
+
+                bsClr = bsClr.Replace("'", "''");
+
                 string query = $@"
-            SELECT
-                ""U_USETYPE""   AS ""UseType"",
-                ""U_POSITION""  AS ""Position"",
-                ""U_ITEMCODE""  AS ""ItemCode"",
-                ""U_ITEMNAME""  AS ""Item Desc"",
-                ""U_UOM""       AS ""UoM"",
-                0               AS ""Consumption"",
-                ""U_SHRNLPRC""  AS ""Shrinkage"",
-                0               AS ""Wastage"",
-                ""U_CBLWDIN""   AS ""Cut WD Inch"",
-                ""U_CBLWDCM""   AS ""Cut WD CM"",
-                0               AS ""Total Consumption"",
-                ''              AS ""Remarks""
-            FROM ""@FIL_DR_CADMFAB""
-            WHERE ""DocEntry"" = '{docEntry}'
-              AND IFNULL(""U_CLRAPPL"", 'N') = 'Y'
-            ORDER BY ""LineId""
-        ";
+                                SELECT
+                                    ""U_USETYPE""     AS ""UseType"",
+                                    ""U_POSITION""    AS ""Position"",
+                                    ""U_ITEMCODE""    AS ""ItemCode"",
+                                    ""U_ITEMNAME""    AS ""Item Desc"",
+                                    ""U_UOM""         AS ""UoM"",
+                                    0                 AS ""Consumption"",
+                                    ""U_SHRNLPRC""    AS ""Shrinkage"",
+                                    0                 AS ""Wastage"",
+                                    ""U_CBLWDIN""     AS ""Cut WD Inch"",
+                                    ""U_CBLWDCM""     AS ""Cut WD CM"",
+                                    0                 AS ""Total Consumption"",
+                                    ''                AS ""Remarks"",
+                                    '{bsClr}'         AS ""BSCLR""
+                                FROM ""@FIL_DR_CADMFAB""
+                                WHERE ""DocEntry"" = '{docEntry}'
+                                  AND IFNULL(""U_CLRAPPL"", 'N') = 'Y'
+                                ORDER BY ""LineId""
+                            ";
 
                 dtCAD.ExecuteQuery(query);
 
@@ -178,10 +194,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             {
                 try
                 {
-                    SAPbouiCOM.Form oForm =
-                        Application.SBO_Application.Forms.Item(pVal.FormUID);
-
-                    oForm.Freeze(false);
+                    if (oForm != null)
+                        oForm.Freeze(false);
                 }
                 catch { }
             }
@@ -353,9 +367,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         }
 
         private void MTXMRCON_ChooseFromListBefore(
-            object sboObject,
-            SAPbouiCOM.SBOItemEventArg pVal,
-            out bool BubbleEvent)
+     object sboObject,
+     SAPbouiCOM.SBOItemEventArg pVal,
+     out bool BubbleEvent)
         {
             BubbleEvent = true;
 
@@ -373,19 +387,31 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 {
                     cflUID = "CFL_POS";
                 }
+                else if (pVal.ColUID == "CLITMCOD")
+                {
+                    cflUID = "CFL_ITEM";
+                }
                 else
                 {
                     return;
                 }
 
                 SAPbouiCOM.ChooseFromList oCFL = oForm.ChooseFromLists.Item(cflUID);
-
                 SAPbouiCOM.Conditions oCons = new SAPbouiCOM.Conditions();
                 SAPbouiCOM.Condition oCon1 = oCons.Add();
 
-                oCon1.Alias = "U_ACTIVE";
-                oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
-                oCon1.CondVal = "Y";
+                if (pVal.ColUID == "CLITMCOD")
+                {
+                    oCon1.Alias = "InvntItem";
+                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon1.CondVal = "Y";
+                }
+                else
+                {
+                    oCon1.Alias = "U_ACTIVE";
+                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon1.CondVal = "Y";
+                }
 
                 oCFL.SetConditions(oCons);
             }
