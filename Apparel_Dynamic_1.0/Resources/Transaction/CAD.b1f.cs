@@ -28,13 +28,19 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
 
         private SAPbouiCOM.Matrix MTXMRCON, MTXCDCLR, MTXCDCON;
+
+
+
         private SAPbouiCOM.Grid GRDCDCON, GRDSIZE, GRDSCLR;
+
+
+
         private SAPbouiCOM.Button ADDButton, CancelButton, BTNFETCH, BTNLDCAD, BTNSAVE;
 
 
         public override void OnInitializeComponent()
         {
-            //                Static text
+            //                   Static text
             this.STSTATUS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTATUS").Specific));
             this.STSTYLCD = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLCD").Specific));
             this.STSTYLDS = ((SAPbouiCOM.StaticText)(this.GetItem("STSTYLDS").Specific));
@@ -44,7 +50,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STDRFTNO = ((SAPbouiCOM.StaticText)(this.GetItem("STDRFTNO").Specific));
             this.STSLCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STSLCLR").Specific));
             this.STCDCLR = ((SAPbouiCOM.StaticText)(this.GetItem("STCDCLR").Specific));
-            //                Edittext
+            //                   Edittext
             this.ETSLCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETSLCLR").Specific));
             this.ETSTYLCD = ((SAPbouiCOM.EditText)(this.GetItem("ETSTYLCD").Specific));
             this.ETSTYLCD.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETSTYLCD_ChooseFromListAfter);
@@ -56,14 +62,14 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETDRFTNO.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETDRFTNO_ChooseFromListBefore);
             this.ETCDCLR = ((SAPbouiCOM.EditText)(this.GetItem("ETCDCLR").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //                Combo box
+            //                   Combo box
             this.CBDOCNUM = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.CBSTATUS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSTATUS").Specific));
-            //                Folder
+            //                   Folder
             this.FOLMERCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLMERCON").Specific));
             this.FOLCANCON = ((SAPbouiCOM.Folder)(this.GetItem("FOLCANCN").Specific));
             this.FOLTEMP = ((SAPbouiCOM.Folder)(this.GetItem("FOLTEMP").Specific));
-            //                Matrix
+            //                   Matrix
             this.MTXMRCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXMRCON").Specific));
             this.MTXMRCON.LostFocusAfter += new SAPbouiCOM._IMatrixEvents_LostFocusAfterEventHandler(this.MTXMRCON_LostFocusAfter);
             this.MTXMRCON.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXMRCON_ChooseFromListAfter);
@@ -71,10 +77,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.MTXCDCLR = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCLR").Specific));
             this.MTXCDCLR.DoubleClickAfter += new SAPbouiCOM._IMatrixEvents_DoubleClickAfterEventHandler(this.MTXCDCLR_DoubleClickAfter);
             this.MTXCDCON = ((SAPbouiCOM.Matrix)(this.GetItem("MTXCDCON").Specific));
-            //                Grid
+            //                   Grid
             this.GRDCDCON = ((SAPbouiCOM.Grid)(this.GetItem("GRDCDCON").Specific));
+            this.GRDCDCON.LostFocusAfter += new SAPbouiCOM._IGridEvents_LostFocusAfterEventHandler(this.GRDCDCON_LostFocusAfter);
+            this.GRDCDCON.ChooseFromListBefore += new SAPbouiCOM._IGridEvents_ChooseFromListBeforeEventHandler(this.GRDCDCON_ChooseFromListBefore);
+            this.GRDCDCON.ChooseFromListAfter += new SAPbouiCOM._IGridEvents_ChooseFromListAfterEventHandler(this.GRDCDCON_ChooseFromListAfter);
             this.GRDSIZE = ((SAPbouiCOM.Grid)(this.GetItem("GRDSIZE").Specific));
-            //                Button
+            //                   Button
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
             this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
@@ -84,6 +93,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.BTNLDCAD = ((SAPbouiCOM.Button)(this.GetItem("BTNLDCAD").Specific));
             this.BTNLDCAD.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.BTNLDCAD_PressedAfter);
             this.BTNSAVE = ((SAPbouiCOM.Button)(this.GetItem("BTNSAVE").Specific));
+            this.BTNSAVE.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.BTNSAVE_PressedAfter);
             this.GRDSCLR = ((SAPbouiCOM.Grid)(this.GetItem("GRDSCLR").Specific));
             this.GRDSCLR.DoubleClickAfter += new SAPbouiCOM._IGridEvents_DoubleClickAfterEventHandler(this.GRDSCLR_DoubleClickAfter);
             this.ETSTNTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETSTNTRY").Specific));
@@ -105,6 +115,393 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private void OnCustomInitialize()
         {
 
+        }
+
+        private void BTNSAVE_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            SAPbouiCOM.Form oForm = null;
+
+            try
+            {
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm.Freeze(true);
+
+                SAPbouiCOM.DataTable dtCAD =
+                    oForm.DataSources.DataTables.Item("DT_CADCN");
+
+                SAPbouiCOM.Matrix oMatrix =
+                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCDCON").Specific;
+
+                string currentBSCLR =
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETCDCLR").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(currentBSCLR))
+                {
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Please select CAD colour first.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Warning
+                    );
+                    return;
+                }
+
+                // Remove empty matrix rows first
+                for (int i = oMatrix.RowCount; i >= 1; i--)
+                {
+                    string itemCode =
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLITMCOD")
+                            .Cells.Item(i).Specific).Value.Trim();
+
+                    if (string.IsNullOrEmpty(itemCode))
+                    {
+                        oMatrix.DeleteRow(i);
+                    }
+                }
+
+                // Remove only previous rows of selected BSCLR
+                for (int i = oMatrix.RowCount; i >= 1; i--)
+                {
+                    string matrixBSCLR =
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("CLBSCLR")
+                            .Cells.Item(i).Specific).Value.Trim();
+
+                    if (matrixBSCLR == currentBSCLR)
+                    {
+                        oMatrix.DeleteRow(i);
+                    }
+                }
+
+                // Add grid rows again
+                for (int i = 0; i < dtCAD.Rows.Count; i++)
+                {
+                    string itemCode =
+                        dtCAD.GetValue("ItemCode", i).ToString().Trim();
+
+                    if (string.IsNullOrEmpty(itemCode))
+                        continue;
+
+                    oMatrix.AddRow(1);
+
+                    int row = oMatrix.RowCount;
+
+                    SetMatrixValue(oMatrix, "#", row, row.ToString());
+
+                    SetMatrixValue(oMatrix, "CLUSETYP", row, dtCAD.GetValue("UseType", i).ToString());
+                    SetMatrixValue(oMatrix, "CLPOSTN", row, dtCAD.GetValue("Position", i).ToString());
+                    SetMatrixValue(oMatrix, "CLITMCOD", row, dtCAD.GetValue("ItemCode", i).ToString());
+                    SetMatrixValue(oMatrix, "CLITMNAM", row, dtCAD.GetValue("Item Desc", i).ToString());
+                    SetMatrixValue(oMatrix, "CLUOM", row, dtCAD.GetValue("UoM", i).ToString());
+
+                    SetMatrixValue(oMatrix, "CLCNSMPN", row, dtCAD.GetValue("Consumption", i).ToString());
+                    SetMatrixValue(oMatrix, "CLSHRKPR", row, dtCAD.GetValue("Shrinkage", i).ToString());
+                    SetMatrixValue(oMatrix, "CLWSTGP", row, dtCAD.GetValue("Wastage", i).ToString());
+
+                    SetMatrixValue(oMatrix, "CLCTWDIN", row, dtCAD.GetValue("Cut WD Inch", i).ToString());
+                    SetMatrixValue(oMatrix, "CLCTWDCM", row, dtCAD.GetValue("Cut WD CM", i).ToString());
+
+                    SetMatrixValue(oMatrix, "CLTTLCON", row, dtCAD.GetValue("Total Consumption", i).ToString());
+                    SetMatrixValue(oMatrix, "CLRMRKS", row, dtCAD.GetValue("Remarks", i).ToString());
+
+                    SetMatrixValue(oMatrix, "CLBSCLR", row, currentBSCLR);
+                }
+
+                // Re-arrange LineId / # after all delete and add
+                ReArrangeMatrixLineId(oMatrix);
+
+                oMatrix.FlushToDataSource();
+
+                Application.SBO_Application.StatusBar.SetText(
+                    "CAD consumption rows updated successfully.",
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Success
+                );
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "CAD save error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+            finally
+            {
+                try
+                {
+                    if (oForm != null)
+                        oForm.Freeze(false);
+                }
+                catch { }
+            }
+        }
+
+        private void SetMatrixValue(SAPbouiCOM.Matrix matrix,string colUID,int row,string value)
+        {
+            ((SAPbouiCOM.EditText)matrix.Columns.Item(colUID)
+                .Cells.Item(row).Specific).Value = value;
+        }
+
+        private void ReArrangeMatrixLineId(SAPbouiCOM.Matrix matrix)
+        {
+            for (int i = 1; i <= matrix.RowCount; i++)
+            {
+                SetMatrixValue(matrix, "#", i, i.ToString());
+            }
+        }
+
+        private void GRDCDCON_LostFocusAfter(object sboObject,SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                if (pVal.Row < 0)
+                    return;
+
+                if (pVal.ColUID != "Cut WD Inch" &&
+                    pVal.ColUID != "Cut WD CM" &&
+                    pVal.ColUID != "Consumption" &&
+                    pVal.ColUID != "Shrinkage" &&
+                    pVal.ColUID != "Wastage")
+                    return;
+
+                SAPbouiCOM.Form oForm =Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                SAPbouiCOM.Grid oGrid =(SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+
+                SAPbouiCOM.DataTable dtCAD =oForm.DataSources.DataTables.Item("DT_CADCN");
+
+                int dtRow = oGrid.GetDataTableRowIndex(pVal.Row);
+
+                if (dtRow < 0)
+                    return;
+
+                // =========================
+                // Inch / CM conversion
+                // =========================
+                if (pVal.ColUID == "Cut WD Inch")
+                {
+                    double inch;
+
+                    if (double.TryParse(
+                        dtCAD.GetValue("Cut WD Inch", dtRow).ToString().Trim(),
+                        out inch))
+                    {
+                        dtCAD.SetValue(
+                            "Cut WD CM",
+                            dtRow,
+                            (inch * 2.54).ToString("0.##")
+                        );
+                    }
+                    else
+                    {
+                        dtCAD.SetValue("Cut WD CM", dtRow, "");
+                    }
+                }
+                else if (pVal.ColUID == "Cut WD CM")
+                {
+                    double cm;
+
+                    if (double.TryParse(
+                        dtCAD.GetValue("Cut WD CM", dtRow).ToString().Trim(),
+                        out cm))
+                    {
+                        dtCAD.SetValue(
+                            "Cut WD Inch",
+                            dtRow,
+                            (cm / 2.54).ToString("0.##")
+                        );
+                    }
+                    else
+                    {
+                        dtCAD.SetValue("Cut WD Inch", dtRow, "");
+                    }
+                }
+
+                // =========================
+                // Total Consumption calculation
+                // Total = Consumption + Consumption * Shrinkage + Consumption * Wastage
+                // =========================
+                double consumption = 0;
+                double shrinkage = 0;
+                double wastage = 0;
+
+                double.TryParse(
+                    dtCAD.GetValue("Consumption", dtRow).ToString().Trim(),
+                    out consumption);
+
+                double.TryParse(
+                    dtCAD.GetValue("Shrinkage", dtRow).ToString().Trim(),
+                    out shrinkage);
+
+                double.TryParse(
+                    dtCAD.GetValue("Wastage", dtRow).ToString().Trim(),
+                    out wastage);
+
+                double totalConsumption =
+                    consumption +
+                    (consumption * shrinkage) +
+                    (consumption * wastage);
+
+                dtCAD.SetValue(
+                    "Total Consumption",
+                    dtRow,
+                    totalConsumption.ToString("0.######")
+                );
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Grid calculation error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+        }
+
+
+        private void GRDCDCON_ChooseFromListBefore(object sboObject,SAPbouiCOM.SBOItemEventArg pVal,out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+
+            try
+            {
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                string cflUID = "";
+
+                if (pVal.ColUID == "UseType")
+                {
+                    cflUID = "CFL_USE2";
+                }
+                else if (pVal.ColUID == "Position")
+                {
+                    cflUID = "CFL_POS2";
+                }
+                else if (pVal.ColUID == "ItemCode")
+                {
+                    cflUID = "CFL_ITM2";
+                }
+                else
+                {
+                    return;
+                }
+
+                SAPbouiCOM.ChooseFromList oCFL =
+                    oForm.ChooseFromLists.Item(cflUID);
+
+                SAPbouiCOM.Conditions oCons =
+                    new SAPbouiCOM.Conditions();
+
+                SAPbouiCOM.Condition oCon1 = oCons.Add();
+
+                if (pVal.ColUID == "ItemCode")
+                {
+                    oCon1.Alias = "InvntItem";
+                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon1.CondVal = "Y";
+                }
+                else
+                {
+                    oCon1.Alias = "U_ACTIVE";
+                    oCon1.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                    oCon1.CondVal = "Y";
+                }
+
+                oCFL.SetConditions(oCons);
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Grid CFL condition error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+
+                BubbleEvent = false;
+            }
+        }
+
+        private void GRDCDCON_ChooseFromListAfter(object sboObject,SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg =
+                    (SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+
+                SAPbouiCOM.DataTable selectedDt = cflArg.SelectedObjects;
+
+                if (selectedDt == null || selectedDt.Rows.Count == 0)
+                    return;
+
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                SAPbouiCOM.Grid oGrid =
+                    (SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+
+                SAPbouiCOM.DataTable dtCAD =
+                    oForm.DataSources.DataTables.Item("DT_CADCN");
+
+                int dtRow = oGrid.GetDataTableRowIndex(pVal.Row);
+
+                if (dtRow < 0)
+                    return;
+
+                if (pVal.ColUID == "UseType")
+                {
+                    string code = selectedDt.GetValue("Code", 0).ToString().Trim();
+                    dtCAD.SetValue("UseType", dtRow, code);
+                }
+                else if (pVal.ColUID == "Position")
+                {
+                    string code = selectedDt.GetValue("Code", 0).ToString().Trim();
+                    dtCAD.SetValue("Position", dtRow, code);
+                }
+                else if (pVal.ColUID == "ItemCode")
+                {
+                    string itemCode = selectedDt.GetValue("ItemCode", 0).ToString().Trim();
+                    string itemName = selectedDt.GetValue("ItemName", 0).ToString().Trim();
+
+                    dtCAD.SetValue("ItemCode", dtRow, itemCode);
+                    dtCAD.SetValue("Item Desc", dtRow, itemName);
+
+                    // Add new row only if current row is last row
+                    if (dtRow == dtCAD.Rows.Count - 1)
+                    {
+                        dtCAD.Rows.Add(1);
+
+                        int newRow = dtCAD.Rows.Count - 1;
+
+                        dtCAD.SetValue("UseType", newRow, "");
+                        dtCAD.SetValue("Position", newRow, "");
+                        dtCAD.SetValue("ItemCode", newRow, "");
+                        dtCAD.SetValue("Item Desc", newRow, "");
+                        dtCAD.SetValue("UoM", newRow, "");
+                        dtCAD.SetValue("Consumption", newRow, 0);
+                        dtCAD.SetValue("Shrinkage", newRow, 0);
+                        dtCAD.SetValue("Wastage", newRow, 0);
+                        dtCAD.SetValue("Cut WD Inch", newRow, 0);
+                        dtCAD.SetValue("Cut WD CM", newRow, 0);
+                        dtCAD.SetValue("Total Consumption", newRow, 0);
+                        dtCAD.SetValue("Remarks", newRow, "");
+
+                        // Keep same colour
+                        dtCAD.SetValue(
+                            "BSCLR",
+                            newRow,
+                            dtCAD.GetValue("BSCLR", dtRow).ToString()
+                        );
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Grid CFL After error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
         }
 
         private void BTNLDCAD_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -173,7 +570,28 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
                 dtCAD.ExecuteQuery(query);
 
+                // Add one empty row at last
+                dtCAD.Rows.Add(1);
+
+                int lastRow = dtCAD.Rows.Count - 1;
+
+                dtCAD.SetValue("UseType", lastRow, "");
+                dtCAD.SetValue("Position", lastRow, "");
+                dtCAD.SetValue("ItemCode", lastRow, "");
+                dtCAD.SetValue("Item Desc", lastRow, "");
+                dtCAD.SetValue("UoM", lastRow, "");
+                dtCAD.SetValue("Consumption", lastRow, 0);
+                dtCAD.SetValue("Shrinkage", lastRow, 0);
+                dtCAD.SetValue("Wastage", lastRow, 0);
+                dtCAD.SetValue("Cut WD Inch", lastRow, 0);
+                dtCAD.SetValue("Cut WD CM", lastRow, 0);
+                dtCAD.SetValue("Total Consumption", lastRow, 0);
+                dtCAD.SetValue("Remarks", lastRow, "");
+                dtCAD.SetValue("BSCLR", lastRow, bsClr);
+
                 oGrid.DataTable = dtCAD;
+
+                // optional
                 oGrid.AutoResizeColumns();
 
                 Application.SBO_Application.StatusBar.SetText(
@@ -336,13 +754,15 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         private void MTXCDCLR_DoubleClickAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
+            SAPbouiCOM.Form oForm = null;
+
             try
             {
                 if (pVal.Row <= 0)
                     return;
 
-                SAPbouiCOM.Form oForm =
-                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm.Freeze(true);
 
                 SAPbouiCOM.Matrix oMatrix =
                     (SAPbouiCOM.Matrix)oForm.Items.Item("MTXCDCLR").Specific;
@@ -355,6 +775,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     (SAPbouiCOM.EditText)oForm.Items.Item("ETCDCLR").Specific;
 
                 ETCDCLR.Value = colourCode;
+
+                LoadCADConsumptionByBaseColour(oForm, colourCode);
             }
             catch (Exception ex)
             {
@@ -364,12 +786,119 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
             }
+            finally
+            {
+                try
+                {
+                    if (oForm != null)
+                        oForm.Freeze(false);
+                }
+                catch { }
+            }
         }
 
-        private void MTXMRCON_ChooseFromListBefore(
-     object sboObject,
-     SAPbouiCOM.SBOItemEventArg pVal,
-     out bool BubbleEvent)
+        private void LoadCADConsumptionByBaseColour(SAPbouiCOM.Form oForm, string colourCode)
+        {
+            try
+            {
+                SAPbouiCOM.Grid oGrid =
+                    (SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+
+                SAPbouiCOM.DataTable dtCAD =
+                    oForm.DataSources.DataTables.Item("DT_CADCN");
+
+                string docEntry =
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value.Trim();
+
+                SAPbouiCOM.Button btnLoadCAD =
+                    (SAPbouiCOM.Button)oForm.Items.Item("BTNLDCAD").Specific;
+
+                if (string.IsNullOrEmpty(docEntry) || string.IsNullOrEmpty(colourCode))
+                {
+                    //btnLoadCAD.Item.Enabled = true;
+                    return;
+                }
+
+                string safeColourCode = colourCode.Replace("'", "''");
+
+                string query = $@"
+                                SELECT
+                                    ""U_USETYPE""   AS ""UseType"",
+                                    ""U_POSITION""  AS ""Position"",
+                                    ""U_ITEMCODE""  AS ""ItemCode"",
+                                    ""U_ITEMNAME""  AS ""Item Desc"",
+                                    ""U_UOM""       AS ""UoM"",
+                                    ""U_ACTCONSM""  AS ""Consumption"",
+                                    ""U_SHRNLPRC""  AS ""Shrinkage"",
+                                    ""U_CUTWSTG""   AS ""Wastage"",
+                                    ""U_CBLWDIN""   AS ""Cut WD Inch"",
+                                    ""U_CBLWDCM""   AS ""Cut WD CM"",
+                                    ""U_TTLCONSM""  AS ""Total Consumption"",
+                                    ""U_REMARKS""   AS ""Remarks"",
+                                    ""U_BASECLR""   AS ""BSCLR""
+                                FROM ""@FIL_DR_CADFABCN""
+                                WHERE ""DocEntry"" = '{docEntry}'
+                                  AND ""U_BASECLR"" = '{safeColourCode}'
+                                ORDER BY ""LineId""
+                            ";
+
+                dtCAD.ExecuteQuery(query);
+
+                bool hasData = false;
+
+                for (int i = 0; i < dtCAD.Rows.Count; i++)
+                {
+                    string itemCode =
+                        dtCAD.GetValue("ItemCode", i).ToString().Trim();
+
+                    if (!string.IsNullOrEmpty(itemCode))
+                    {
+                        hasData = true;
+                        break;
+                    }
+                }
+
+                if (hasData)
+                {
+                    dtCAD.Rows.Add(1);
+
+                    int newRow = dtCAD.Rows.Count - 1;
+
+                    dtCAD.SetValue("UseType", newRow, "");
+                    dtCAD.SetValue("Position", newRow, "");
+                    dtCAD.SetValue("ItemCode", newRow, "");
+                    dtCAD.SetValue("Item Desc", newRow, "");
+                    dtCAD.SetValue("UoM", newRow, "");
+                    dtCAD.SetValue("Consumption", newRow, 0);
+                    dtCAD.SetValue("Shrinkage", newRow, 0);
+                    dtCAD.SetValue("Wastage", newRow, 0);
+                    dtCAD.SetValue("Cut WD Inch", newRow, 0);
+                    dtCAD.SetValue("Cut WD CM", newRow, 0);
+                    dtCAD.SetValue("Total Consumption", newRow, 0);
+                    dtCAD.SetValue("Remarks", newRow, "");
+                    dtCAD.SetValue("BSCLR", newRow, colourCode);
+
+                    btnLoadCAD.Item.Enabled = false;
+                }
+                else
+                {
+                    btnLoadCAD.Item.Enabled = true;
+                }
+
+                oGrid.DataTable = dtCAD;
+                oGrid.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Load CAD colour consumption error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+        }
+
+        private void MTXMRCON_ChooseFromListBefore(object sboObject,SAPbouiCOM.SBOItemEventArg pVal,out bool BubbleEvent)
         {
             BubbleEvent = true;
 
