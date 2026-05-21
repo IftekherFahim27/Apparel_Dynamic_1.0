@@ -38,6 +38,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Button ADDButton, CancelButton, BTNFETCH, BTNLDCAD, BTNSAVE;
 
 
+
         public override void OnInitializeComponent()
         {
             //                   Static text
@@ -107,7 +108,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         public override void OnInitializeFormEvents()
         {
-            this.ResizeAfter += new ResizeAfterHandler(this.Form_ResizeAfter);
+            this.ResizeAfter += new SAPbouiCOM.Framework.FormBase.ResizeAfterHandler(this.Form_ResizeAfter);
+            this.DataLoadAfter += new DataLoadAfterHandler(this.Form_DataLoadAfter);
 
         }
 
@@ -115,6 +117,156 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private void OnCustomInitialize()
         {
 
+        }
+
+        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
+        {
+            LoadHeaderColourSizeInfo(pVal.FormUID);
+            LoadCADConsumptionDetails(pVal.FormUID);
+        }
+
+
+        private void LoadCADConsumptionDetails(string formUID)
+        {
+            SAPbouiCOM.Form oForm = null;
+
+            try
+            {
+                oForm = Application.SBO_Application.Forms.Item(formUID);
+                oForm.Freeze(true);
+
+                string docEntry =
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCTRY").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(docEntry))
+                    return;
+
+                SAPbouiCOM.Grid oGrid = (SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+                SAPbouiCOM.DataTable dtCAD = oForm.DataSources.DataTables.Item("DT_CADCN");
+
+                string query = $@"
+                                SELECT
+                                    T0.""U_USETYPE""     AS ""Use Type"",
+                                    T0.""U_ITEMCODE""    AS ""Item Code"",
+                                    T0.""U_ITEMNAME""    AS ""Item Desc"",
+                                    T0.""U_UOM""         AS ""UOM"",
+                                    T0.""U_SHRNLPRC""    AS ""Shrinkage"",
+                                    T0.""U_CBLWDIN""     AS ""Cut WD Inch"",
+                                    T0.""U_CBLWDCM""     AS ""Cut WD CM"",
+                                    T0.""U_POSITION""    AS ""Position"",
+                                    T0.""U_ACTCONSM""    AS ""Consumption"",
+                                    T0.""U_CUTWSTG""     AS ""Wastage"",
+                                    T0.""U_TTLCONSM""    AS ""Total Consumption"",
+                                    T0.""U_REMARKS""     AS ""Remarks"",
+                                    T0.""U_BASECLR""    AS ""BSCLR""
+
+                                FROM ""@FIL_DR_CADFABCN"" T0
+                                WHERE T0.""DocEntry"" = '{docEntry}'
+                                ORDER BY
+                                    T0.""LineId""";
+
+                dtCAD.ExecuteQuery(query);
+                oGrid.DataTable = dtCAD;
+                DisableAllGridColumns(oGrid);
+                oGrid.AutoResizeColumns();
+
+                // Set selected colour text
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETCDCLR").Specific).Value = "ALL Colour";
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "CAD consumption load error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+            finally
+            {
+                if (oForm != null)
+                    oForm.Freeze(false);
+            }
+        }
+
+        private void DisableAllGridColumns(SAPbouiCOM.Grid oGrid)
+        {
+            for (int i = 0; i < oGrid.Columns.Count; i++)
+            {
+                oGrid.Columns.Item(i).Editable = false;
+            }
+        }
+
+        private void LoadHeaderColourSizeInfo(string formUID)
+        {
+            SAPbouiCOM.Form oForm = null;
+
+            try
+            {
+                oForm = Application.SBO_Application.Forms.Item(formUID);
+                oForm.Freeze(true);
+
+                string docEntry =
+                    ((SAPbouiCOM.EditText)oForm.Items.Item("ETDONTRY").Specific).Value.Trim();
+
+                if (string.IsNullOrEmpty(docEntry))
+                    return;
+
+                // Set selected colour text
+                ((SAPbouiCOM.EditText)oForm.Items.Item("ETSLCLR").Specific).Value = "ALL Colour";
+
+                SAPbouiCOM.Grid grdColour = (SAPbouiCOM.Grid)oForm.Items.Item("GRDSCLR").Specific;
+                SAPbouiCOM.Grid grdSize = (SAPbouiCOM.Grid)oForm.Items.Item("GRDSIZE").Specific;
+                SAPbouiCOM.DataTable dtColour = oForm.DataSources.DataTables.Item("DT_CLR");
+                SAPbouiCOM.DataTable dtSize =oForm.DataSources.DataTables.Item("DT_SIZE");
+
+                string colourQuery = $@"
+                                        SELECT DISTINCT
+                                            T0.""U_FGCOLOUR"" AS ""Colour Code"",
+                                            T0.""U_FGCOLRNM"" AS ""Colour Name""
+                                        FROM ""QUT1"" T0
+                                        WHERE T0.""DocEntry"" = '{docEntry}'
+                                          AND IFNULL(T0.""U_FGCOLOUR"", '') <> ''
+                                        ORDER BY
+                                            T0.""U_FGCOLOUR""";
+
+                string sizeQuery = $@"
+                                        SELECT
+                                            T0.""U_FGSIZE""        AS ""Size Code"",
+                                            T1.""Name""            AS ""Size Name"",
+                                            SUM(T0.""Quantity"")   AS ""Quantity""
+                                        FROM ""QUT1"" T0
+                                        LEFT JOIN ""@FIL_MH_SIZEMSTR"" T1
+                                            ON T0.""U_FGSIZE"" = T1.""Code""
+                                        WHERE T0.""DocEntry"" = '{docEntry}'
+                                          AND IFNULL(T0.""U_FGSIZE"", '') <> ''
+                                        GROUP BY
+                                            T0.""U_FGSIZE"",
+                                            T1.""Name""
+                                        ORDER BY
+                                            T0.""U_FGSIZE""";
+
+                dtColour.ExecuteQuery(colourQuery);
+                grdColour.DataTable = dtColour;
+
+                dtSize.ExecuteQuery(sizeQuery);
+                grdSize.DataTable = dtSize;
+
+                grdColour.AutoResizeColumns();
+                grdSize.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Header colour/size load error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+            finally
+            {
+                if (oForm != null)
+                    oForm.Freeze(false);
+            }
         }
 
         private void BTNSAVE_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
@@ -249,8 +401,10 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
         }
 
-        private void GRDCDCON_LostFocusAfter(object sboObject,SAPbouiCOM.SBOItemEventArg pVal)
+        private void GRDCDCON_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
+            SAPbouiCOM.Form oForm = null;
+
             try
             {
                 if (pVal.Row < 0)
@@ -263,16 +417,34 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     pVal.ColUID != "Wastage")
                     return;
 
-                SAPbouiCOM.Form oForm =Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm.Freeze(true);
 
-                SAPbouiCOM.Grid oGrid =(SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+                SAPbouiCOM.Grid oGrid =
+                    (SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
 
-                SAPbouiCOM.DataTable dtCAD =oForm.DataSources.DataTables.Item("DT_CADCN");
+                SAPbouiCOM.DataTable dtCAD =
+                    oForm.DataSources.DataTables.Item("DT_CADCN");
 
                 int dtRow = oGrid.GetDataTableRowIndex(pVal.Row);
 
                 if (dtRow < 0)
                     return;
+
+                // =========================
+                // Negative value protection
+                // =========================
+                double enteredValue;
+
+                if (double.TryParse(
+                    dtCAD.GetValue(pVal.ColUID, dtRow).ToString().Trim(),
+                    out enteredValue))
+                {
+                    if (enteredValue < 0)
+                    {
+                        dtCAD.SetValue(pVal.ColUID, dtRow, "0");
+                    }
+                }
 
                 // =========================
                 // Inch / CM conversion
@@ -285,6 +457,12 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                         dtCAD.GetValue("Cut WD Inch", dtRow).ToString().Trim(),
                         out inch))
                     {
+                        if (inch < 0)
+                        {
+                            inch = 0;
+                            dtCAD.SetValue("Cut WD Inch", dtRow, "0");
+                        }
+
                         dtCAD.SetValue(
                             "Cut WD CM",
                             dtRow,
@@ -304,6 +482,12 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                         dtCAD.GetValue("Cut WD CM", dtRow).ToString().Trim(),
                         out cm))
                     {
+                        if (cm < 0)
+                        {
+                            cm = 0;
+                            dtCAD.SetValue("Cut WD CM", dtRow, "0");
+                        }
+
                         dtCAD.SetValue(
                             "Cut WD Inch",
                             dtRow,
@@ -317,8 +501,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 }
 
                 // =========================
-                // Total Consumption calculation
-                // Total = Consumption + Consumption * Shrinkage + Consumption * Wastage
+                // Total Consumption
                 // =========================
                 double consumption = 0;
                 double shrinkage = 0;
@@ -335,6 +518,24 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 double.TryParse(
                     dtCAD.GetValue("Wastage", dtRow).ToString().Trim(),
                     out wastage);
+
+                if (consumption < 0)
+                {
+                    consumption = 0;
+                    dtCAD.SetValue("Consumption", dtRow, "0");
+                }
+
+                if (shrinkage < 0)
+                {
+                    shrinkage = 0;
+                    dtCAD.SetValue("Shrinkage", dtRow, "0");
+                }
+
+                if (wastage < 0)
+                {
+                    wastage = 0;
+                    dtCAD.SetValue("Wastage", dtRow, "0");
+                }
 
                 double totalConsumption =
                     consumption +
@@ -354,6 +555,11 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
+            }
+            finally
+            {
+                if (oForm != null)
+                    oForm.Freeze(false);
             }
         }
 
@@ -697,48 +903,64 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         }
 
 
-        private void MTXMRCON_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        private void MTXMRCON_LostFocusAfter(object sboObject,SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
             {
                 if (pVal.Row <= 0)
                     return;
 
-                if (pVal.ColUID != "CLCTWDIN" && pVal.ColUID != "CLCTWDCM")
+                if (pVal.ColUID != "CLCTWDIN" &&
+                    pVal.ColUID != "CLCTWDCM")
                     return;
 
-                SAPbouiCOM.Form oForm =
-                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.Form oForm =Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.Matrix oMatrix =(SAPbouiCOM.Matrix)oForm.Items.Item("MTXMRCON").Specific;
+                SAPbouiCOM.EditText txtInch =(SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCTWDIN").Cells.Item(pVal.Row).Specific;
+                SAPbouiCOM.EditText txtCM =(SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCTWDCM").Cells.Item(pVal.Row).Specific;
 
-                SAPbouiCOM.Matrix oMatrix =
-                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXMRCON").Specific;
-
-                SAPbouiCOM.EditText txtInch =
-                    (SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCTWDIN")
-                    .Cells.Item(pVal.Row).Specific;
-
-                SAPbouiCOM.EditText txtCM =
-                    (SAPbouiCOM.EditText)oMatrix.Columns.Item("CLCTWDCM")
-                    .Cells.Item(pVal.Row).Specific;
-
+                // Inch → CM
                 if (pVal.ColUID == "CLCTWDIN")
                 {
                     double inch;
 
                     if (double.TryParse(txtInch.Value.Trim(), out inch))
+                    {
+                        if (inch < 0)
+                        {
+                            txtInch.Value = "0";
+                            txtCM.Value = "0";
+                            return;
+                        }
+
                         txtCM.Value = (inch * 2.54).ToString("0.##");
+                    }
                     else
+                    {
                         txtCM.Value = "";
+                    }
                 }
 
+                // CM → Inch
                 else if (pVal.ColUID == "CLCTWDCM")
                 {
                     double cm;
 
                     if (double.TryParse(txtCM.Value.Trim(), out cm))
+                    {
+                        if (cm < 0)
+                        {
+                            txtCM.Value = "0";
+                            txtInch.Value = "0";
+                            return;
+                        }
+
                         txtInch.Value = (cm / 2.54).ToString("0.##");
+                    }
                     else
+                    {
                         txtInch.Value = "";
+                    }
                 }
             }
             catch (Exception ex)
@@ -777,6 +999,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 ETCDCLR.Value = colourCode;
 
                 LoadCADConsumptionByBaseColour(oForm, colourCode);
+                SetCADConsumptionGridEditableForColour(oForm);
             }
             catch (Exception ex)
             {
@@ -794,6 +1017,35 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                         oForm.Freeze(false);
                 }
                 catch { }
+            }
+        }
+
+        private void SetCADConsumptionGridEditableForColour(SAPbouiCOM.Form oForm)
+        {
+            SAPbouiCOM.Grid oGrid =
+                (SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific;
+
+            // First enable all columns
+            for (int i = 0; i < oGrid.Columns.Count; i++)
+            {
+                oGrid.Columns.Item(i).Editable = true;
+            }
+
+            // Then disable only these columns
+            SetGridColumnEditable(oGrid, "BSCLR", false);
+            SetGridColumnEditable(oGrid, "Total Consumption", false);
+            SetGridColumnEditable(oGrid, "Item Desc", false);
+        }
+
+        private void SetGridColumnEditable(SAPbouiCOM.Grid oGrid, string colUID, bool editable)
+        {
+            try
+            {
+                oGrid.Columns.Item(colUID).Editable = editable;
+            }
+            catch
+            {
+                // Column not found, ignore
             }
         }
 
@@ -1438,7 +1690,6 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
                 // =========================
                 // Top Grids: GRDSCLR + GRDSIZE
-                // This part is working fine
                 // =========================
                 SAPbouiCOM.Item grdClr = oForm.Items.Item("GRDSCLR");
                 SAPbouiCOM.Item grdSize = oForm.Items.Item("GRDSIZE");
@@ -1458,12 +1709,15 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 grdClr.Height = Math.Min(maxTopGridHeight, tabTopLimit - grdClr.Top - gap);
                 grdSize.Height = Math.Min(maxTopGridHeight, tabTopLimit - grdSize.Top - gap);
 
+                // =========================
+                // Caption Width Fix
+                // =========================
+                oForm.Items.Item("STSLCLR").Width = 110;
+                oForm.Items.Item("FOLMERCON").Width = 180;
+                oForm.Items.Item("FOLCANCN").Width = 140;
 
                 // =========================
                 // Tab Container: Item_8
-                // Important:
-                // Do NOT change Top/Height too much.
-                // Otherwise folder headers become unclickable.
                 // =========================
                 SAPbouiCOM.Item tab = oForm.Items.Item("Item_8");
 
@@ -1471,24 +1725,18 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 tab.Top = 170;
                 tab.Width = formWidth - (margin * 2);
 
-                // Keep enough bottom space for Add/Cancel button
                 int bottomButtonSpace = 55;
-
-                // Only update tab height safely
                 tab.Height = Math.Max(190, formHeight - tab.Top - bottomButtonSpace);
-
 
                 // =========================
                 // Common Tab Content Area
-                // Folder header needs free space
                 // =========================
-                int folderHeaderHeight = 55;   // more safe area for folder header
-                int insideMargin = 10;         // gap after folder header
+                int folderHeaderHeight = 55;
+                int insideMargin = 10;
 
                 int contentTop = tab.Top + folderHeaderHeight + insideMargin;
                 int contentBottom = tab.Top + tab.Height - 20;
                 int contentHeight = Math.Max(80, contentBottom - contentTop);
-
 
                 // =========================
                 // Pane 1: FOLMERCON
@@ -1501,9 +1749,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 mtxMrCon.Width = tab.Width - 36;
                 mtxMrCon.Height = contentHeight;
 
-
                 // =========================
-                // Pane 2: FOLCANCON
+                // Pane 2: FOLCANCN
                 // Matrix: MTXCDCLR
                 // StaticText: STCDCLR
                 // EditText: ETCDCLR
@@ -1549,7 +1796,6 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 btnSave.Left = btnLoadCad.Left + btnLoadCad.Width + 5;
                 btnSave.Width = 65;
 
-
                 // =========================
                 // Pane 3: FOLTEMP
                 // Matrix: MTXCDCON
@@ -1560,7 +1806,6 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 mtxCdCon.Left = tab.Left + 18;
                 mtxCdCon.Width = tab.Width - 36;
                 mtxCdCon.Height = contentHeight;
-
 
                 // =========================
                 // Bottom Add / Cancel Buttons
@@ -1573,6 +1818,11 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
                 btnAdd.Left = 13;
                 btnCancel.Left = btnAdd.Left + btnAdd.Width + 3;
+
+                // =========================
+                // Auto Resize All Columns
+                // =========================
+                AutoResizeAllMatrixAndGridColumns(oForm);
             }
             catch (Exception ex)
             {
@@ -1588,6 +1838,23 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 {
                     oForm.Freeze(false);
                 }
+            }
+        }
+
+        private void AutoResizeAllMatrixAndGridColumns(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                ((SAPbouiCOM.Grid)oForm.Items.Item("GRDSCLR").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Grid)oForm.Items.Item("GRDSIZE").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Grid)oForm.Items.Item("GRDCDCON").Specific).AutoResizeColumns();
+
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXMRCON").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXCDCLR").Specific).AutoResizeColumns();
+                ((SAPbouiCOM.Matrix)oForm.Items.Item("MTXCDCON").Specific).AutoResizeColumns();
+            }
+            catch
+            {
             }
         }
     }
