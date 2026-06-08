@@ -82,6 +82,9 @@
     <Compile Include="Resources\Setup\Gender.b1f.cs">
       <DependentUpon>Gender.b1f</DependentUpon>
     </Compile>
+    <Compile Include="Resources\Setup\OrderType.b1f.cs">
+      <DependentUpon>OrderType.b1f</DependentUpon>
+    </Compile>
     <Compile Include="Resources\Setup\Position.b1f.cs">
       <DependentUpon>Position.b1f</DependentUpon>
     </Compile>
@@ -160,6 +163,9 @@
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\Gender.b1f">
+      <FormCategory>UserForm</FormCategory>
+    </None>
+    <None Include="Resources\Setup\OrderType.b1f">
       <FormCategory>UserForm</FormCategory>
     </None>
     <None Include="Resources\Setup\Position.b1f">

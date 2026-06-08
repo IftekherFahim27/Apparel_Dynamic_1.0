@@ -40,6 +40,7 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_SBDVSN", "Sub Division", 12, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_DEPT", "Department", 13, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_USETYPE", "Use Type", 14, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_ORDRTYPE", "Order Type", 15, 1, false);
 
 
                 //Apparel ->  Master
@@ -300,7 +301,32 @@ namespace Apparel_Dynamic_1._0
                     UseType activeForm = new UseType();
                     activeForm.Show();
                 }
+                //ORDER TYPE
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_ORDRTYPE")
+                {
+                    string formUID = "FIL_FRM_ORDRTYPE";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    try
+                    {
+                        OrderType activeForm = new OrderType();
+                        activeForm.Show();
+                        SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_ORDRTYPE");
+                        SAPbouiCOM.Matrix MTXORDR = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDR").Specific;
+                        MTXORDR.AutoResizeColumns();
 
+                    }
+                    catch(Exception ex)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
+                    }
+                   
+                }
                 //___________________________________________________________Master________________________________________________
                 //Sample Master
                 else if (pVal.BeforeAction && pVal.MenuUID == "APP_TRN_SAM_SM")
