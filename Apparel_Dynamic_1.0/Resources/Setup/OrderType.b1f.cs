@@ -19,7 +19,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
 
         private SAPbouiCOM.Matrix MTXORDR;
-        private SAPbouiCOM.Button ADDButton, CancelButton;
+        private SAPbouiCOM.Button ADDButton, CancelButton, BTNEWLN;
 
 
 
@@ -40,6 +40,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
             this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
+            this.BTNEWLN = ((SAPbouiCOM.Button)(this.GetItem("BTNEWLN").Specific));
+            this.BTNEWLN.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.BTNEWLN_PressedAfter);
             this.OnCustomInitialize();
 
         }
@@ -214,7 +216,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     }
 
                     // If CLMAXQTY is non-zero, create next row
-                    if (maxQty != 0)
+                    if (maxQty != 0 && oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
                     {
                         int nextRow = pVal.Row + 1;
 
@@ -282,7 +284,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         }
 
-        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
+        private void BTNEWLN_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             SAPbouiCOM.Form oForm = null;
 
@@ -294,50 +296,55 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                 SAPbouiCOM.Matrix oMatrix =
                     (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDR").Specific;
 
-                oMatrix.LoadFromDataSource();
+                oMatrix.FlushToDataSource();
 
                 if (oMatrix.RowCount == 0)
-                    return;
-
-                int oldRowCount = oMatrix.RowCount;
-                int lastRow = oldRowCount;
-
-                double lastMaxQty = GetMatrixDoubleValue(oMatrix, "CLMAXQTY", lastRow);
-
-                if (lastMaxQty <= 0)
                 {
+                    oMatrix.AddRow();
+                    SetMatrixValue(oMatrix, "#", 1, "1");
+                    SetMatrixValue(oMatrix, "CLCODE", 1, "Code 1");
+                    SetMatrixValue(oMatrix, "CLMINQTY", 1, "1");
+                    SetMatrixValue(oMatrix, "CLMAXQTY", 1, "");
+                    //SetMatrixValue(oMatrix, "CLMAXQTY", "");
                     SetMinQtyEditable(oMatrix);
                     return;
                 }
 
-                AddLineIfLastRowHasValue(
-                    oForm,
-                    "MTXORDR",
-                    "@FIL_MR_ORDRTYPE",
-                    "U_MAXQTY"
-                );
+                int lastRow = oMatrix.VisualRowCount;
 
-                oMatrix.LoadFromDataSource();
+                string lastMaxQtyText = GetMatrixStringValue(oMatrix, "CLMAXQTY", lastRow);
+                double lastMaxQty = GetMatrixDoubleValue(oMatrix, "CLMAXQTY", lastRow);
 
-                int newRow = oMatrix.RowCount;
-
-                if (newRow > oldRowCount)
+                if (string.IsNullOrWhiteSpace(lastMaxQtyText) || lastMaxQty <= 0)
                 {
-                    SetMatrixValue(oMatrix, "CLCODE", newRow, "Code " + newRow);
-                    SetMatrixValue(oMatrix, "CLMINQTY", newRow, (lastMaxQty + 1).ToString("0"));
-                    SetMatrixValue(oMatrix, "CLMAXQTY", newRow, "");
-
-                    oMatrix.FlushToDataSource();    
-                    oMatrix.LoadFromDataSource();
+                    Application.SBO_Application.StatusBar.SetText(
+                        "Please enter Maximum Quantity in the last row before adding a new line.",
+                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                        SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                    );
+                    return;
                 }
 
-                //SetMinQtyEditable(oMatrix);
+                int newRow = lastRow + 1;
+
+                oMatrix.AddRow();
+
+                SetMatrixValue(oMatrix, "#", newRow, newRow.ToString());
+                SetMatrixValue(oMatrix, "CLCODE", newRow, "Code " + newRow);
+                SetMatrixValue(oMatrix, "CLMINQTY", newRow, (lastMaxQty + 1).ToString("0"));
+                SetMatrixValue(oMatrix, "CLMAXQTY", newRow, "");
+
+                SetMinQtyEditable(oMatrix);
+
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+
                 oMatrix.AutoResizeColumns();
             }
             catch (Exception ex)
             {
                 Application.SBO_Application.StatusBar.SetText(
-                    "DataLoadAfter Error: " + ex.Message,
+                    "Add New Line Error: " + ex.Message,
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
@@ -349,25 +356,41 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             }
         }
 
-
-        public static void AddLineIfLastRowHasValue(
-    SAPbouiCOM.Form oForm,
-    string matrixID,
-    string dbTable,
-    string columnName)
+        private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
         {
             try
             {
-                SAPbouiCOM.Matrix matrix =
-                    (SAPbouiCOM.Matrix)oForm.Items.Item(matrixID).Specific;
+                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
 
-                SAPbouiCOM.DBDataSource db =
-                    oForm.DataSources.DBDataSources.Item(dbTable);
+                // Enable Add New Line button only after existing data loaded
+                oForm.Items.Item("BTNEWLN").Enabled = true;
+
+                SAPbouiCOM.Matrix oMatrix =
+                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDR").Specific;
+
+                SetMinQtyEditable(oMatrix);
+                oMatrix.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "DataLoadAfter Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+        }
+
+
+        public static void AddLineIfLastRowHasValue(SAPbouiCOM.Form oForm,string matrixID,string dbTable,string columnName)
+        {
+            try
+            {
+                SAPbouiCOM.Matrix matrix =(SAPbouiCOM.Matrix)oForm.Items.Item(matrixID).Specific;
+                SAPbouiCOM.DBDataSource db =oForm.DataSources.DBDataSources.Item(dbTable);
 
                 matrix.FlushToDataSource();
-
                 int dbRowCount = db.Size;
-
                 if (dbRowCount == 0)
                 {
                     Global.GFunc.SetNewLine(matrix, db, 1, "");
@@ -394,18 +417,13 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         private string GetMatrixStringValue(SAPbouiCOM.Matrix oMatrix, string colUID, int row)
         {
-            SAPbouiCOM.EditText txt =
-                (SAPbouiCOM.EditText)oMatrix.Columns.Item(colUID).Cells.Item(row).Specific;
-
+            SAPbouiCOM.EditText txt =(SAPbouiCOM.EditText)oMatrix.Columns.Item(colUID).Cells.Item(row).Specific;
             return txt.Value.Trim();
         }
 
         private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
         {
-            string code = oForm.DataSources.DBDataSources
-                .Item("@FIL_MH_ORDRTYPE")
-                .GetValue("U_PRDGRP", 0)
-                .Trim();
+            string code = oForm.DataSources.DBDataSources.Item("@FIL_MH_ORDRTYPE").GetValue("U_PRDGRP", 0).Trim();
 
             if (string.IsNullOrWhiteSpace(code))
             {
@@ -465,6 +483,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
             return BubbleEvent;
         }
+
+
 
         private bool IsProductGroupAlreadyExists(string code)
         {
@@ -544,5 +564,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                 Global.GFunc.SetNewLine(matrix, db, 1, "");
             }
         }
+
+        private SAPbouiCOM.Button Button0;
     }
 }
