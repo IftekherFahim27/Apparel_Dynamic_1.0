@@ -227,11 +227,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                         if (pVal.Row == oMatrix.RowCount)
                         {
                             oMatrix.FlushToDataSource();
-
                             Global.GFunc.SetNewLine(oMatrix, db, nextRow, "");
-
                             oMatrix.LoadFromDataSource();
-
                             SetMatrixValue(oMatrix, "#", nextRow, nextRow.ToString());
                         }
 
@@ -240,7 +237,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     }
                 }
 
-                SetMinQtyEditable(oMatrix);
+                //SetMinQtyEditable(oMatrix);
+                SetOrderTypeMatrixEditableAfterLoad(oMatrix);
             }
             catch (Exception ex)
             {
@@ -373,7 +371,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     SetMatrixValue(matrix, "CLMINQTY", 1, "1");
                     SetMatrixValue(matrix, "CLMAXQTY", 1, "");
 
-                    SetMinQtyEditable(matrix);
+                    SetOrderTypeMatrixEditableAfterLoad(matrix);
                     return;
                 }
 
@@ -397,7 +395,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     SetMatrixValue(matrix, "CLMINQTY", newLineNo, (lastMaxQty + 1).ToString("0"));
                     SetMatrixValue(matrix, "CLMAXQTY", newLineNo, "");
 
-                    SetMinQtyEditable(matrix);
+                    SetOrderTypeMatrixEditableAfterLoad(matrix);
 
                     if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
                         oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
@@ -447,9 +445,12 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         private void Form_DataLoadAfter(ref SAPbouiCOM.BusinessObjectInfo pVal)
         {
+            SAPbouiCOM.Form oForm = null;
+
             try
             {
-                SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+                oForm.Freeze(true);
 
                 // Enable Add New Line button only after existing data loaded
                 oForm.Items.Item("BTNEWLN").Enabled = true;
@@ -457,7 +458,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                 SAPbouiCOM.Matrix oMatrix =
                     (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDR").Specific;
 
-                SetMinQtyEditable(oMatrix);
+                SetOrderTypeMatrixEditableAfterLoad(oMatrix);
+
                 oMatrix.AutoResizeColumns();
             }
             catch (Exception ex)
@@ -468,9 +470,50 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
             }
+            finally
+            {
+                if (oForm != null)
+                {
+                    try
+                    {
+                        oForm.Freeze(false);
+                    }
+                    catch { }
+                }
+            }
         }
 
+        private void SetOrderTypeMatrixEditableAfterLoad(SAPbouiCOM.Matrix oMatrix)
+        {
+            int minQtyColNo = GetMatrixColumnNumber(oMatrix, "CLMINQTY");
+            int maxQtyColNo = GetMatrixColumnNumber(oMatrix, "CLMAXQTY");
 
+            if (minQtyColNo <= 0 || maxQtyColNo <= 0)
+                return;
+
+            int rowCount = oMatrix.VisualRowCount;
+
+            if (rowCount <= 0)
+                return;
+
+            // Case 1: only one row
+            if (rowCount == 1)
+            {
+                oMatrix.CommonSetting.SetCellEditable(1, minQtyColNo, true);
+                oMatrix.CommonSetting.SetCellEditable(1, maxQtyColNo, true);
+                return;
+            }
+
+            // Case 2: more than one row
+            for (int i = 1; i <= rowCount; i++)
+            {
+                // CLMINQTY disabled for all rows
+                oMatrix.CommonSetting.SetCellEditable(i, minQtyColNo, false);
+
+                // CLMAXQTY enabled only for last row
+                oMatrix.CommonSetting.SetCellEditable(i, maxQtyColNo, i == rowCount);
+            }
+        }
 
 
         private string GetMatrixStringValue(SAPbouiCOM.Matrix oMatrix, string colUID, int row)

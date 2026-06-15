@@ -1447,6 +1447,7 @@ namespace Apparel_Dynamic_1._0
                                     if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
                                         oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
 
+                                    SetOrderTypeMatrixEditableAfterDelete(matrix);
                                     matrix.AutoResizeColumns();
 
                                     break;
@@ -1492,6 +1493,48 @@ namespace Apparel_Dynamic_1._0
             return false;
         }
 
+        private void SetOrderTypeMatrixEditableAfterDelete(SAPbouiCOM.Matrix matrix)
+        {
+            int minQtyColNo = GetMatrixColumnNumber(matrix, "CLMINQTY");
+            int maxQtyColNo = GetMatrixColumnNumber(matrix, "CLMAXQTY");
+
+            if (minQtyColNo <= 0 || maxQtyColNo <= 0)
+                return;
+
+            int rowCount = matrix.VisualRowCount;
+
+            if (rowCount <= 0)
+                return;
+
+            // If only one row remains:
+            // CLMINQTY and CLMAXQTY both editable
+            if (rowCount == 1)
+            {
+                matrix.CommonSetting.SetCellEditable(1, minQtyColNo, true);
+                matrix.CommonSetting.SetCellEditable(1, maxQtyColNo, true);
+                return;
+            }
+
+            // If more than one row:
+            // CLMINQTY disabled for all rows
+            // CLMAXQTY enabled only for last row
+            for (int i = 1; i <= rowCount; i++)
+            {
+                matrix.CommonSetting.SetCellEditable(i, minQtyColNo, false);
+                matrix.CommonSetting.SetCellEditable(i, maxQtyColNo, i == rowCount);
+            }
+        }
+
+        private int GetMatrixColumnNumber(SAPbouiCOM.Matrix oMatrix, string colUID)
+        {
+            for (int i = 1; i <= oMatrix.Columns.Count; i++)
+            {
+                if (oMatrix.Columns.Item(i).UniqueID == colUID)
+                    return i;
+            }
+
+            return -1;
+        }
 
         private void SampleEnableButtons(SAPbouiCOM.Form oForm)
         {
