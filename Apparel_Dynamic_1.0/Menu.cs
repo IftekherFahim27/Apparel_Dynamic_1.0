@@ -1017,6 +1017,12 @@ namespace Apparel_Dynamic_1._0
 
                                 break;
                             }
+                        case "FIL_FRM_ORDRTYPE":
+                            {
+                                SetItemsEnabled(oForm, false, "BTNEWLN", "ETPRDNAM");
+                                break;
+                            }
+
                     }
                 }
                 //Find Mode
@@ -1154,6 +1160,12 @@ namespace Apparel_Dynamic_1._0
                             {
                                 SAPbouiCOM.Item oUomItem = oForm.Items.Item("ETCODE");
                                 oUomItem.Enabled = true;
+                                break;
+                            }
+                        case "FIL_FRM_ORDRTYPE":
+                            {
+                                SetItemsEnabled(oForm, true, "ETPRDNAM");
+                                SetItemsEnabled(oForm, false, "BTNEWLN");
                                 break;
                             }
                     }
@@ -1337,7 +1349,128 @@ namespace Apparel_Dynamic_1._0
                     string formtype = oForm.UniqueID.ToString();
                     switch (formtype)
                     {
-                        
+                        case "FIL_FRM_ORDRTYPE":
+                            {
+                                SAPbouiCOM.Matrix matrix =
+                                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDR").Specific;
+
+                                int lastRow = matrix.VisualRowCount;
+
+                                int currentRow =
+                                    matrix.GetNextSelectedRow(0, SAPbouiCOM.BoOrderType.ot_RowOrder);
+
+                                if (currentRow <= 0)
+                                {
+                                    SAPbouiCOM.CellPosition cellPos = matrix.GetCellFocus();
+                                    currentRow = cellPos.rowIndex;
+                                }
+
+                                if (currentRow != lastRow)
+                                {
+                                    Application.SBO_Application.StatusBar.SetText(
+                                        "Only last row can be deleted.",
+                                        SAPbouiCOM.BoMessageTime.bmt_Short,
+                                        SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                                    );
+
+                                    BubbleEvent = false;
+                                    return;
+                                }
+
+                                break;
+                            }
+                    }
+                }
+                else if (!pVal.BeforeAction && pVal.MenuUID == "1293")
+                {
+                    SAPbouiCOM.Form oForm = null;
+
+                    try
+                    {
+                        oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.ActiveForm;
+
+                        if (oForm == null)
+                            return;
+
+                        string formtype = oForm.UniqueID.ToString();
+
+                        switch (formtype)
+                        {
+                            case "FIL_FRM_ORDRTYPE":
+                                {
+                                    oForm.Freeze(true);
+
+                                    SAPbouiCOM.Matrix matrix =
+                                        (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDR").Specific;
+
+                                    SAPbouiCOM.DBDataSource db =
+                                        oForm.DataSources.DBDataSources.Item("@FIL_MR_ORDRTYPE");
+
+                                    matrix.FlushToDataSource();
+
+                                    // Remove ghost rows after SAP 1293 delete
+                                    for (int i = db.Size - 1; i >= 0; i--)
+                                    {
+                                        string minQtyText = db.GetValue("U_MINQTY", i).Trim();
+                                        string maxQtyText = db.GetValue("U_MAXQTY", i).Trim();
+
+                                        double minQty = 0;
+                                        double maxQty = 0;
+
+                                        double.TryParse(minQtyText, out minQty);
+                                        double.TryParse(maxQtyText, out maxQty);
+
+                                        if (minQty <= 0 && maxQty <= 0)
+                                        {
+                                            db.RemoveRecord(i);
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                    }
+
+                                    matrix.LoadFromDataSource();
+
+                                    // Re-number rows
+                                    for (int i = 1; i <= matrix.VisualRowCount; i++)
+                                    {
+                                        ((SAPbouiCOM.EditText)matrix.Columns.Item("#").Cells.Item(i).Specific).Value =
+                                            i.ToString();
+
+                                        ((SAPbouiCOM.EditText)matrix.Columns.Item("CLCODE").Cells.Item(i).Specific).Value =
+                                            "Code " + i;
+                                    }
+
+                                    matrix.FlushToDataSource();
+
+                                    if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                                        oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+
+                                    matrix.AutoResizeColumns();
+
+                                    break;
+                                }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        Application.SBO_Application.StatusBar.SetText(
+                            "Delete Row After Error: " + ex.Message,
+                            SAPbouiCOM.BoMessageTime.bmt_Short,
+                            SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                        );
+                    }
+                    finally
+                    {
+                        if (oForm != null)
+                        {
+                            try
+                            {
+                                oForm.Freeze(false);
+                            }
+                            catch { }
+                        }
                     }
                 }
             }
