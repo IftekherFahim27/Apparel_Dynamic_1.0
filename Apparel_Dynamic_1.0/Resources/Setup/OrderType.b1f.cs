@@ -459,7 +459,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDR").Specific;
 
                 SetOrderTypeMatrixEditableAfterLoad(oMatrix);
-
+                SetProductGroupEditableByMatrixData(oForm, oMatrix);
                 oMatrix.AutoResizeColumns();
             }
             catch (Exception ex)
@@ -480,6 +480,39 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     }
                     catch { }
                 }
+            }
+        }
+
+        private void SetProductGroupEditableByMatrixData(SAPbouiCOM.Form oForm,SAPbouiCOM.Matrix oMatrix)
+        {
+            try
+            {
+                bool hasData = false;
+
+                for (int i = 1; i <= oMatrix.VisualRowCount; i++)
+                {
+                    string code = GetMatrixStringValue(oMatrix, "CLCODE", i);
+                    string minQty = GetMatrixStringValue(oMatrix, "CLMINQTY", i);
+                    string maxQty = GetMatrixStringValue(oMatrix, "CLMAXQTY", i);
+
+                    if (!string.IsNullOrWhiteSpace(code)
+                        || !string.IsNullOrWhiteSpace(minQty)
+                        || !string.IsNullOrWhiteSpace(maxQty))
+                    {
+                        hasData = true;
+                        break;
+                    }
+                }
+
+                oForm.Items.Item("ETPRDCOD").Enabled = !hasData;
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Product Group Enable Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
             }
         }
 
