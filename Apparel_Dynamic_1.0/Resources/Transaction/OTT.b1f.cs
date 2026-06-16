@@ -92,10 +92,10 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                         ""DocNum"",
                         ""CardCode"",
                         ""CardName"",
-                        ""U_STYLECODE"",
-                        ""U_STYLENM"",
-                        ""DocDueDate"",
-                        ""U_TOTALQTY""
+                        ""U_STYLECODE"" AS ""Style Code"",
+                        ""U_STYLENM"" AS ""Style Desc."",
+                        ""DocDueDate"" AS ""Delivery Date"",
+                        ""U_TOTALQTY""  AS ""Total Quantity""
                     FROM ""OQUT""
                     WHERE ""U_OTTENTRY"" = '" + docEntry + "'";
 
