@@ -958,6 +958,9 @@ namespace Apparel_Dynamic_1._0
                                     SetItemsEnabled(oForm, false, "ETDOCNUM", "ETCUSTNM", "ETBRNDNM", "ETDOVAL",
                                                     "CBDSNBNK", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO");
 
+                                    SetItemsEnabled(oForm, true, "CBSERIES", "ETCUSTMR", "CBDSNBNK", "CBMRSTAT", "CBCMSTAT", "ETBRNDCD", "ETSCNO", "ETISUDAT");
+                                    ReBindCustomerCFL(oForm);
+
                                     SAPbouiCOM.Matrix MTXORDTL = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXORDTL").Specific;
                                     SAPbouiCOM.Matrix MTXB2BDL = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXB2BDL").Specific;
                                     SAPbouiCOM.Matrix MTXATTCH = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXATTCH").Specific;
@@ -1153,7 +1156,8 @@ namespace Apparel_Dynamic_1._0
                             }
                         case "FIL_FRM_SLCNTRCT":
                             {
-                                SetItemsEnabled(oForm, true, "ETDOCNUM", "ETCUSTNM", "ETBRNDNM", "ETDOVAL", "CBDSNBNK", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO");
+                                SetItemsEnabled(oForm, true, "CBSERIES", "ETDOCNUM", "ETCUSTNM", "ETBRNDNM", "CBMRSTAT", "CBCMSTAT", "ETCUSTMR", "ETBRNDNM",
+                                  "ETISUDAT", "ETDOVAL", "CBDSNBNK", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO") ;
                                 break;
                             }
                         case "FIL_FRM_USETYPE":
@@ -1482,7 +1486,17 @@ namespace Apparel_Dynamic_1._0
         }
 
         //_____________________________________________________ Method for Working Purpose________________________________________
-        
+
+
+        private void ReBindCustomerCFL(SAPbouiCOM.Form oForm)
+        {
+            SAPbouiCOM.EditText txtCustomer =
+                (SAPbouiCOM.EditText)oForm.Items.Item("ETCUSTMR").Specific;
+
+            txtCustomer.ChooseFromListUID = "CFL_OCRD";
+            txtCustomer.ChooseFromListAlias = "CardCode";
+        }
+
         private bool ValidValueExists(SAPbouiCOM.Column col, string value)
         {
             for (int i = 0; i < col.ValidValues.Count; i++)

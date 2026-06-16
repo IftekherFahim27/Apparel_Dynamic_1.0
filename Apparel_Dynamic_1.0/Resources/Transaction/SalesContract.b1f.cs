@@ -44,6 +44,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                     ETPORTLD, ETCNDEST, ETPRTDIS, ETINSNCE, ETSHPTOL,
                                     ETHSCODE, ETDOCREQ, ETRMSCON, ETDOCTRY;
 
+
+
         // -------- Folder --------
         private SAPbouiCOM.Folder FOLORDTL, FOLAMEND, FOLB2BDL, FOLATTCH, FOLCDTLS;
 
@@ -57,7 +59,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Grid GRDAMEND;
         public override void OnInitializeComponent()
         {
-            //               -------- Static Text --------
+            //                -------- Static Text --------
             this.STBRANCH = ((SAPbouiCOM.StaticText)(this.GetItem("STBRANCH").Specific));
             this.STMRSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STMRSTAT").Specific));
             this.STCMSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STCMSTAT").Specific));
@@ -97,13 +99,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STRMSCON = ((SAPbouiCOM.StaticText)(this.GetItem("STRMSCON").Specific));
             this.STSHPADD = ((SAPbouiCOM.StaticText)(this.GetItem("STSHPADD").Specific));
             this.STPRTSHP = ((SAPbouiCOM.StaticText)(this.GetItem("STPRTSHP").Specific));
-            //               -------- Folder --------
+            //                -------- Folder --------
             this.FOLORDTL = ((SAPbouiCOM.Folder)(this.GetItem("FOLORDTL").Specific));
             this.FOLAMEND = ((SAPbouiCOM.Folder)(this.GetItem("FOLAMEND").Specific));
             this.FOLB2BDL = ((SAPbouiCOM.Folder)(this.GetItem("FOLB2BDL").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.FOLCDTLS = ((SAPbouiCOM.Folder)(this.GetItem("FOLCDTLS").Specific));
-            //               -------- Button --------
+            //                -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
             this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
@@ -116,11 +118,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.DISPBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DISPBTN_ClickAfter);
             this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
             this.DELBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DELBTN_ClickAfter);
-            //               -------- ComboBox --------
+            //                -------- ComboBox --------
             this.CBBRANCH = ((SAPbouiCOM.ComboBox)(this.GetItem("CBBRANCH").Specific));
             this.CBMRSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMRSTAT").Specific));
+            this.CBMRSTAT.LostFocusAfter += new SAPbouiCOM._IComboBoxEvents_LostFocusAfterEventHandler(this.CBMRSTAT_LostFocusAfter);
             this.CBMRSTAT.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBMRSTAT_ComboSelectAfter);
             this.CBCMSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBCMSTAT").Specific));
+            this.CBCMSTAT.LostFocusAfter += new SAPbouiCOM._IComboBoxEvents_LostFocusAfterEventHandler(this.CBCMSTAT_LostFocusAfter);
             this.CBCMSTAT.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBCMSTAT_ComboSelectAfter);
             this.CBINTRMS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBINTRMS").Specific));
             this.CBPYTRMS = ((SAPbouiCOM.ComboBox)(this.GetItem("CBPYTRMS").Specific));
@@ -130,7 +134,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.CBDSNBNK = ((SAPbouiCOM.ComboBox)(this.GetItem("CBDSNBNK").Specific));
             this.CBSHPADD = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSHPADD").Specific));
             this.CBDSNBNK.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBDSNBNK_ComboSelectAfter);
-            //               -------- Edit Text --------
+            //                -------- Edit Text --------
             this.ETCUSTMR = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTMR").Specific));
             this.ETCUSTMR.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETCUSTMR_ChooseFromListBefore);
             this.ETCUSTMR.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCUSTMR_ChooseFromListAfter);
@@ -174,11 +178,11 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETDOCREQ = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCREQ").Specific));
             this.ETRMSCON = ((SAPbouiCOM.EditText)(this.GetItem("ETRMSCON").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //               -------- Matrix --------
+            //                -------- Matrix --------
             this.MTXORDTL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXORDTL").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
             this.MTXB2BDL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXB2BDL").Specific));
-            //               -------- Grid --------
+            //                -------- Grid --------
             this.GRDAMEND = ((SAPbouiCOM.Grid)(this.GetItem("GRDAMEND").Specific));
             this.GRDAMEND.DoubleClickAfter += new SAPbouiCOM._IGridEvents_DoubleClickAfterEventHandler(this.GRDAMEND_DoubleClickAfter);
             this.OnCustomInitialize();
@@ -901,8 +905,9 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             {
                 oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
 
+                ControlCompletedStatusCombos(oForm);
                 LoadCustomerShippingAddress(oForm);
-
+                SetItemsEnabled(oForm, false, "ETCUSTNM", "ETBRNDNM", "ETDOVAL", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO");
                 string scNo = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSCNO").Specific).Value.Trim();
 
                 if (string.IsNullOrWhiteSpace(scNo))
@@ -1009,6 +1014,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 SetDraftOrderTotalValue(oForm);
                 oMatrix.AutoResizeColumns();
                 ControlSendToBank(oForm);
+
                 CheckAndLoadAmendmentGrid(oForm);
             }
             catch (Exception ex)
@@ -1027,6 +1033,21 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                         oForm.Freeze(false);
                 }
                 catch { }
+            }
+        }
+
+        private void SetItemsEnabled(SAPbouiCOM.Form oForm, bool enabled, params string[] itemIds)
+        {
+            foreach (string itemId in itemIds)
+            {
+                try
+                {
+                    oForm.Items.Item(itemId).Enabled = enabled;
+                }
+                catch
+                {
+
+                }
             }
         }
 
@@ -1321,6 +1342,65 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
         }
 
+        private void CBMRSTAT_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                SAPbouiCOM.ComboBox oCmb =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item("CBMRSTAT").Specific;
+
+                string selectedValue =
+                    oCmb.Selected == null ? "" : oCmb.Selected.Value.Trim();
+
+                if (selectedValue == "C")
+                {
+                    oForm.Items.Item("CBMRSTAT").Enabled = false;
+                }
+
+                ControlSendToBank(oForm);
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "CBMRSTAT LostFocus Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+        private void CBCMSTAT_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                SAPbouiCOM.ComboBox oCmb =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item("CBCMSTAT").Specific;
+
+                string selectedValue =
+                    oCmb.Selected == null ? "" : oCmb.Selected.Value.Trim();
+
+                if (selectedValue == "C")
+                {
+                    oForm.Items.Item("CBCMSTAT").Enabled = false;
+                }
+
+                ControlSendToBank(oForm);
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "CBCMSTAT LostFocus Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+
         private void CBCMSTAT_ComboSelectAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
         {
             try
@@ -1435,6 +1515,51 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
             }
+        }
+
+        private string GetComboSelectedValue(SAPbouiCOM.Form oForm, string comboId)
+        {
+            try
+            {
+                SAPbouiCOM.ComboBox cmb =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item(comboId).Specific;
+
+                return cmb.Selected == null ? "" : cmb.Selected.Value.Trim();
+            }
+            catch
+            {
+                return "";
+            }
+        }
+
+        private void DisableCompletedStatusCombo(SAPbouiCOM.Form oForm, string comboId)
+        {
+            try
+            {
+                string value = GetComboSelectedValue(oForm, comboId);
+
+                if (value == "C")
+                {
+                    oForm.Items.Item(comboId).Enabled = false;
+                }
+                else if (value == "D")
+                {
+                    oForm.Items.Item(comboId).Enabled = true;
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "DisableCompletedStatusCombo Error (" + comboId + "): " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+        private void ControlCompletedStatusCombos(SAPbouiCOM.Form oForm)
+        {
+            DisableCompletedStatusCombo(oForm, "CBMRSTAT");
+            DisableCompletedStatusCombo(oForm, "CBCMSTAT");
         }
 
         private void ETSCNO_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
