@@ -45,7 +45,6 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                     ETHSCODE, ETDOCREQ, ETRMSCON, ETDOCTRY;
 
 
-
         // -------- Folder --------
         private SAPbouiCOM.Folder FOLORDTL, FOLAMEND, FOLB2BDL, FOLATTCH, FOLCDTLS;
 
@@ -59,7 +58,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
         private SAPbouiCOM.Grid GRDAMEND;
         public override void OnInitializeComponent()
         {
-            //                -------- Static Text --------
+            //                 -------- Static Text --------
             this.STBRANCH = ((SAPbouiCOM.StaticText)(this.GetItem("STBRANCH").Specific));
             this.STMRSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STMRSTAT").Specific));
             this.STCMSTAT = ((SAPbouiCOM.StaticText)(this.GetItem("STCMSTAT").Specific));
@@ -99,13 +98,13 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.STRMSCON = ((SAPbouiCOM.StaticText)(this.GetItem("STRMSCON").Specific));
             this.STSHPADD = ((SAPbouiCOM.StaticText)(this.GetItem("STSHPADD").Specific));
             this.STPRTSHP = ((SAPbouiCOM.StaticText)(this.GetItem("STPRTSHP").Specific));
-            //                -------- Folder --------
+            //                 -------- Folder --------
             this.FOLORDTL = ((SAPbouiCOM.Folder)(this.GetItem("FOLORDTL").Specific));
             this.FOLAMEND = ((SAPbouiCOM.Folder)(this.GetItem("FOLAMEND").Specific));
             this.FOLB2BDL = ((SAPbouiCOM.Folder)(this.GetItem("FOLB2BDL").Specific));
             this.FOLATTCH = ((SAPbouiCOM.Folder)(this.GetItem("FOLATTCH").Specific));
             this.FOLCDTLS = ((SAPbouiCOM.Folder)(this.GetItem("FOLCDTLS").Specific));
-            //                -------- Button --------
+            //                 -------- Button --------
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
             this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
             this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
@@ -118,7 +117,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.DISPBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DISPBTN_ClickAfter);
             this.DELBTN = ((SAPbouiCOM.Button)(this.GetItem("DELBTN").Specific));
             this.DELBTN.ClickAfter += new SAPbouiCOM._IButtonEvents_ClickAfterEventHandler(this.DELBTN_ClickAfter);
-            //                -------- ComboBox --------
+            //                 -------- ComboBox --------
             this.CBBRANCH = ((SAPbouiCOM.ComboBox)(this.GetItem("CBBRANCH").Specific));
             this.CBMRSTAT = ((SAPbouiCOM.ComboBox)(this.GetItem("CBMRSTAT").Specific));
             this.CBMRSTAT.LostFocusAfter += new SAPbouiCOM._IComboBoxEvents_LostFocusAfterEventHandler(this.CBMRSTAT_LostFocusAfter);
@@ -132,9 +131,10 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.CBPRTSHP = ((SAPbouiCOM.ComboBox)(this.GetItem("CBPRTSHP").Specific));
             this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.CBDSNBNK = ((SAPbouiCOM.ComboBox)(this.GetItem("CBDSNBNK").Specific));
+            this.CBDSNBNK.LostFocusAfter += new SAPbouiCOM._IComboBoxEvents_LostFocusAfterEventHandler(this.CBDSNBNK_LostFocusAfter);
             this.CBSHPADD = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSHPADD").Specific));
             this.CBDSNBNK.ComboSelectAfter += new SAPbouiCOM._IComboBoxEvents_ComboSelectAfterEventHandler(this.CBDSNBNK_ComboSelectAfter);
-            //                -------- Edit Text --------
+            //                 -------- Edit Text --------
             this.ETCUSTMR = ((SAPbouiCOM.EditText)(this.GetItem("ETCUSTMR").Specific));
             this.ETCUSTMR.ChooseFromListBefore += new SAPbouiCOM._IEditTextEvents_ChooseFromListBeforeEventHandler(this.ETCUSTMR_ChooseFromListBefore);
             this.ETCUSTMR.ChooseFromListAfter += new SAPbouiCOM._IEditTextEvents_ChooseFromListAfterEventHandler(this.ETCUSTMR_ChooseFromListAfter);
@@ -178,11 +178,11 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             this.ETDOCREQ = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCREQ").Specific));
             this.ETRMSCON = ((SAPbouiCOM.EditText)(this.GetItem("ETRMSCON").Specific));
             this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            //                -------- Matrix --------
+            //                 -------- Matrix --------
             this.MTXORDTL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXORDTL").Specific));
             this.MTXATTCH = ((SAPbouiCOM.Matrix)(this.GetItem("MTXATTCH").Specific));
             this.MTXB2BDL = ((SAPbouiCOM.Matrix)(this.GetItem("MTXB2BDL").Specific));
-            //                -------- Grid --------
+            //                 -------- Grid --------
             this.GRDAMEND = ((SAPbouiCOM.Grid)(this.GetItem("GRDAMEND").Specific));
             this.GRDAMEND.DoubleClickAfter += new SAPbouiCOM._IGridEvents_DoubleClickAfterEventHandler(this.GRDAMEND_DoubleClickAfter);
             this.OnCustomInitialize();
@@ -906,6 +906,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
 
                 ControlCompletedStatusCombos(oForm);
+                ControlDesignBankCombo(oForm);
                 LoadCustomerShippingAddress(oForm);
                 SetItemsEnabled(oForm, false, "ETCUSTNM", "ETBRNDNM", "ETDOVAL", "ETCUSBNK", "ETOWNBNK", "ETAMNDNO");
                 string scNo = ((SAPbouiCOM.EditText)oForm.Items.Item("ETSCNO").Specific).Value.Trim();
@@ -1036,6 +1037,41 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
         }
 
+        private void ControlDesignBankCombo(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                SAPbouiCOM.ComboBox cbDesignBank =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item("CBDSNBNK").Specific;
+
+                SAPbouiCOM.ComboBox cbCMStatus =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item("CBCMSTAT").Specific;
+
+                string designBankValue = cbDesignBank.Value.Trim();
+                string cmStatusValue = cbCMStatus.Value.Trim();
+
+                if (designBankValue == "Y")
+                {
+                    oForm.Items.Item("CBDSNBNK").Enabled = false;
+                }
+                else if (cmStatusValue == "C")
+                {
+                    oForm.Items.Item("CBDSNBNK").Enabled = true;
+                }
+                else
+                {
+                    oForm.Items.Item("CBDSNBNK").Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "ControlDesignBankCombo Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
         private void SetItemsEnabled(SAPbouiCOM.Form oForm, bool enabled, params string[] itemIds)
         {
             foreach (string itemId in itemIds)
@@ -1150,10 +1186,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value = "1";
 
                 // Branch combo
-                string sqlQuerybpl = @"SELECT ""BPLId"", ""BPLName"" FROM ""OBPL""";
-                SAPbouiCOM.ComboBox CBCMPANY = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBBRANCH").Specific;
-                Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
-                CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
+                LoadUserBranches(oForm, "CBBRANCH");
 
                 //Payment Terms
                 string payTerms = @"SELECT ""GroupNum"", ""PymntGroup"" FROM ""OCTG""";
@@ -1178,6 +1211,102 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 ValidateForm(ref oForm, ref BubbleEvent);
             }
 
+        }
+
+        private bool ValidateSalesContractDates(SAPbouiCOM.Form oForm, ref bool BubbleEvent)
+        {
+            try
+            {
+                SAPbouiCOM.DBDataSource oDB =
+                    oForm.DataSources.DBDataSources.Item("@FIL_DH_OSCM");
+
+                string issueDateStr = oDB.GetValue("U_ISSUEDATE", 0).Trim();
+                string shipmentDateStr = oDB.GetValue("U_SHIPDATE", 0).Trim();
+                string expiryDateStr = oDB.GetValue("U_EXPDATE", 0).Trim();
+
+                if (string.IsNullOrWhiteSpace(issueDateStr))
+                {
+                    Global.GFunc.ShowError("Enter Issue Date");
+                    oForm.ActiveItem = "ETISUDAT";
+                    return BubbleEvent = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(shipmentDateStr))
+                {
+                    Global.GFunc.ShowError("Enter Shipment Date");
+                    oForm.ActiveItem = "ETSHPDAT";
+                    return BubbleEvent = false;
+                }
+
+                if (string.IsNullOrWhiteSpace(expiryDateStr))
+                {
+                    Global.GFunc.ShowError("Enter Expiry Date");
+                    oForm.ActiveItem = "ETEXPDAT";
+                    return BubbleEvent = false;
+                }
+
+                DateTime issueDate = DateTime.ParseExact(issueDateStr, "yyyyMMdd", null);
+                DateTime shipmentDate = DateTime.ParseExact(shipmentDateStr, "yyyyMMdd", null);
+                DateTime expiryDate = DateTime.ParseExact(expiryDateStr, "yyyyMMdd", null);
+
+                if (shipmentDate < issueDate)
+                {
+                    Global.GFunc.ShowError("Shipment Date cannot be before Issue Date.");
+                    oForm.ActiveItem = "ETSHPDAT";
+                    return BubbleEvent = false;
+                }
+
+                if (expiryDate < shipmentDate)
+                {
+                    Global.GFunc.ShowError("Expiry Date cannot be before Shipment Date.");
+                    oForm.ActiveItem = "ETEXPDAT";
+                    return BubbleEvent = false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                Global.GFunc.ShowError("Date validation error: " + ex.Message);
+                return BubbleEvent = false;
+            }
+        }
+
+        private void LoadUserBranches(SAPbouiCOM.Form oForm, string comboId)
+        {
+            try
+            {
+                int userSign = Global.oComp.UserSignature;
+
+                string sql = $@"
+                                SELECT DISTINCT
+                                    T0.""BPLId"",
+                                    T0.""BPLName""
+                                FROM ""OBPL"" T0
+                                INNER JOIN ""USR6"" T1
+                                    ON T0.""BPLId"" = T1.""BPLId""
+                                WHERE T1.""UserID"" = {userSign}
+                                ORDER BY T0.""BPLName""";
+
+                SAPbouiCOM.ComboBox oCombo =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item(comboId).Specific;
+
+                Global.GFunc.setComboBoxValue(oCombo, sql);
+
+                if (oCombo.ValidValues.Count == 1)
+                {
+                    oCombo.Select(
+                        oCombo.ValidValues.Item(0).Value,
+                        SAPbouiCOM.BoSearchKey.psk_ByValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "LoadUserBranches Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
         }
 
         private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
@@ -1220,6 +1349,11 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                     Global.GFunc.ShowError("Enter Issue Date");
                     oForm.ActiveItem = "ETISUDAT";
                     return BubbleEvent = false;
+                }
+
+                if (!ValidateSalesContractDates(oForm, ref BubbleEvent))
+                {
+                    return false;
                 }
 
                 //Prevent New Empty Free Line
@@ -1516,6 +1650,33 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 );
             }
         }
+
+        private void CBDSNBNK_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.Form oForm =
+                    Application.SBO_Application.Forms.Item(pVal.FormUID);
+
+                SAPbouiCOM.ComboBox oCombo =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item("CBDSNBNK").Specific;
+
+                string selectedValue = oCombo.Value.Trim();
+
+                if (selectedValue == "Y")
+                {
+                    oForm.Items.Item("CBDSNBNK").Enabled = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "CBDSNBNK LostFocus Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
 
         private string GetComboSelectedValue(SAPbouiCOM.Form oForm, string comboId)
         {
