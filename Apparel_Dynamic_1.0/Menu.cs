@@ -41,6 +41,7 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_DEPT", "Department", 13, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_USETYPE", "Use Type", 14, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_ORDRTYPE", "Order Type", 15, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_LEADTIME", "Lead Time", 16, 1, false);
 
 
                 //Apparel ->  Master
@@ -71,10 +72,11 @@ namespace Apparel_Dynamic_1._0
 
                 //Apparel -> Transaction -> Merchandising 
                 CreateMainMenu("APP_TRN_MRD", "APP_TRN_MRD_SM", "Style Master", 1, 1, false);
-                CreateMainMenu("APP_TRN_MRD", "APP_TRN_MRD_SCON", "Sales Contract ", 2, 2, false);
+                //CreateMainMenu("APP_TRN_MRD", "APP_TRN_MRD_SCON", "Sales Contract ", 2, 2, false);
+                CreateMainMenu("APP_TRN_MRD", "APP_TRN_MRD_SCON_SC", "Sales Contract", 2, 1, false);
 
                 //Apparel -> Transaction -> Merchandising->Sales Contract
-                CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC", "Sales Contract", 0, 1, false);
+                //CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC", "Sales Contract", 1, 1, false);
                 //CreateMainMenu("APP_TRN_MRD_SCON", "APP_TRN_MRD_SCON_SC_AMD", "Sales Contract Ammendment", 2, 1, false);
 
                 //Apparel -> Transaction -> Merchandising -> OTT
@@ -326,6 +328,32 @@ namespace Apparel_Dynamic_1._0
                         Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
                     }
                    
+                }
+                //Lead Time
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_LEADTIME")
+                {
+                    string formUID = "FIL_FRM_LEADTIME";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    try
+                    {
+                        LeadTime activeForm = new LeadTime();
+                        activeForm.Show();
+                        SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_LEADTIME");
+                        SAPbouiCOM.Matrix MTXLEDTM = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                        MTXLEDTM.AutoResizeColumns();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
+                    }
+
                 }
                 //___________________________________________________________Master________________________________________________
                 //Sample Master
@@ -647,10 +675,7 @@ namespace Apparel_Dynamic_1._0
                         ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value = DateTime.Now.ToString("yyyyMMdd");
 
                         // Branch combo
-                        string sqlQuerybpl = @"SELECT ""BPLId"", ""BPLName"" FROM ""OBPL""";
-                        SAPbouiCOM.ComboBox CBCMPANY = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBBRANCH").Specific;
-                        Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
-                        CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
+                        LoadUserBranches(oForm, "CBBRANCH");
 
                         //Amendment No
                         ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value = "1";
@@ -987,11 +1012,7 @@ namespace Apparel_Dynamic_1._0
                                     ((SAPbouiCOM.EditText)oForm.Items.Item("ETDOCDAT").Specific).Value =
                                         DateTime.Now.ToString("yyyyMMdd");
 
-                                    //Branch combo
-                                    string sqlQuerybpl = @"SELECT ""BPLId"", ""BPLName"" FROM ""OBPL""";
-                                    SAPbouiCOM.ComboBox CBCMPANY = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBBRANCH").Specific;
-                                    Global.GFunc.setComboBoxValue(CBCMPANY, sqlQuerybpl);
-                                    CBCMPANY.Select("1", SAPbouiCOM.BoSearchKey.psk_ByValue);
+                                    LoadUserBranches(oForm, "CBBRANCH");
 
                                     //Amendment No
                                     ((SAPbouiCOM.EditText)oForm.Items.Item("ETAMNDNO").Specific).Value = "1";
@@ -1487,7 +1508,42 @@ namespace Apparel_Dynamic_1._0
 
         //_____________________________________________________ Method for Working Purpose________________________________________
 
+        private void LoadUserBranches(SAPbouiCOM.Form oForm, string comboId)
+        {
+            try
+            {
+                int userSign = Global.oComp.UserSignature;
 
+                string sql = $@"
+                                SELECT DISTINCT
+                                    T0.""BPLId"",
+                                    T0.""BPLName""
+                                FROM ""OBPL"" T0
+                                INNER JOIN ""USR6"" T1
+                                    ON T0.""BPLId"" = T1.""BPLId""
+                                WHERE T1.""UserID"" = {userSign}
+                                ORDER BY T0.""BPLName""";
+
+                SAPbouiCOM.ComboBox oCombo =
+                    (SAPbouiCOM.ComboBox)oForm.Items.Item(comboId).Specific;
+
+                Global.GFunc.setComboBoxValue(oCombo, sql);
+
+                if (oCombo.ValidValues.Count == 1)
+                {
+                    oCombo.Select(
+                        oCombo.ValidValues.Item(0).Value,
+                        SAPbouiCOM.BoSearchKey.psk_ByValue);
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "LoadUserBranches Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
         private void ReBindCustomerCFL(SAPbouiCOM.Form oForm)
         {
             SAPbouiCOM.EditText txtCustomer =
