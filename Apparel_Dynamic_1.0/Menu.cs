@@ -41,6 +41,7 @@ namespace Apparel_Dynamic_1._0
                 CreateMainMenu("APP_STP", "APP_STP_DEPT", "Department", 13, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_USETYPE", "Use Type", 14, 1, false);
                 CreateMainMenu("APP_STP", "APP_STP_ORDRTYPE", "Order Type", 15, 1, false);
+                CreateMainMenu("APP_STP", "APP_STP_LEADTIME", "Lead Time", 16, 1, false);
 
 
                 //Apparel ->  Master
@@ -327,6 +328,32 @@ namespace Apparel_Dynamic_1._0
                         Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
                     }
                    
+                }
+                //Lead Time
+                else if (pVal.BeforeAction && pVal.MenuUID == "APP_STP_LEADTIME")
+                {
+                    string formUID = "FIL_FRM_LEADTIME";
+                    if (IsFormOpen(formUID))
+                    {
+                        Global.G_UI_Application.Forms.Item(formUID).Select();
+                        Global.G_UI_Application.StatusBar.SetText("Form already opened once.",
+                            SAPbouiCOM.BoMessageTime.bmt_Short, SAPbouiCOM.BoStatusBarMessageType.smt_Warning);
+                        return;
+                    }
+                    try
+                    {
+                        LeadTime activeForm = new LeadTime();
+                        activeForm.Show();
+                        SAPbouiCOM.Form oForm = (SAPbouiCOM.Form)Application.SBO_Application.Forms.Item("FIL_FRM_LEADTIME");
+                        SAPbouiCOM.Matrix MTXLEDTM = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                        MTXLEDTM.AutoResizeColumns();
+
+                    }
+                    catch (Exception ex)
+                    {
+                        Application.SBO_Application.MessageBox("Error Found : " + ex.Message);
+                    }
+
                 }
                 //___________________________________________________________Master________________________________________________
                 //Sample Master

@@ -18,17 +18,17 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         /// </summary>
         public override void OnInitializeComponent()
         {
-            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_0").Specific));
-            this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_1").Specific));
-            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("Item_2").Specific));
-            this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("Item_3").Specific));
-            this.EditText2 = ((SAPbouiCOM.EditText)(this.GetItem("Item_4").Specific));
-            this.EditText3 = ((SAPbouiCOM.EditText)(this.GetItem("Item_5").Specific));
-            this.ComboBox0 = ((SAPbouiCOM.ComboBox)(this.GetItem("Item_6").Specific));
-            this.Matrix0 = ((SAPbouiCOM.Matrix)(this.GetItem("Item_7").Specific));
-            this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("Item_8").Specific));
-            this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("Item_9").Specific));
-            this.Button1 = ((SAPbouiCOM.Button)(this.GetItem("Item_10").Specific));
+            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("STEFRMDT").Specific));
+            this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("STEFTODT").Specific));
+            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("ETEFRMDT").Specific));
+            this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("ETEFTODT").Specific));
+            this.EditText2 = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
+            this.EditText3 = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
+            this.ComboBox0 = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
+            this.Matrix0 = ((SAPbouiCOM.Matrix)(this.GetItem("MTXLEDTM").Specific));
+            this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
+            this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.Button1 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.OnCustomInitialize();
 
         }
