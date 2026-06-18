@@ -348,6 +348,21 @@ namespace Apparel_Dynamic_1._0
                         SAPbouiCOM.Matrix MTXLEDTM = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
                         MTXLEDTM.AutoResizeColumns();
 
+                        //Series Initialization
+                        SAPbouiCOM.DBDataSource oDBH = (SAPbouiCOM.DBDataSource)oForm.DataSources.DBDataSources.Item("@FIL_DH_LEADTMST");
+                        if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
+                        {
+                            SAPbouiCOM.ComboBox ocmb = (SAPbouiCOM.ComboBox)oForm.Items.Item("CBSERIES").Specific;
+                            Global.GFunc.LoadComboBoxSeries(ocmb, "FIL_D_LEADTMST");  //Object Type
+                            string ocmbvalue = ocmb.Selected.Value;
+                            long docno = oForm.BusinessObject.GetNextSerialNumber(ocmbvalue, "FIL_D_LEADTMST");
+                            oDBH.SetValue("DocNum", 0, docno.ToString()); // only set the value in string.
+
+                            //LoadShippingModeComboInMatrix(oForm);
+                            LoadMatrixCombos(oForm);
+                            EnsureLine(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST");
+                        }
+
                     }
                     catch (Exception ex)
                     {
@@ -1507,6 +1522,101 @@ namespace Apparel_Dynamic_1._0
         }
 
         //_____________________________________________________ Method for Working Purpose________________________________________
+        private void LoadMatrixCombos(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                SAPbouiCOM.Matrix oMatrix =
+                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+
+                // Shipping Mode
+                Global.GFunc.SetMatrixComboValue(
+                    oMatrix,
+                    "CLSHPMOD",
+                    @"SELECT
+                ""TrnspCode"",
+                ""TrnspName""
+              FROM ""OSHP""
+              ORDER BY ""TrnspName"""
+                );
+
+                // Incoterms
+                Global.GFunc.SetMatrixComboValue(
+                    oMatrix,
+                    "CLINTRMS",
+                    @"SELECT
+                ""Code"",
+                ""Name""
+              FROM ""@FIL_MH_INCOTRMS""
+              WHERE ""U_ACTIVE"" = 'Y'
+              ORDER BY ""Name"""
+                );
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Matrix Combo Load Error : " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+        }
+
+
+
+        private void LoadShippingModeComboInMatrix(SAPbouiCOM.Form oForm)
+        {
+            SAPbobsCOM.Recordset rs = null;
+
+            try
+            {
+                SAPbouiCOM.Matrix oMatrix = (SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                SAPbouiCOM.Column oColumn = oMatrix.Columns.Item("CLSHPMOD");
+
+                // Clear old valid values first
+                for (int i = oColumn.ValidValues.Count - 1; i >= 0; i--)
+                {
+                    oColumn.ValidValues.Remove(i, SAPbouiCOM.BoSearchKey.psk_Index);
+                }
+
+                string query = @"
+                                SELECT 
+                                    ""TrnspCode"",
+                                    ""TrnspName""
+                                FROM ""OSHP""
+                                WHERE IFNULL(""Active"", 'Y') = 'Y'
+                                ORDER BY ""TrnspName""
+                                ";
+
+                rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                rs.DoQuery(query);
+
+                while (!rs.EoF)
+                {
+                    string code = rs.Fields.Item("TrnspCode").Value.ToString();
+                    string name = rs.Fields.Item("TrnspName").Value.ToString();
+
+                    oColumn.ValidValues.Add(code, name);
+
+                    rs.MoveNext();
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Shipping Mode combo load error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (rs != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(rs);
+                    rs = null;
+                }
+            }
+        }
+
 
         private void LoadUserBranches(SAPbouiCOM.Form oForm, string comboId)
         {

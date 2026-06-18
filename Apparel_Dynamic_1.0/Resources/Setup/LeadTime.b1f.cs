@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using Apparel_Dynamic_1._0.Helper;
+
 
 namespace Apparel_Dynamic_1._0.Resources.Setup
 {
@@ -13,49 +15,231 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         {
         }
 
-        /// <summary>
-        /// Initialize components. Called by framework after form created.
-        /// </summary>
+        private SAPbouiCOM.StaticText STEFRMDT, STEFTODT, STDOCNUM;
+        private SAPbouiCOM.EditText ETEFRMDT, ETEFTODT, ETDOCTRY, ETDOCNUM;
+      
+        private SAPbouiCOM.ComboBox CBSERIES;
+        private SAPbouiCOM.Matrix MTXLEDTM;
+
+
+
+        private SAPbouiCOM.Button ADDButton,CancelButton;
+
+
         public override void OnInitializeComponent()
         {
-            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("STEFRMDT").Specific));
-            this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("STEFTODT").Specific));
-            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("ETEFRMDT").Specific));
-            this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("ETEFTODT").Specific));
-            this.EditText2 = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            this.EditText3 = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
-            this.ComboBox0 = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
-            this.Matrix0 = ((SAPbouiCOM.Matrix)(this.GetItem("MTXLEDTM").Specific));
-            this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
-            this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
-            this.Button1 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
+            this.STEFRMDT = ((SAPbouiCOM.StaticText)(this.GetItem("STEFRMDT").Specific));
+            this.STEFTODT = ((SAPbouiCOM.StaticText)(this.GetItem("STEFTODT").Specific));
+            this.ETEFRMDT = ((SAPbouiCOM.EditText)(this.GetItem("ETEFRMDT").Specific));
+            this.ETEFTODT = ((SAPbouiCOM.EditText)(this.GetItem("ETEFTODT").Specific));
+            this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
+            this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
+            this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
+            this.MTXLEDTM = ((SAPbouiCOM.Matrix)(this.GetItem("MTXLEDTM").Specific));
+            this.MTXLEDTM.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXLEDTM_ChooseFromListAfter);
+            this.MTXLEDTM.ChooseFromListBefore += new SAPbouiCOM._IMatrixEvents_ChooseFromListBeforeEventHandler(this.MTXLEDTM_ChooseFromListBefore);
+            this.STDOCNUM = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
+            this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.OnCustomInitialize();
 
         }
 
-        /// <summary>
-        /// Initialize form event. Called by framework before form creation.
-        /// </summary>
+
         public override void OnInitializeFormEvents()
         {
-        }
 
-        private SAPbouiCOM.StaticText StaticText0;
+        }
 
         private void OnCustomInitialize()
         {
 
         }
 
-        private SAPbouiCOM.StaticText StaticText1;
-        private SAPbouiCOM.EditText EditText0;
-        private SAPbouiCOM.EditText EditText1;
-        private SAPbouiCOM.EditText EditText2;
-        private SAPbouiCOM.EditText EditText3;
-        private SAPbouiCOM.ComboBox ComboBox0;
-        private SAPbouiCOM.Matrix Matrix0;
-        private SAPbouiCOM.StaticText StaticText2;
-        private SAPbouiCOM.Button Button0;
-        private SAPbouiCOM.Button Button1;
+
+        private void MTXLEDTM_ChooseFromListBefore(object sboObject,SAPbouiCOM.SBOItemEventArg pVal,out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+
+            try
+            {
+                if (pVal.ColUID != "CLVNCOD")
+                    return;
+
+                SAPbouiCOM.Form oForm =Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.ChooseFromList oCFL =oForm.ChooseFromLists.Item("CFL_OCRD");
+
+                SAPbouiCOM.Conditions oCons =new SAPbouiCOM.Conditions();
+                SAPbouiCOM.Condition oCon =oCons.Add();
+
+                oCon.Alias = "CardType";
+                oCon.Operation = SAPbouiCOM.BoConditionOperation.co_EQUAL;
+                oCon.CondVal = "S"; 
+
+                oCFL.SetConditions(oCons);
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Vendor CFL condition error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+
+                BubbleEvent = false;
+            }
+        }
+
+        private void MTXLEDTM_ChooseFromListAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            try
+            {
+                SAPbouiCOM.ISBOChooseFromListEventArg cflArg =(SAPbouiCOM.ISBOChooseFromListEventArg)pVal;
+                SAPbouiCOM.Form oForm =Application.SBO_Application.Forms.Item(pVal.FormUID);
+                SAPbouiCOM.Matrix oMatrix =(SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                SAPbouiCOM.DBDataSource db =oForm.DataSources.DBDataSources.Item("@FIL_DR_LEADTMST");
+                SAPbouiCOM.DataTable dt = cflArg.SelectedObjects;
+
+                if (dt == null || dt.Rows.Count == 0)
+                    return;
+
+                int row = pVal.Row;
+
+                if (pVal.ColUID == "CLVNCOD") // Currency OCRN
+                {
+                    string cardCode = dt.GetValue("CardCode", 0).ToString();
+                    string cardName = dt.GetValue("CardName", 0).ToString();
+
+                    oMatrix.SetCellWithoutValidation(row, "CLVNCOD", cardCode);
+                    oMatrix.SetCellWithoutValidation(row, "CLVNNAM", cardName);
+                   
+                }
+                else if (pVal.ColUID == "CLSHFCN") // Country OCRY
+                {
+                    string countryName = dt.GetValue("Name", 0).ToString();
+                    oMatrix.SetCellWithoutValidation(row, "CLSHFCN", countryName);
+                }
+                else if (pVal.ColUID == "CLITMGRP") // Item Group OITB
+                {
+                    string itemGroupName = dt.GetValue("ItmsGrpNam", 0).ToString();
+                    oMatrix.SetCellWithoutValidation(row, "CLITMGRP", itemGroupName);
+                }
+                else
+                {
+                    return;
+                }
+
+                oMatrix.FlushToDataSource();
+                AddLineIfLastRowHasValue(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST", "U_CARDCODE");
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                {
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "MTXLEDTM CFL Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error
+                );
+            }
+        }
+
+
+        private void LoadShippingModeComboInMatrix(SAPbouiCOM.Form oForm)
+        {
+            SAPbobsCOM.Recordset rs = null;
+
+            try
+            {
+                SAPbouiCOM.Matrix oMatrix =(SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                SAPbouiCOM.Column oColumn =oMatrix.Columns.Item("CLSHPMOD");
+
+                // Clear old valid values first
+                for (int i = oColumn.ValidValues.Count - 1; i >= 0; i--)
+                {
+                    oColumn.ValidValues.Remove(i, SAPbouiCOM.BoSearchKey.psk_Index);
+                }
+
+                string query = @"
+                                SELECT 
+                                    ""TrnspCode"",
+                                    ""TrnspName""
+                                FROM ""OSHP""
+                                WHERE IFNULL(""Active"", 'Y') = 'Y'
+                                ORDER BY ""TrnspName""
+                                ";
+
+                rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                rs.DoQuery(query);
+
+                while (!rs.EoF)
+                {
+                    string code = rs.Fields.Item("TrnspCode").Value.ToString();
+                    string name = rs.Fields.Item("TrnspName").Value.ToString();
+
+                    oColumn.ValidValues.Add(code, name);
+
+                    rs.MoveNext();
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Shipping Mode combo load error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (rs != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(rs);
+                    rs = null;
+                }
+            }
+        }
+
+        public static void EnsureLine(SAPbouiCOM.Form oForm, string matrixID, string dbTable)
+        {
+            SAPbouiCOM.Matrix matrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixID).Specific;
+            SAPbouiCOM.DBDataSource db = oForm.DataSources.DBDataSources.Item(dbTable);
+            if (matrix.RowCount == 0)
+            {
+                Global.GFunc.SetNewLine(matrix, db, 1, "");
+            }
+        }
+
+        public static void AddLineIfLastRowHasValue(
+          SAPbouiCOM.Form oForm,
+          string matrixID,
+          string dbTable,
+          string columnName
+          )
+        {
+            try
+            {
+                SAPbouiCOM.Matrix matrix = (SAPbouiCOM.Matrix)oForm.Items.Item(matrixID).Specific;
+                SAPbouiCOM.DBDataSource db = oForm.DataSources.DBDataSources.Item(dbTable);
+                matrix.FlushToDataSource();
+                int dbRowCount = db.Size;
+                if (dbRowCount == 0)
+                {
+                    Global.GFunc.SetNewLine(matrix, db, 1, "");
+                    return;
+                }
+                int lastDbRow = dbRowCount - 1;
+                string lastValue = db.GetValue(columnName, lastDbRow).Trim();
+                if (!string.IsNullOrEmpty(lastValue) && !lastValue.Equals("0.0"))
+                {
+                    Global.GFunc.SetNewLine(matrix, db, dbRowCount + 1, "");
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.MessageBox("AddLineIfLastRowHasValue Error: " + ex.Message);
+            }
+        }
     }
 }
