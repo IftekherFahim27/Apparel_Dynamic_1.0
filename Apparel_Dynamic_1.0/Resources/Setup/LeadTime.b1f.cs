@@ -13,31 +13,35 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
         {
         }
 
-        /// <summary>
-        /// Initialize components. Called by framework after form created.
-        /// </summary>
+        private SAPbouiCOM.StaticText STEFRMDT, STEFTODT, STDOCNUM;
+        private SAPbouiCOM.EditText ETEFRMDT, ETEFTODT, ETDOCTRY, ETDOCNUM;
+      
+        private SAPbouiCOM.ComboBox CBSERIES;
+        private SAPbouiCOM.Matrix MTXLEDTM;
+
+        private SAPbouiCOM.Button ADDButton,CancelButton;
+
+
         public override void OnInitializeComponent()
         {
-            this.StaticText0 = ((SAPbouiCOM.StaticText)(this.GetItem("STEFRMDT").Specific));
-            this.StaticText1 = ((SAPbouiCOM.StaticText)(this.GetItem("STEFTODT").Specific));
-            this.EditText0 = ((SAPbouiCOM.EditText)(this.GetItem("ETEFRMDT").Specific));
-            this.EditText1 = ((SAPbouiCOM.EditText)(this.GetItem("ETEFTODT").Specific));
-            this.EditText2 = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
-            this.EditText3 = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
-            this.ComboBox0 = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
-            this.Matrix0 = ((SAPbouiCOM.Matrix)(this.GetItem("MTXLEDTM").Specific));
-            this.StaticText2 = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
-            this.Button0 = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
-            this.Button1 = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
+            this.STEFRMDT = ((SAPbouiCOM.StaticText)(this.GetItem("STEFRMDT").Specific));
+            this.STEFTODT = ((SAPbouiCOM.StaticText)(this.GetItem("STEFTODT").Specific));
+            this.ETEFRMDT = ((SAPbouiCOM.EditText)(this.GetItem("ETEFRMDT").Specific));
+            this.ETEFTODT = ((SAPbouiCOM.EditText)(this.GetItem("ETEFTODT").Specific));
+            this.ETDOCTRY = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCTRY").Specific));
+            this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
+            this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
+            this.MTXLEDTM = ((SAPbouiCOM.Matrix)(this.GetItem("MTXLEDTM").Specific));
+            this.STDOCNUM = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
+            this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.OnCustomInitialize();
 
         }
 
-        /// <summary>
-        /// Initialize form event. Called by framework before form creation.
-        /// </summary>
         public override void OnInitializeFormEvents()
         {
+
         }
 
         private SAPbouiCOM.StaticText StaticText0;
@@ -47,15 +51,5 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         }
 
-        private SAPbouiCOM.StaticText StaticText1;
-        private SAPbouiCOM.EditText EditText0;
-        private SAPbouiCOM.EditText EditText1;
-        private SAPbouiCOM.EditText EditText2;
-        private SAPbouiCOM.EditText EditText3;
-        private SAPbouiCOM.ComboBox ComboBox0;
-        private SAPbouiCOM.Matrix Matrix0;
-        private SAPbouiCOM.StaticText StaticText2;
-        private SAPbouiCOM.Button Button0;
-        private SAPbouiCOM.Button Button1;
     }
 }
