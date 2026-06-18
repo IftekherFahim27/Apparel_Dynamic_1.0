@@ -17,6 +17,44 @@ namespace Apparel_Dynamic_1._0.Helper
             return input.ToUpper();
         }
 
+        public  void SetMatrixComboValue(SAPbouiCOM.Matrix matrix,string columnID,string query)
+        {
+            SAPbobsCOM.Recordset rs = null;
+
+            try
+            {
+                SAPbouiCOM.Column column = matrix.Columns.Item(columnID);
+
+                // Remove old values
+                for (int i = column.ValidValues.Count - 1; i >= 0; i--)
+                {
+                    column.ValidValues.Remove(i, SAPbouiCOM.BoSearchKey.psk_Index);
+                }
+
+                rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(
+                    SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                rs.DoQuery(query);
+
+                while (!rs.EoF)
+                {
+                    string code = rs.Fields.Item(0).Value.ToString();
+                    string name = rs.Fields.Item(1).Value.ToString();
+
+                    column.ValidValues.Add(code, name);
+
+                    rs.MoveNext();
+                }
+            }
+            finally
+            {
+                if (rs != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(rs);
+                    rs = null;
+                }
+            }
+        }
 
         public bool setComboBoxValue(SAPbouiCOM.ComboBox oComboBox, string strQry)
         {

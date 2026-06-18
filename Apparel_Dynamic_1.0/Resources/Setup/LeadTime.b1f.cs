@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using Apparel_Dynamic_1._0.Helper;
 
+
 namespace Apparel_Dynamic_1._0.Resources.Setup
 {
     [FormAttribute("Apparel_Dynamic_1._0.Resources.Setup.LeadTime", "Resources/Setup/LeadTime.b1f")]
@@ -47,31 +48,6 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         public override void OnInitializeFormEvents()
         {
-            this.ActivateAfter += new ActivateAfterHandler(this.Form_ActivateAfter);
-
-        }
-
-
-
-        private void Form_ActivateAfter(SAPbouiCOM.SBOItemEventArg pVal)
-        {
-            try
-            {
-                SAPbouiCOM.Form oForm =
-                    Application.SBO_Application.Forms.Item(pVal.FormUID);
-
-                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE)
-                {
-                    EnsureLine(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST");
-                }
-            }
-            catch (Exception ex)
-            {
-                Application.SBO_Application.StatusBar.SetText(
-                    ex.Message,
-                    SAPbouiCOM.BoMessageTime.bmt_Short,
-                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
-            }
 
         }
 
@@ -136,7 +112,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
                     oMatrix.SetCellWithoutValidation(row, "CLVNCOD", cardCode);
                     oMatrix.SetCellWithoutValidation(row, "CLVNNAM", cardName);
-                    AddLineIfLastRowHasValue(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST", "U_CARDCODE");
+                   
                 }
                 else if (pVal.ColUID == "CLSHFCN") // Country OCRY
                 {
@@ -154,7 +130,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                 }
 
                 oMatrix.FlushToDataSource();
-
+                AddLineIfLastRowHasValue(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST", "U_CARDCODE");
                 if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
                 {
                     oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
@@ -167,6 +143,61 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     SAPbouiCOM.BoMessageTime.bmt_Short,
                     SAPbouiCOM.BoStatusBarMessageType.smt_Error
                 );
+            }
+        }
+
+
+        private void LoadShippingModeComboInMatrix(SAPbouiCOM.Form oForm)
+        {
+            SAPbobsCOM.Recordset rs = null;
+
+            try
+            {
+                SAPbouiCOM.Matrix oMatrix =(SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                SAPbouiCOM.Column oColumn =oMatrix.Columns.Item("CLSHPMOD");
+
+                // Clear old valid values first
+                for (int i = oColumn.ValidValues.Count - 1; i >= 0; i--)
+                {
+                    oColumn.ValidValues.Remove(i, SAPbouiCOM.BoSearchKey.psk_Index);
+                }
+
+                string query = @"
+                                SELECT 
+                                    ""TrnspCode"",
+                                    ""TrnspName""
+                                FROM ""OSHP""
+                                WHERE IFNULL(""Active"", 'Y') = 'Y'
+                                ORDER BY ""TrnspName""
+                                ";
+
+                rs = (SAPbobsCOM.Recordset)Global.oComp.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+                rs.DoQuery(query);
+
+                while (!rs.EoF)
+                {
+                    string code = rs.Fields.Item("TrnspCode").Value.ToString();
+                    string name = rs.Fields.Item("TrnspName").Value.ToString();
+
+                    oColumn.ValidValues.Add(code, name);
+
+                    rs.MoveNext();
+                }
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Shipping Mode combo load error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                if (rs != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(rs);
+                    rs = null;
+                }
             }
         }
 
