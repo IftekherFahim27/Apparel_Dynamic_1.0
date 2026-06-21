@@ -36,10 +36,13 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
             this.ETDOCNUM = ((SAPbouiCOM.EditText)(this.GetItem("ETDOCNUM").Specific));
             this.CBSERIES = ((SAPbouiCOM.ComboBox)(this.GetItem("CBSERIES").Specific));
             this.MTXLEDTM = ((SAPbouiCOM.Matrix)(this.GetItem("MTXLEDTM").Specific));
+            this.MTXLEDTM.LostFocusAfter += new SAPbouiCOM._IMatrixEvents_LostFocusAfterEventHandler(this.MTXLEDTM_LostFocusAfter);
             this.MTXLEDTM.ChooseFromListAfter += new SAPbouiCOM._IMatrixEvents_ChooseFromListAfterEventHandler(this.MTXLEDTM_ChooseFromListAfter);
             this.MTXLEDTM.ChooseFromListBefore += new SAPbouiCOM._IMatrixEvents_ChooseFromListBeforeEventHandler(this.MTXLEDTM_ChooseFromListBefore);
             this.STDOCNUM = ((SAPbouiCOM.StaticText)(this.GetItem("STDOCNUM").Specific));
             this.ADDButton = ((SAPbouiCOM.Button)(this.GetItem("1").Specific));
+            this.ADDButton.PressedAfter += new SAPbouiCOM._IButtonEvents_PressedAfterEventHandler(this.ADDButton_PressedAfter);
+            this.ADDButton.PressedBefore += new SAPbouiCOM._IButtonEvents_PressedBeforeEventHandler(this.ADDButton_PressedBefore);
             this.CancelButton = ((SAPbouiCOM.Button)(this.GetItem("2").Specific));
             this.OnCustomInitialize();
 
@@ -51,11 +54,124 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
 
         }
 
+
+
         private void OnCustomInitialize()
         {
 
         }
 
+        private void ADDButton_PressedBefore(object sboObject, SAPbouiCOM.SBOItemEventArg pVal, out bool BubbleEvent)
+        {
+            BubbleEvent = true;
+            SAPbouiCOM.Form oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
+            if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_ADD_MODE || oForm.Mode == SAPbouiCOM.BoFormMode.fm_UPDATE_MODE)
+            {
+                ValidateForm(ref oForm, ref BubbleEvent);
+            }
+
+        }
+
+        private void ADDButton_PressedAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            
+
+        }
+
+
+        private bool ValidateForm(ref SAPbouiCOM.Form oForm, ref bool BubbleEvent)
+        {
+            SAPbouiCOM.DBDataSource db =oForm.DataSources.DBDataSources.Item("@FIL_DH_LEADTMST");
+
+            string efFrmDate = db.GetValue("U_EFROMDATE", 0).Trim();
+            string efToDate = db.GetValue("U_ETODATE", 0).Trim();
+
+            if (string.IsNullOrWhiteSpace(efFrmDate))
+            {
+                Global.GFunc.ShowError("Enter Effective From Date");
+                oForm.ActiveItem = "ETEFRMDT";
+                return BubbleEvent = false;
+            }
+
+            if (string.IsNullOrWhiteSpace(efToDate))
+            {
+                Global.GFunc.ShowError("Enter Effective To Date");
+                oForm.ActiveItem = "ETEFTODT";
+                return BubbleEvent = false;
+            }
+
+            DateTime fromDate = DateTime.ParseExact(efFrmDate, "yyyyMMdd", null);
+            DateTime toDate = DateTime.ParseExact(efToDate, "yyyyMMdd", null);
+
+            if (toDate < fromDate)
+            {
+                Global.GFunc.ShowError("Effective To Date cannot be before Effective From Date");
+                oForm.ActiveItem = "ETEFTODT";
+                return BubbleEvent = false;
+            }
+
+            string docEntry = db.GetValue("DocEntry", 0).Trim();
+
+            if (IsLeadTimeDateRangeExists(fromDate, toDate, docEntry))
+            {
+                Global.GFunc.ShowError("This effective date period already exists or overlaps with another period.");
+                oForm.ActiveItem = "ETEFRMDT";
+                return BubbleEvent = false;
+            }
+
+            return BubbleEvent;
+        }
+
+        private void MTXLEDTM_LostFocusAfter(object sboObject, SAPbouiCOM.SBOItemEventArg pVal)
+        {
+            
+
+        }
+
+        private bool IsLeadTimeDateRangeExists(DateTime fromDate, DateTime toDate, string currentDocEntry)
+        {
+            SAPbobsCOM.Recordset rs = null;
+
+            try
+            {
+                SAPbobsCOM.Company oCompany =(SAPbobsCOM.Company)Application.SBO_Application.Company.GetDICompany();
+                rs = (SAPbobsCOM.Recordset)oCompany.GetBusinessObject(SAPbobsCOM.BoObjectTypes.BoRecordset);
+
+                string fromDateStr = fromDate.ToString("yyyyMMdd");
+                string toDateStr = toDate.ToString("yyyyMMdd");
+
+                string query = $@"
+                                SELECT TOP 1 ""DocEntry""
+                                FROM ""@FIL_DH_LEADTMST""
+                                WHERE 
+                                    ""U_EFROMDATE"" <= '{toDateStr}'
+                                    AND ""U_ETODATE"" >= '{fromDateStr}'";
+
+                if (!string.IsNullOrWhiteSpace(currentDocEntry))
+                {
+                    query += $@" AND ""DocEntry"" <> '{currentDocEntry}'";
+                }
+
+                rs.DoQuery(query);
+
+                return !rs.EoF;
+            }
+            catch (Exception ex)
+            {
+                Global.GFunc.ShowError("Date validation error: " + ex.Message);
+                return true;
+            }
+            finally
+            {
+                if (rs != null)
+                {
+                    System.Runtime.InteropServices.Marshal.ReleaseComObject(rs);
+                    rs = null;
+                }
+
+                GC.Collect();
+            }
+        }
 
         private void MTXLEDTM_ChooseFromListBefore(object sboObject,SAPbouiCOM.SBOItemEventArg pVal,out bool BubbleEvent)
         {
@@ -130,7 +246,7 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                 }
 
                 oMatrix.FlushToDataSource();
-                AddLineIfLastRowHasValue(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST", "U_CARDCODE");
+                //AddLineIfLastRowHasValue(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST", "U_CARDCODE");
                 if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
                 {
                     oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
