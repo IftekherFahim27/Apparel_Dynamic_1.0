@@ -223,7 +223,7 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
                 string docEntry = oDT.GetValue("DocEntry", pVal.Row).ToString().Trim();
                 string docNum = oDT.GetValue("DocNum", pVal.Row).ToString().Trim();
-                string amendNo = oDT.GetValue("U_AMNDMNT", pVal.Row).ToString().Trim();
+                string amendNo = oDT.GetValue("Amendment No", pVal.Row).ToString().Trim();
                 string logInst = oDT.GetValue("LogInst", pVal.Row).ToString().Trim();
 
                 OpenAmendmentInNewForm(docEntry, docNum, amendNo, logInst);
