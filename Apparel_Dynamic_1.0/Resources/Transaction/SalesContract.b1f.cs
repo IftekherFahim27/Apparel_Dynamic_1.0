@@ -25,10 +25,6 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                                      STCNDEST, STPRTDIS, STINSNCE, STSHPTOL, STHSCODE,
                                      STDOCREQ, STRMSCON, STSHPADD, STPRTSHP;
 
-       
-
-
-
         // -------- ComboBox --------
         private SAPbouiCOM.ComboBox CBBRANCH, CBMRSTAT, CBCMSTAT, CBINTRMS, CBDSNBNK,
                                     CBPYTRMS, CBMDSHIP, CBPRTSHP, CBSERIES, CBSHPADD;
@@ -397,24 +393,39 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
                 SetEdit(oForm, "ETSCNO", rs.Fields.Item("U_SCNO").Value);
                 SetEdit(oForm, "ETSCDESC", rs.Fields.Item("U_SCDESC").Value);
                 SetEdit(oForm, "ETREFNCE", rs.Fields.Item("U_REFERANCE").Value);
-                SetEdit(oForm, "ETSCVAL", rs.Fields.Item("U_SCVALUE").Value);
-                SetEdit(oForm, "ETDOVAL", rs.Fields.Item("U_DRFTVALUE").Value);
                 SetEdit(oForm, "ETB2BPER", rs.Fields.Item("U_BTOBLCPER").Value);
-                SetEdit(oForm, "ETB2BVAL", rs.Fields.Item("U_BTOBLCVALUE").Value);
+
+                //SetEdit(oForm, "ETSCVAL", rs.Fields.Item("U_SCVALUE").Value);
+                //SetEdit(oForm, "ETDOVAL", rs.Fields.Item("U_DRFTVALUE").Value);
+                //SetEdit(oForm, "ETB2BVAL", rs.Fields.Item("U_BTOBLCVALUE").Value);
+                //SetEdit(oForm, "ETOPNAMT", rs.Fields.Item("U_OPBTBAMT").Value);
+
+                //Amount Format
+                SetEditAmountFormat(oForm, "ETSCVAL", rs.Fields.Item("U_SCVALUE").Value);
+                SetEditAmountFormat(oForm, "ETDOVAL", rs.Fields.Item("U_DRFTVALUE").Value);
+                SetEditAmountFormat(oForm, "ETB2BVAL", rs.Fields.Item("U_BTOBLCVALUE").Value);
+                SetEditAmountFormat(oForm, "ETOPNAMT", rs.Fields.Item("U_OPBTBAMT").Value);
+                //Date Format
+                SetEditDateFormat(oForm, "ETDOCDAT", rs.Fields.Item("U_DOCDATE").Value);
+                SetEditDateFormat(oForm, "ETISUDAT", rs.Fields.Item("U_ISSUEDATE").Value);
+                SetEditDateFormat(oForm, "ETSHPDAT", rs.Fields.Item("U_SHIPDATE").Value);
+                SetEditDateFormat(oForm, "ETEXPDAT", rs.Fields.Item("U_EXPDATE").Value);
+
                 SetEdit(oForm, "ETDSNBNK", rs.Fields.Item("DocSendToBank").Value);
 
-                SetEditDate(oForm, "ETDOCDAT", rs.Fields.Item("U_DOCDATE").Value);
+                //SetEditDate(oForm, "ETDOCDAT", rs.Fields.Item("U_DOCDATE").Value);
+                //SetEditDate(oForm, "ETISUDAT", rs.Fields.Item("U_ISSUEDATE").Value);
+                //SetEditDate(oForm, "ETSHPDAT", rs.Fields.Item("U_SHIPDATE").Value);
+                //SetEditDate(oForm, "ETEXPDAT", rs.Fields.Item("U_EXPDATE").Value);
                 SetEdit(oForm, "ETCBNKAC", rs.Fields.Item("U_CUSBKACT").Value);
                 SetEdit(oForm, "ETCUSBNK", rs.Fields.Item("U_CUSBANK").Value);
                 SetEdit(oForm, "ETOBNKAC", rs.Fields.Item("U_OWNBKACT").Value);
                 SetEdit(oForm, "ETOWNBNK", rs.Fields.Item("U_OWNBNAME").Value);
                 SetEdit(oForm, "ETCURR", rs.Fields.Item("U_CURRENCY").Value);
-                SetEditDate(oForm, "ETISUDAT", rs.Fields.Item("U_ISSUEDATE").Value);
-                SetEditDate(oForm, "ETSHPDAT", rs.Fields.Item("U_SHIPDATE").Value);
-                SetEditDate(oForm, "ETEXPDAT", rs.Fields.Item("U_EXPDATE").Value);
+
                 SetEdit(oForm, "ETTOLPER", rs.Fields.Item("U_TOLRPERC").Value);
                 SetEdit(oForm, "ETAMNDNO", rs.Fields.Item("U_AMNDMNT").Value);
-                SetEdit(oForm, "ETOPNAMT", rs.Fields.Item("U_OPBTBAMT").Value);
+
 
                 SetEdit(oForm, "ETINTRMS", rs.Fields.Item("U_INCOTRMS").Value);
                 SetEdit(oForm, "ETPYTRMS", rs.Fields.Item("PaymentTermsName").Value);
@@ -559,6 +570,43 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
             }
 
             mtx.AutoResizeColumns();
+        }
+
+
+        private void SetEditDateFormat(SAPbouiCOM.Form oForm, string itemId, object value)
+        {
+            try
+            {
+                if (value == null) return;
+
+                DateTime dt;
+                if (!DateTime.TryParse(value.ToString(), out dt))
+                    return;
+
+                // SAP display style: 21/06/26
+                string formattedDate = dt.ToString("dd/MM/yy");
+
+                ((SAPbouiCOM.EditText)oForm.Items.Item(itemId).Specific).Value = formattedDate;
+            }
+            catch { }
+        }
+
+        private void SetEditAmountFormat(SAPbouiCOM.Form oForm, string itemId, object value)
+        {
+            try
+            {
+                if (value == null) return;
+
+                decimal amount;
+                if (!decimal.TryParse(value.ToString(), out amount))
+                    amount = 0;
+
+                // Amount style: 1,234.56
+                string formattedAmount = amount.ToString("#,##0.00");
+
+                ((SAPbouiCOM.EditText)oForm.Items.Item(itemId).Specific).Value = formattedAmount;
+            }
+            catch { }
         }
 
         private void ClearAmendmentForm(SAPbouiCOM.Form oForm)
