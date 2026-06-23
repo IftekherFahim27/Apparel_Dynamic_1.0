@@ -90,8 +90,8 @@ namespace Apparel_Dynamic_1._0.Resources.Transaction
 
                 string qStr = @"SELECT 
                         ""DocNum"",
-                        ""CardCode"",
-                        ""CardName"",
+                        ""CardCode"" AS ""Customer Code"",
+                        ""CardName"" AS ""Customer Name"",
                         ""U_STYLECODE"" AS ""Style Code"",
                         ""U_STYLENM"" AS ""Style Desc."",
                         ""DocDueDate"" AS ""Delivery Date"",
