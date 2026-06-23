@@ -1511,7 +1511,7 @@ namespace Apparel_Dynamic_1._0
                                 }
                             case "FIL_FRM_LEADTIME":
                                 {
-
+                                    HandleLeadTimeDeleteAfter(oForm);
                                     break;
                                 }
                         }
@@ -1544,6 +1544,85 @@ namespace Apparel_Dynamic_1._0
         }
 
         //_____________________________________________________ Method for Working Purpose________________________________________
+
+        private void HandleLeadTimeDeleteAfter(SAPbouiCOM.Form oForm)
+        {
+            try
+            {
+                oForm.Freeze(true);
+
+                SAPbouiCOM.Matrix oMatrix =(SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                SAPbouiCOM.DBDataSource db =oForm.DataSources.DBDataSources.Item("@FIL_DR_LEADTMST");
+                oMatrix.FlushToDataSource();
+
+                // Remove fully blank/ghost rows after SAP 1293 delete
+                for (int i = db.Size - 1; i >= 0; i--)
+                {
+                    string vendorCode = db.GetValue("U_CARDCODE", i).Trim();
+                    string country = db.GetValue("U_CONTRYCODE", i).Trim();
+                    string shipMode = db.GetValue("U_SHIPMODE", i).Trim();
+                    string incoterms = db.GetValue("U_INCOTRMS", i).Trim();
+                    string itemGroup = db.GetValue("U_ITMGRPCD", i).Trim();
+                    string leadDays = db.GetValue("U_LEADDAYS", i).Trim();
+
+                    if (string.IsNullOrWhiteSpace(vendorCode) &&
+                        string.IsNullOrWhiteSpace(country) &&
+                        string.IsNullOrWhiteSpace(shipMode) &&
+                        string.IsNullOrWhiteSpace(incoterms) &&
+                        string.IsNullOrWhiteSpace(itemGroup) &&
+                        string.IsNullOrWhiteSpace(leadDays))
+                    {
+                        db.RemoveRecord(i);
+                    }
+                }
+
+                // Case 1: all rows deleted
+                if (db.Size == 0)
+                {
+                    oMatrix.LoadFromDataSource();
+                    EnsureLine(oForm, "MTXLEDTM", "@FIL_DR_LEADTMST");
+                }
+                else
+                {
+                    // Maintain LineId
+                    for (int i = 0; i < db.Size; i++)
+                    {
+                        db.SetValue("LineId", i, (i + 1).ToString());
+                    }
+
+                    oMatrix.LoadFromDataSource();
+
+                    // Maintain visual row number
+                    for (int i = 1; i <= oMatrix.VisualRowCount; i++)
+                    {
+                        ((SAPbouiCOM.EditText)oMatrix.Columns.Item("#").Cells.Item(i).Specific).Value =
+                            i.ToString();
+                    }
+
+                    oMatrix.FlushToDataSource();
+
+                    // Optional: if last row has data, add new blank line
+                    AddLineIfLastRowHasValue(oForm,"MTXLEDTM","@FIL_DR_LEADTMST","U_CARDCODE");
+                }
+
+                if (oForm.Mode == SAPbouiCOM.BoFormMode.fm_OK_MODE)
+                    oForm.Mode = SAPbouiCOM.BoFormMode.fm_UPDATE_MODE;
+
+                oMatrix.AutoResizeColumns();
+            }
+            catch (Exception ex)
+            {
+                Application.SBO_Application.StatusBar.SetText(
+                    "Lead Time Delete Row Error: " + ex.Message,
+                    SAPbouiCOM.BoMessageTime.bmt_Short,
+                    SAPbouiCOM.BoStatusBarMessageType.smt_Error);
+            }
+            finally
+            {
+                try { oForm.Freeze(false); } catch { }
+            }
+        }
+
         private void LoadMatrixCombos(SAPbouiCOM.Form oForm)
         {
             try
