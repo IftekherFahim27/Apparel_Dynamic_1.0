@@ -141,13 +141,8 @@ namespace Apparel_Dynamic_1._0.Resources.Setup
                     return;
 
                 oForm = Application.SBO_Application.Forms.Item(pVal.FormUID);
-
-                SAPbouiCOM.Matrix matrix =
-                    (SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
-
-                SAPbouiCOM.DBDataSource db =
-                    oForm.DataSources.DBDataSources.Item("@FIL_DR_LEADTMST");
-
+                SAPbouiCOM.Matrix matrix =(SAPbouiCOM.Matrix)oForm.Items.Item("MTXLEDTM").Specific;
+                SAPbouiCOM.DBDataSource db =oForm.DataSources.DBDataSources.Item("@FIL_DR_LEADTMST");
                 matrix.FlushToDataSource();
 
                 int currentRow = pVal.Row;
